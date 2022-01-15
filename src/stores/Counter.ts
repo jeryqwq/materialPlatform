@@ -1,8 +1,10 @@
-import { observable, action } from 'mobx';
+import { observable, action, makeAutoObservable } from 'mobx';
 
 class Counter {
   @observable count = 0;
-
+  constructor() {
+    makeAutoObservable(this);
+  }
   @action handleInc = () => {
     this.count++;
   };
