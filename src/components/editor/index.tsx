@@ -25,6 +25,7 @@ function Editer() {
       height="90vh"
       defaultLanguage="javascript"
       defaultValue="// some comment"
+      theme="vs-dark"
       onChange={handleEditorChange}
       onMount={handleEditorDidMount}
       beforeMount={handleEditorWillMount}

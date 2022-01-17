@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { history } from 'umi';
-import Editor from '@/components/editor';
 import { inject, observer } from 'mobx-react';
-
+import styles from './index.less'
+import FileTree from './fileTree';
+import NpmTree from './npmDep'
+import Preview from './preview';
+import FileHistory from './fileHistory';
+import Editor from '@/components/editor';
 type StateType = {
   inputVal: string;
 };
-
 @inject('counterStore')
 @observer
 class Editer extends React.Component<
@@ -28,30 +30,20 @@ class Editer extends React.Component<
     const store = this.props;
     const { counterStore } = store;
     // const [inputVal, setVal] = useState('')
-
+    
     return (
-      <div>
-        Editer-content
-        <input type="text" onChange={(e) => this.setVal(e.target.value)} />
-        <button
-          onClick={() => {
-            history.push(`/index?val=${this.state.inputVal}`);
-          }}
-        >
-          {' '}
-          click me to other with input value params
-        </button>
-        <h1>mobx count Store val {counterStore.count} index</h1>
-        <button
-          onClick={() => {
-            history.push(`/manage?val=${this.state.inputVal}`);
-          }}
-        >
-          {' '}
-          click me to manage with input value params
-        </button>
-        <button onClick={counterStore.handleDec}>handleDec</button>
-        <Editor />
+      <div className={ styles['editer-wrap'] }>
+        <div className={ styles['left-tree'] }>
+          <p style={{ margin: '15px 0 0 15px' }}>资源管理器</p>
+          <FileTree fileTree={[{title: '项目名', key: 'project-name', children: [ {title: 'index.vue', key: '2', isLeaf: true} ]}]}/>
+          <NpmTree fileTree={[{title: '依赖管理', key: 'project-name', children: [ {title: 'lodash', key: '2', isLeaf: true} ]}]}/>
+        </div>
+        <div className={ styles["content-wrap"] }>
+          <div className={ styles["code-edit-wrap"] }>
+            <FileHistory panes={[{ title: 'index.vue', key: '/index.vue', content: <Editor  />, style: { height: '100%' } }]}/>
+          </div>
+          <div className={ styles["preview-wrap"] }> <Preview /> </div>
+        </div>
       </div>
     );
   }
