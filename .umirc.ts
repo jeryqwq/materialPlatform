@@ -4,9 +4,8 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  plugins: [
-  ],
+  plugins: [],
   routes: routes,
   fastRefresh: {},
-  mfsu: {}
+  mfsu: {},
 });
