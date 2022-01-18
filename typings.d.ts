@@ -8,3 +8,7 @@ declare module '*.svg' {
   const url: string;
   export default url;
 }
+
+declare module 'vue3-sfc-loader-vis'{
+  type loadModule = Function
+}

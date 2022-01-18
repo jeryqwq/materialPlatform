@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ReactPropsWithRouter } from 'types';
 import styles from './layout.less'
-import Provider from '@/provider/index'
+import IndexProvider from '@/provider/index'
 import ProLayout, { PageContainer, SettingDrawer } from '@ant-design/pro-layout';
 import type { ProSettings } from '@ant-design/pro-layout';
 import {
@@ -14,7 +14,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
   const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({ fixSiderbar: true, navTheme: 'realDark' });
   const pathname = props.route.path
   return (
-    <Provider>
+    <IndexProvider>
       <div
       id="pro-layout"
       style={{
@@ -89,7 +89,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
         disableUrlParams
       />
     </div>
-    </Provider>
+    </IndexProvider>
   );
 }
 

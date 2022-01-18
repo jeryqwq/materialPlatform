@@ -1,5 +1,5 @@
 import { CodeSandboxOutlined, CrownOutlined } from '@ant-design/icons';
-
+import React from 'react'
 
 export const editerPages = { path: '/', component: '@/layout/index', name: '操作',
   routes: [

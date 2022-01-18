@@ -9,13 +9,16 @@ import Editor from '@/components/editor';
 type StateType = {
   inputVal: string;
 };
-@inject('counterStore')
+type StoreProps = {
+  counterStore: CounterStore, fileSystem: FileSys
+}
+@inject('counterStore', 'fileSystem')
 @observer
 class Editer extends React.Component<
-  { counterStore: CounterStore },
+  StoreProps,
   StateType
 > {
-  constructor(props: { counterStore: CounterStore }) {
+  constructor(props: StoreProps) {
     super(props);
     this.state = {
       inputVal: '',
@@ -28,9 +31,8 @@ class Editer extends React.Component<
   }
   render(): React.ReactNode {
     const store = this.props;
-    const { counterStore } = store;
-    // const [inputVal, setVal] = useState('')
-    
+    const { fileSystem } = store;
+    const { actives } = fileSystem as FileSys
     return (
       <div className={ styles['editer-wrap'] }>
         <div className={ styles['left-tree'] }>
@@ -40,9 +42,13 @@ class Editer extends React.Component<
         </div>
         <div className={ styles["content-wrap"] }>
           <div className={ styles["code-edit-wrap"] }>
-            <FileHistory panes={[{ title: 'index.vue', key: '/index.vue', content: <Editor  />, style: { height: '100%' } }]}/>
+            {
+              actives.map(i => (
+                <FileHistory panes={[{ title: i.name, key: i.path, content: <Editor file={i} />, style: { height: '100%' } }]}/>
+              ))
+            }
           </div>
-          <div className={ styles["preview-wrap"] }> <Preview /> </div>
+          <div className={ styles["preview-wrap"] }> <Preview fileSystem={fileSystem}/> </div>
         </div>
       </div>
     );
