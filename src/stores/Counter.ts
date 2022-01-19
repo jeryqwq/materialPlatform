@@ -13,5 +13,5 @@ class Counter {
     this.count--;
   };
 }
-
-export default new Counter();
+const counter = new Counter();
+export default counter;

@@ -1,25 +1,10 @@
 import React from 'react';
 import Editor from '@monaco-editor/react';
-function Editer(props: { file: fileDescription }) {
-  const { file } = props
+function Editer(props: { file: FileDescription; onChange: Function }) {
+  const { file, onChange } = props;
   function handleEditorChange(value: any, event: any) {
-    // here is the current value
+    onChange(file, value);
   }
-
-  // function handleEditorDidMount(editor: any, monaco: any) {
-  //   console.log('onMount: the editor instance:', editor);
-  //   console.log('onMount: the monaco instance:', monaco);
-  // }
-
-  // function handleEditorWillMount(monaco: any) {
-  //   console.log('beforeMount: the monaco instance:', monaco);
-  // }
-
-  // function handleEditorValidation(markers: any) {
-  //   // model markers
-  //   // markers.forEach(marker => console.log('onValidate:', marker.message));
-  // }
-
   return (
     <Editor
       height="90vh"

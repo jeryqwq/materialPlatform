@@ -30,20 +30,12 @@ class Editer extends React.Component<StoreProps, StateType> {
   render(): React.ReactNode {
     const store = this.props;
     const { fileSystem } = store;
-    const { actives } = fileSystem as FileSys;
+    const { actives, files } = fileSystem as FileSys;
     return (
       <div className={styles['editer-wrap']}>
         <div className={styles['left-tree']}>
           <p style={{ margin: '15px 0 0 15px' }}>资源管理器</p>
-          <FileTree
-            fileTree={[
-              {
-                title: '项目名',
-                key: 'project-name',
-                children: [{ title: 'index.vue', key: '2', isLeaf: true }],
-              },
-            ]}
-          />
+          <FileTree fileSystem={fileSystem} />
           <NpmTree
             fileTree={[
               {
@@ -63,7 +55,14 @@ class Editer extends React.Component<StoreProps, StateType> {
                   {
                     title: i.name,
                     key: i.path,
-                    content: <Editor file={i} />,
+                    content: (
+                      <Editor
+                        file={i}
+                        onChange={(i: FileDescription, val: string) => {
+                          fileSystem.saveToLs(i.path, val);
+                        }}
+                      />
+                    ),
                     style: { height: '100%' },
                   },
                 ]}
@@ -71,8 +70,7 @@ class Editer extends React.Component<StoreProps, StateType> {
             ))}
           </div>
           <div className={styles['preview-wrap']}>
-            {' '}
-            <Preview fileSystem={fileSystem} />{' '}
+            <Preview fileSystem={fileSystem} />
           </div>
         </div>
       </div>

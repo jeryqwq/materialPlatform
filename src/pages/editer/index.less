@@ -1,31 +1,44 @@
-.editer-wrap{
+.editer-wrap {
   display: flex;
   flex-direction: row;
   height: 100%;
-  >.left-tree{
+  > .left-tree {
     width: 200px;
     min-width: 200px;
   }
-  >.content-wrap{
+  > .content-wrap {
     flex: 1;
     display: flex;
     flex-direction: row;
-    >.code-edit-wrap{
+    > .code-edit-wrap {
       flex: 1;
     }
-    >.preview-wrap{
+    > .preview-wrap {
       min-width: 300px;
       width: 400px;
     }
   }
 }
-.util-btn{
+.util-btn {
   height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
-    >.font-label{
-      margin: 0 5px;
+  > .font-label {
+    margin: 0 5px;
+  }
+}
+.file-tree-node {
+  display: inline-block;
+  padding-right: 10px;
+  white-space: nowrap;
+  > .icon-wrap {
+    opacity: 0;
+  }
+  &:hover {
+    > .icon-wrap {
+      opacity: 1;
     }
+  }
 }
