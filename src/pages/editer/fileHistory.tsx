@@ -14,7 +14,9 @@ function FileHistory(props: { panes: Array<TabPaneItem> }) {
         hideAdd
         // onChange={this.onChange}
         // activeKey={this.state.activeKey}
+        tabBarGutter={0}
         type="editable-card"
+        size="small"
         // onEdit={this.onEdit}
         style={{ height: '100%' }}
       >

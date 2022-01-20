@@ -1,6 +1,6 @@
 import { fileTransform } from '@/utils/file';
 import { addStyles, destoryPreview } from '@/utils/reload';
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useLayoutEffect, useRef } from 'react';
 import * as loader from 'vue3-sfc-loader-vis';
 declare global {
   interface Window {
@@ -14,6 +14,7 @@ const stylus = window['stylus'] || {};
 const sass = new window.Sass();
 function Preview(props: { fileSystem: FileSys }) {
   const ref = useRef(null);
+
   useLayoutEffect(() => {
     const config = {
       files: fileTransform(props.fileSystem),

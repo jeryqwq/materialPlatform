@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { KeyboardEventHandler, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import styles from './index.less';
 import FileTree from './fileTree';
@@ -21,11 +21,18 @@ class Editer extends React.Component<StoreProps, StateType> {
     this.state = {
       inputVal: '',
     };
+    this.reloadFile = this.reloadFile.bind(this);
   }
   setVal(val: string) {
     this.setState({
       inputVal: val,
     });
+  }
+  reloadFile(e: any) {
+    if (e.code === 'KeyS' && (e.altKey || e.ctrlKey || e.metaKey)) {
+      this.props.fileSystem.reloadFile();
+      e.preventDefault();
+    }
   }
   render(): React.ReactNode {
     const store = this.props;
@@ -47,27 +54,27 @@ class Editer extends React.Component<StoreProps, StateType> {
           />
         </div>
         <div className={styles['content-wrap']}>
-          <div className={styles['code-edit-wrap']}>
-            {actives.map((i) => (
-              <FileHistory
-                key={i.path}
-                panes={[
-                  {
-                    title: i.name,
-                    key: i.path,
-                    content: (
-                      <Editor
-                        file={i}
-                        onChange={(i: FileDescription, val: string) => {
-                          fileSystem.saveToLs(i.path, val);
-                        }}
-                      />
-                    ),
-                    style: { height: '100%' },
-                  },
-                ]}
-              />
-            ))}
+          <div
+            className={styles['code-edit-wrap']}
+            onKeyDown={this.reloadFile}
+            tabIndex={0}
+          >
+            {/* {actives.map((i) => ( */}
+            <FileHistory
+              panes={[...actives].map((i) => ({
+                title: i.name,
+                key: i.path,
+                content: (
+                  <Editor
+                    file={i}
+                    onChange={(i: FileDescription, val: string) => {
+                      fileSystem.saveToLs(i.path, val);
+                    }}
+                  />
+                ),
+                style: { height: '100%' },
+              }))}
+            />
           </div>
           <div className={styles['preview-wrap']}>
             <Preview fileSystem={fileSystem} />

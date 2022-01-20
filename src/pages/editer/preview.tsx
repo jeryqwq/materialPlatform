@@ -3,8 +3,6 @@ import React from 'react';
 import Console from './console';
 import styles from './index.less';
 import { ChromeOutlined } from '@ant-design/icons';
-import { inject } from 'mobx-react';
-import { ReactPropsWithRouter } from 'types';
 import PreviewReact from '@/components/previewReact';
 
 export default (props: { fileSystem: FileSys }) => {

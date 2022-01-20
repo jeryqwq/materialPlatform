@@ -4,22 +4,25 @@ declare type CounterStore = {
   handleDec: () => void;
 };
 declare type FileTarget = string | File | MediaSource; //  File对象， 多媒体文件
-declare enum FileTypes { // 目前支持的解析文件类型
-  'png',
-  'jpg',
-  'jpeg',
-  'img', // 适配文件类型， 非后缀
-  'svg',
-  'gif',
-  'vue',
-  'js',
-  'mjs',
-  'css',
-  'scss',
-  'stylus',
-  'mp4',
-  'mp3',
+declare enum FileTypes {
+  PNG = 'png',
+  JPG = 'jpg',
+  JEPG = 'jpeg',
+  IMG = 'img',
+  SVG = 'svg',
+  GIF = 'gif',
+  VUE = 'vue',
+  JS = 'js',
+  MJS = 'mjs',
+  CSS = 'css',
+  SCSS = 'scss',
+  STYLUS = 'stylus',
+  MP4 = 'mp4',
+  MP3 = 'mp3',
+  COMMON = 'common',
 }
+type FileTypesString = keyof typeof FileTypes;
+
 declare type FileDescription = {
   url: string;
   target: FileTarget;
@@ -31,7 +34,8 @@ declare type FileDescription = {
 };
 declare type FileSys = {
   files: Record<string, FileDescription>;
-  actives: Array<FileDescription>;
+  actives: Set<FileDescription>;
   activeFile: (_: FileDescription) => void;
   saveToLs: (path: string, content: FileTarget) => void;
+  reloadFile: () => void;
 };
