@@ -67,6 +67,10 @@ function Preview(props: { fileSystem: FileSys }) {
         // return config.files[url] || (() => { throw new Error('404 ' + url) })();
         return config.files[url];
       },
+      log(type: string, err: string) {
+        // compiler error
+        alert('log' + type + err);
+      },
       getResource(pathCx: any, options: any) {
         // 其次使用getResource ， 当handleModule返回null或者不返回时， 源码位置 tools.ts:294
         // getResource 偏运行时，能支撑适配运行时参数
@@ -105,9 +109,20 @@ function Preview(props: { fileSystem: FileSys }) {
       },
     };
     const _loader = loader as { loadModule: Function };
+    const myConsol = window.console;
+    window.console = {
+      ...myConsol,
+      log: (str: string) => {
+        myConsol.log(str, '----proxy');
+      },
+      warn: () => {},
+    };
     Vue.createApp(
       Vue.defineAsyncComponent(() => _loader.loadModule('/index.vue', options)),
     ).mount(elWrap as unknown as HTMLElement);
+    setTimeout(() => {
+      window.console = myConsol;
+    }, 0);
     return destoryPreview;
   }, [props.fileSystem.files]);
   return <div ref={ref}></div>;
