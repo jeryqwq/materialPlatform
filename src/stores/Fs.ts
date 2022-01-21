@@ -4,10 +4,12 @@ import { observable, action, makeAutoObservable } from 'mobx';
 class FileSystem implements FileSys {
   @observable files: Record<string, FileDescription> = {};
   @observable actives: Set<FileDescription> = new Set();
+  @observable activeKey: string = '';
   constructor() {
     makeAutoObservable(this);
   }
   @action activeFile = (item: FileDescription) => {
+    this.activeKey = item.path;
     this.actives.add(item);
   };
   @action reloadFile = () => {

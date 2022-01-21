@@ -38,4 +38,5 @@ declare type FileSys = {
   activeFile: (_: FileDescription) => void;
   saveToLs: (path: string, content: FileTarget) => void;
   reloadFile: () => void;
+  activeKey: string;
 };

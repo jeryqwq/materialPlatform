@@ -8,13 +8,10 @@ function Editer(props: { file: FileDescription; onChange: Function }) {
   return (
     <Editor
       height="90vh"
-      defaultLanguage="html"
+      defaultLanguage="css"
       defaultValue={typeof file.target === 'string' ? file.target : ''}
       theme="vs-dark"
       onChange={handleEditorChange}
-      // onMount={handleEditorDidMount}
-      // beforeMount={handleEditorWillMount}
-      // onValidate={handleEditorValidation}
     />
   );
 }

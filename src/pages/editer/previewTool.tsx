@@ -3,7 +3,7 @@ import React from 'react';
 import Console from './console';
 import styles from './index.less';
 import { ChromeOutlined } from '@ant-design/icons';
-import PreviewReact from '@/components/previewReact';
+import PreviewReact from '@/components/renderPreview';
 
 export default (props: { fileSystem: FileSys }) => {
   return (

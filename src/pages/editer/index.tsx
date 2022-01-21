@@ -1,12 +1,11 @@
-import React, { KeyboardEventHandler, useState } from 'react';
+import React, { KeyboardEventHandler, Suspense, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import styles from './index.less';
 import FileTree from './fileTree';
 import NpmTree from './npmDep';
-import Preview from './preview';
+import Preview from './previewTool';
 import FileHistory from './fileHistory';
-import Editor from '@/components/editor';
-import { Button, Upload } from 'antd';
+import { Button, Spin, Upload } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 type StateType = {
   inputVal: string;
@@ -54,7 +53,7 @@ class Editer extends React.Component<StoreProps, StateType> {
             >
               <Upload onChange={(e) => console.log(e)} fileList={[]}>
                 <UploadOutlined />
-              </Upload>{' '}
+              </Upload>
               <DownloadOutlined style={{ margin: '0 5px' }} />
             </div>
           </div>
@@ -75,21 +74,39 @@ class Editer extends React.Component<StoreProps, StateType> {
             onKeyDown={this.reloadFile}
             tabIndex={0}
           >
-            {/* {actives.map((i) => ( */}
             <FileHistory
-              panes={[...actives].map((i) => ({
-                title: i.name,
-                key: i.path,
-                content: (
-                  <Editor
-                    file={i}
-                    onChange={(i: FileDescription, val: string) => {
-                      fileSystem.saveToLs(i.path, val);
-                    }}
-                  />
-                ),
-                style: { height: '100%' },
-              }))}
+              activeKey={fileSystem.activeKey}
+              onChange={(val: string) =>
+                fileSystem.activeFile(
+                  [...fileSystem.actives].find(
+                    (i) => i.path === val,
+                  ) as FileDescription,
+                )
+              }
+              panes={[...actives].map((i) => {
+                const Editor = React.lazy(
+                  () => import(`@/components/previews/${i.type}`),
+                );
+                return {
+                  title: i.name,
+                  key: i.path,
+                  content: (
+                    <Suspense fallback={<Spin size="large" />}>
+                      <div style={{ paddingLeft: '10px' }}>
+                        {' '}
+                        {i.path.split('/').join(' > ')}{' '}
+                      </div>
+                      <Editor
+                        file={i}
+                        onChange={(i: FileDescription, val: string) => {
+                          fileSystem.saveToLs(i.path, val);
+                        }}
+                      />
+                    </Suspense>
+                  ),
+                  style: { height: '100%' },
+                };
+              })}
             />
           </div>
           <div className={styles['preview-wrap']}>
