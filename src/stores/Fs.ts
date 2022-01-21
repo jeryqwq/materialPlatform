@@ -37,24 +37,48 @@ const fs = new FileSystem();
 fs.saveToLs('/a/b.js', `console.log('/a/bjs')`);
 fs.saveToLs('/a/b/c.js', `console.log('/a/b/cjs')`);
 fs.saveToLs('/assets/vue.png', ``);
-fs.saveToLs('/assets/style/style.css', ``);
+fs.saveToLs('/assets/style/style.css', ` h1{ color: orange } `);
+fs.saveToLs(
+  '/main.vue',
+  `
+<template>
+  <div>
+    这是个渲染的Main.vue组件, 颜色绿
+    <h1>H1 Title</h1>
+  </div>
+</template>
+<script>
+</script>
+<style scoped lang="scss">
+  div{
+  color: green
+  }
+</style>
+  `,
+);
 fs.saveToLs(
   '/index.vue',
   `
-    <template>
-      <div>这是个渲染的vue模版
-        <div style="width: 200px; height: 200px; background: green"></div>
-      </div>
-    </template>
-    <script>
-      import '/a/b.js'
-    </script>
-    <style scoped lang="scss">
-  div{
+  <template>
+    <div>这是个渲染的vue模版
+      <Main />
+      <div style="width: 200px; height: 200px; background: green"></div>
+    </div>
+  </template>
+  <script>
+    import '/a/b.js'
+    import Main from '/main.vue'
+    export default {
+      components: { Main }
+    }
+  </script>
+  <style scoped lang="scss">
+    div{
     color: red
-  }
-    </style>
-  `,
+    }
+  </style>
+   `,
 );
 fs.activeFile(fs.files['/index.vue']);
+window.fs = fs;
 export default fs;

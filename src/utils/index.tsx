@@ -1,4 +1,5 @@
 import { Input, Popconfirm } from 'antd';
+import { TreeFile, TreeFileItem } from 'types';
 
 export const withInputWrap = function (props: {
   children: JSX.Element;
@@ -28,4 +29,22 @@ export const withInputWrap = function (props: {
       {props.children}
     </Popconfirm>
   );
+};
+export const updateTreeData = function (
+  list: TreeFile,
+  key: string | number,
+  children: TreeFile,
+): TreeFile {
+  return list.map((node) => {
+    if (node.key === key) {
+      return { ...node, children };
+    }
+    if (node.children) {
+      return {
+        ...node,
+        children: updateTreeData(node.children, key, children),
+      };
+    }
+    return node;
+  });
 };

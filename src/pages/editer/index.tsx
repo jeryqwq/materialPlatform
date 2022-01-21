@@ -6,6 +6,8 @@ import NpmTree from './npmDep';
 import Preview from './preview';
 import FileHistory from './fileHistory';
 import Editor from '@/components/editor';
+import { Button, Upload } from 'antd';
+import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 type StateType = {
   inputVal: string;
 };
@@ -41,7 +43,21 @@ class Editer extends React.Component<StoreProps, StateType> {
     return (
       <div className={styles['editer-wrap']}>
         <div className={styles['left-tree']}>
-          <p style={{ margin: '15px 0 0 15px' }}>资源管理器</p>
+          <div className={styles['resource-header']}>
+            资源管理器
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <Upload onChange={(e) => console.log(e)} fileList={[]}>
+                <UploadOutlined />
+              </Upload>{' '}
+              <DownloadOutlined style={{ margin: '0 5px' }} />
+            </div>
+          </div>
           <FileTree fileSystem={fileSystem} />
           <NpmTree
             fileTree={[

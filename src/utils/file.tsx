@@ -2,9 +2,13 @@ import { TreeDataNode } from 'antd';
 import { TreeFile, TreeFileItem } from 'types';
 import { PictureOutlined, FileOutlined } from '@ant-design/icons';
 export const isImgFile = function (path: string) {
-  return /\w(\.gif|\.jpeg|\.png|\.jpg|\.bmp)/i.test(path);
+  return ['gif', 'jpeg', 'png', 'jpg', 'bmp'].some((i) => path.endsWith(i));
 };
-
+export const isResource = function (type: string) {
+  return ['img', 'mp4', 'mp3', 'pdf', 'word', 'exal', 'ps', 'html'].some(
+    (i) => i === type,
+  );
+};
 export const getFileType = function (path: string) {
   const splitRes = path.split('.');
   const splitLine = path.split('/');
@@ -28,12 +32,18 @@ export const resolveFile = function (
   const isImg = isImgFile(path);
   const fileInfo = getFileType(path);
   const fileType = isImg ? 'img' : fileInfo.type; // 忽略图片的类型差异， 全部保存为img(方便做判断)
+  const isRes = isResource(fileType); // 是资源类型生成url做预览和持久化
+  let url = '';
+  if (isRes) {
+    url = content && window.URL.createObjectURL(content as File);
+    console.log(url, '---');
+  }
   // const adaptBlob = typeof content === 'string' ? new Blob([content]): content
   // const url = window.URL.createObjectURL(adaptBlob)
   if (fileInfo.type) {
     path2UrlMap[path] = '';
     cb &&
-      cb('', {
+      cb(url, {
         type: fileType as FileTypes,
         compiled: true,
         result: '',
@@ -59,7 +69,7 @@ export const fileTransform = function (
   }
   return ret;
 };
-const fileIcons: Record<FileTypes, JSX.Element> = {
+export const fileIcons: Record<FileTypes, JSX.Element> = {
   vue: (
     <img
       src="/imgs/icon/Vue.png"

@@ -3,7 +3,7 @@ declare type CounterStore = {
   handleInc: () => void;
   handleDec: () => void;
 };
-declare type FileTarget = string | File | MediaSource; //  File对象， 多媒体文件
+declare type FileTarget = string | File; //  File对象， 多媒体文件
 declare enum FileTypes {
   PNG = 'png',
   JPG = 'jpg',
