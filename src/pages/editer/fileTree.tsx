@@ -192,7 +192,9 @@ function FileTree(props: { fileSystem: FileSys }) {
                     }}
                   />
                   <Upload
-                    onChange={(e) => uploadFile(e.file as File, node)}
+                    onChange={(e) => {
+                      uploadFile((e.file as any).originFileObj as File, node);
+                    }}
                     fileList={[]}
                   >
                     <UploadOutlined />

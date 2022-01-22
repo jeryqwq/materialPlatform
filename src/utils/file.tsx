@@ -65,7 +65,9 @@ export const fileTransform = function (
     if (typeof val.target === 'string') {
       // 字符串的文件
       ret[item] = val.target;
-    } // todo : File => URL 适配多媒体文件
+    } else {
+      ret[item] = val.url;
+    }
   }
   return ret;
 };

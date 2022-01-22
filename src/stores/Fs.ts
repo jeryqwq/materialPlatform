@@ -40,6 +40,7 @@ fs.saveToLs('/a/b.js', `console.log('/a/bjs')`);
 fs.saveToLs('/a/b/c.js', `console.log('/a/b/cjs')`);
 fs.saveToLs('/assets/vue.png', ``);
 fs.saveToLs('/assets/style/style.css', ` h1{ color: orange } `);
+fs.saveToLs('/assets/style/style.scss', ` h1{ div{ color: orange } } `);
 fs.saveToLs(
   '/main.vue',
   `
@@ -68,8 +69,8 @@ fs.saveToLs(
     </div>
   </template>
   <script>
-    import '/a/b.js'
-    import Main from '/main.vue'
+    import './a/b.js'
+    import Main from './main.vue'
     export default {
       components: { Main }
     }

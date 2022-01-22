@@ -7,12 +7,32 @@ import Preview from './previewTool';
 import FileHistory from './fileHistory';
 import { Button, Spin, Upload } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
+import VuePreview from '@/components/previews/vue';
+import TsPreview from '@/components/previews/ts';
+import StylusPreview from '@/components/previews/stylus';
+import JsPreview from '@/components/previews/js';
+import ScssPreview from '@/components/previews/scss';
+import ImgPreview from '@/components/previews/img';
+import CssPreview from '@/components/previews/css';
+
 type StateType = {
   inputVal: string;
 };
 type StoreProps = {
   counterStore: CounterStore;
   fileSystem: FileSys;
+};
+let cacheLoadComp: Record<
+  string,
+  (props: { file: FileDescription; onChange: Function }) => JSX.Element
+> = {
+  vue: VuePreview,
+  ts: TsPreview,
+  stylus: StylusPreview,
+  js: JsPreview,
+  scss: ScssPreview,
+  img: ImgPreview,
+  css: CssPreview,
 };
 @inject('counterStore', 'fileSystem')
 @observer
@@ -84,17 +104,15 @@ class Editer extends React.Component<StoreProps, StateType> {
                 )
               }
               panes={[...actives].map((i) => {
-                const Editor = React.lazy(
-                  () => import(`@/components/previews/${i.type}`),
-                );
+                const Editor = cacheLoadComp[i.type];
                 return {
                   title: i.name,
                   key: i.path,
                   content: (
-                    <Suspense fallback={<Spin size="large" />}>
+                    <div>
                       <div style={{ paddingLeft: '10px' }}>
-                        {' '}
-                        {i.path.split('/').join(' > ')}{' '}
+                        {(cacheLoadComp[i.type] = Editor)}
+                        {i.path.split('/').join(' > ')}
                       </div>
                       <Editor
                         file={i}
@@ -102,7 +120,7 @@ class Editer extends React.Component<StoreProps, StateType> {
                           fileSystem.saveToLs(i.path, val);
                         }}
                       />
-                    </Suspense>
+                    </div>
                   ),
                   style: { height: '100%' },
                 };
