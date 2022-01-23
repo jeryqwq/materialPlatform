@@ -1,4 +1,4 @@
-import { fileTransform } from '@/utils/file';
+import { fileTransform, isResource } from '@/utils/file';
 import { addStyles, destoryPreview } from '@/utils/reload';
 import React, { useCallback, useLayoutEffect, useRef } from 'react';
 import * as loader from 'vue3-sfc-loader-vis';
@@ -16,6 +16,7 @@ function Preview(props: { fileSystem: FileSys }) {
   const ref = useRef(null);
 
   useLayoutEffect(() => {
+    destoryPreview();
     const config = {
       files: fileTransform(props.fileSystem),
     };
@@ -51,8 +52,7 @@ function Preview(props: { fileSystem: FileSys }) {
         switch (type) {
           case '.css':
             options.addStyle(await getContentData(false));
-          case '.png':
-            return options.getFile(path);
+            return;
           case '.scss': // 处理单个scss文件
             return new Promise((reslove, reject) => {
               sass.compile(options.getFile(path), function (result: any) {
@@ -61,6 +61,12 @@ function Preview(props: { fileSystem: FileSys }) {
                 reslove(result);
               });
             });
+          case '.png':
+            return options.getFile(path);
+          default:
+            if (isResource(type)) {
+              return options.getFile(path);
+            }
         }
       },
       getFile(url: string, options: any) {

@@ -5,7 +5,7 @@ import FileTree from './fileTree';
 import NpmTree from './npmDep';
 import Preview from './previewTool';
 import FileHistory from './fileHistory';
-import { Button, Spin, Upload } from 'antd';
+import { Alert, Button, Spin, Upload } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import VuePreview from '@/components/previews/vue';
 import TsPreview from '@/components/previews/ts';
@@ -14,6 +14,8 @@ import JsPreview from '@/components/previews/js';
 import ScssPreview from '@/components/previews/scss';
 import ImgPreview from '@/components/previews/img';
 import CssPreview from '@/components/previews/css';
+import PdfPreview from '@/components/previews/pdf';
+import Mp4Preview from '@/components/previews/mp4';
 
 type StateType = {
   inputVal: string;
@@ -33,6 +35,8 @@ let cacheLoadComp: Record<
   scss: ScssPreview,
   img: ImgPreview,
   css: CssPreview,
+  pdf: PdfPreview,
+  mp4: Mp4Preview,
 };
 @inject('counterStore', 'fileSystem')
 @observer
@@ -104,7 +108,13 @@ class Editer extends React.Component<StoreProps, StateType> {
                 )
               }
               panes={[...actives].map((i) => {
-                const Editor = cacheLoadComp[i.type];
+                const Editor = cacheLoadComp[i.type] || (
+                  <Alert
+                    message="提示"
+                    type="info"
+                    closeText="目前暂不支持此类文件的预览， 请联系相关开发人员"
+                  />
+                );
                 return {
                   title: i.name,
                   key: i.path,

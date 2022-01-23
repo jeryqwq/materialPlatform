@@ -35,8 +35,10 @@ export const resolveFile = function (
   const isRes = isResource(fileType); // 是资源类型生成url做预览和持久化
   let url = '';
   if (isRes) {
-    url = content && window.URL.createObjectURL(content as File);
-    console.log(url, '---');
+    url =
+      content.constructor === File
+        ? window.URL.createObjectURL(content as File)
+        : (content as string);
   }
   // const adaptBlob = typeof content === 'string' ? new Blob([content]): content
   // const url = window.URL.createObjectURL(adaptBlob)
@@ -105,6 +107,8 @@ export const fileIcons: Record<FileTypes, JSX.Element> = {
   stylus: <FileOutlined />,
   mp4: <FileOutlined />,
   mp3: <FileOutlined />,
+  pdf: <PictureOutlined />,
+  ts: <PictureOutlined />,
 };
 export const file2Tree = function (fileSystem: FileSys, projectName: string) {
   const { files } = fileSystem;

@@ -20,6 +20,8 @@ declare enum FileTypes {
   MP4 = 'mp4',
   MP3 = 'mp3',
   COMMON = 'common',
+  PDF = 'pdf',
+  TS = 'ts',
 }
 type FileTypesString = keyof typeof FileTypes;
 
