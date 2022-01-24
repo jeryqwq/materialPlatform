@@ -59,7 +59,7 @@ class Editer extends React.Component<StoreProps, StateType> {
       e.preventDefault();
     }
   }
-  render(): React.ReactNode {
+  render() {
     const store = this.props;
     const { fileSystem } = store;
     const { actives, files } = fileSystem as FileSys;
@@ -119,9 +119,8 @@ class Editer extends React.Component<StoreProps, StateType> {
                   title: i.name,
                   key: i.path,
                   content: (
-                    <div>
+                    <div style={{ height: 'calc( 100vh - 85px )' }}>
                       <div style={{ paddingLeft: '10px' }}>
-                        {(cacheLoadComp[i.type] = Editor)}
                         {i.path.split('/').join(' > ')}
                       </div>
                       <Editor

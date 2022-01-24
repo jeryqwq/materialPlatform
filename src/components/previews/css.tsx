@@ -7,7 +7,7 @@ function Editer(props: { file: FileDescription; onChange: Function }) {
   }
   return (
     <Editor
-      height="90vh"
+      height="100%"
       defaultLanguage="css"
       defaultValue={typeof file.target === 'string' ? file.target : ''}
       theme="vs-dark"

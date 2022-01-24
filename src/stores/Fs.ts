@@ -50,18 +50,23 @@ fs.saveToLs(
   'http://vali-ugc.cp31.ott.cibntv.net/65747AA043C38717EFC8F38DD/03000A01005A5363D9CB5F514325B3E6018933-6359-951A-945C-0D482B330E2A.mp4?ccode=0512&duration=344&expire=18000&psid=ddcb0e89bc763682b2d7a62f00df7b1343346&ups_client_netip=cba8143c&ups_ts=1642870288&ups_userid=&utid=EERnGuQxfRwCAXBg6R9NG7%2Fh&vid=XMzMwMTYyODMyNA&vkey=B1f2f710f2f0204f0808685b0c8ee7608&eo=0&t=fd543f213638bcc&cug=1&type=mp4sd&bc=2&dre=u145&si=511&dst=1',
 );
 fs.saveToLs(
-  '/main.vue',
+  '/vue3.vue',
   `
-<template>
+  <template>
   <div>
-    这是个渲染的Main.vue组件, 颜色绿
-    <h1>H1 Title</h1>
+  <div class="test">
+  这是个渲染的Vue3.vue组件, 颜色绿
+  <h1>{{a}} ref: {{b}}</h1>
+</div>
   </div>
 </template>
-<script>
+<script setup>
+  import { reative , ref} from 'vue'
+  const a = 123
+  const b = ref(1)
 </script>
 <style scoped lang="scss">
-  div{
+  div.test{
   color: green
   }
 </style>
@@ -71,23 +76,31 @@ fs.saveToLs(
   '/index.vue',
   `
   <template>
-    <div>这是个渲染的vue模版
+    <div style="text-align: center">
+      <img src="./assets/vue.png" style="width: 100px"/>
+      <h2>HELLO Vue in VIS-CODE-EDITOR</h2>
       <Main />
-      <img src="./assets/vue.png"/>
+
     </div>
   </template>
   <script>
     import './a/b.js'
-    import Main from './main.vue'
+    import Main from './vue3.vue'
     export default {
       components: { Main }
     }
   </script>
   <style scoped lang="scss">
+    img{
+      margin: 20px
+    }
     div{
-    color: red
+      >h2{
+        color: red
+      }
     }
   </style>
+   
    `,
 );
 fs.activeFile(fs.files['/index.vue']);

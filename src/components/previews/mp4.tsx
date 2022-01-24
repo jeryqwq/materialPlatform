@@ -4,7 +4,7 @@ function Editer(props: { file: FileDescription; onChange: Function }) {
 
   return (
     <video
-      style={{ width: '100%', height: '800px' }}
+      style={{ width: '100%', height: '100%' }}
       src={file.url}
       preload="metadata"
       controls

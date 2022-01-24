@@ -15,3 +15,9 @@ declare type TreeFileItem = TreeDataNode & { file?: FileDescription };
 declare type TreeFile = Array<
   TreeDataNode & { file?: FileDescription; children?: Array<TreeFileItem> }
 >;
+declare type RenderOptions = {
+  shadow: boolean;
+  width: number;
+  height: number;
+  scale: number;
+};

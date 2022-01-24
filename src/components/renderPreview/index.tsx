@@ -1,7 +1,10 @@
+import { makeShadowRaw } from '@/utils/reload';
 import { fileTransform, isResource } from '@/utils/file';
 import { addStyles, destoryPreview } from '@/utils/reload';
-import React, { useCallback, useLayoutEffect, useRef } from 'react';
+import React, { LegacyRef, useCallback, useLayoutEffect, useRef } from 'react';
 import * as loader from 'vue3-sfc-loader-vis';
+import { RenderOptions } from 'types';
+
 declare global {
   interface Window {
     Vue: any;
@@ -12,9 +15,8 @@ declare global {
 const Vue = window['Vue'] || {};
 const stylus = window['stylus'] || {};
 const sass = new window.Sass();
-function Preview(props: { fileSystem: FileSys }) {
-  const ref = useRef(null);
-
+function Preview(props: { fileSystem: FileSys; options: RenderOptions }) {
+  const ref = useRef<HTMLDivElement>();
   useLayoutEffect(() => {
     destoryPreview();
     const config = {
@@ -41,14 +43,15 @@ function Preview(props: { fileSystem: FileSys }) {
           },
         },
       },
-      addStyle: addStyles,
+      addStyle: (context: string, scopedId: string, path: string) => {
+        addStyles(context, scopedId, { shadowEl: elWrap?.shadowRoot, path });
+      },
       handleModule: async function (
         type: string,
         getContentData: Function,
         path: string,
         options: any,
       ) {
-        console.log(path, type, '--');
         switch (type) {
           case '.css':
             options.addStyle(await getContentData(false));
@@ -70,7 +73,7 @@ function Preview(props: { fileSystem: FileSys }) {
         }
       },
       getFile(url: string, options: any) {
-        // return config.files[url] || (() => { throw new Error('404 ' + url) })();
+        // return config.files[url] || (() => { throw new Error('404 ' + url) })(); options.log('error', `canot resolve the url ${url}`)
         return config.files[url];
       },
       log(type: string, err: string) {
@@ -82,7 +85,6 @@ function Preview(props: { fileSystem: FileSys }) {
         // getResource 偏运行时，能支撑适配运行时参数
         const { refPath, relPath } = pathCx;
         // console.log(refPath, relPath, options)
-
         const { pathResolve, getFile, log } = options;
         const path = pathResolve(pathCx);
         const pathStr = path.toString();
@@ -116,6 +118,8 @@ function Preview(props: { fileSystem: FileSys }) {
     };
     const _loader = loader as { loadModule: Function };
     const myConsol = window.console;
+    elWrap && makeShadowRaw(elWrap);
+
     window.console = {
       ...myConsol,
       log: (str: string) => {
@@ -125,13 +129,13 @@ function Preview(props: { fileSystem: FileSys }) {
     };
     Vue.createApp(
       Vue.defineAsyncComponent(() => _loader.loadModule('/index.vue', options)),
-    ).mount(elWrap as unknown as HTMLElement);
+    ).mount(elWrap?.shadowRoot);
     setTimeout(() => {
       window.console = myConsol;
     }, 0);
     return destoryPreview;
   }, [props.fileSystem.files]);
-  return <div ref={ref}></div>;
+  return <div ref={ref as LegacyRef<HTMLDivElement>}></div>;
 }
 
 export default Preview;
