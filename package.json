@@ -26,6 +26,7 @@
     "mobx": "^6.3.12",
     "mobx-react": "^7.2.1",
     "react": "17.x",
+    "react-contextmenu": "^2.14.0",
     "react-dom": "17.x",
     "umi": "^3.5.20",
     "vue3-sfc-loader-vis": "^0.1.2"
