@@ -4,7 +4,6 @@ import { addStyles, destoryPreview } from '@/utils/reload';
 import React, { LegacyRef, useCallback, useLayoutEffect, useRef } from 'react';
 import * as loader from 'vue3-sfc-loader-vis';
 import { RenderOptions } from 'types';
-
 declare global {
   interface Window {
     Vue: any;

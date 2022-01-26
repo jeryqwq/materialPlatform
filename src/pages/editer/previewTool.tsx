@@ -46,11 +46,10 @@ export default (props: { fileSystem: FileSys }) => {
           <Button shape="circle" icon={<ChromeOutlined />} />
         </Tooltip>
       </div>
+      {/* ignore element render https://github.com/darkreader/darkreader/issues/4144#issuecomment-729896113 */}
       <div
-        style={{ height: '50%' }}
-        ref={(node) => {
-          node?.style.setProperty('background', 'white', 'important');
-        }}
+        style={{ height: '50%', background: 'white' }}
+        className="ignore-render"
       >
         <PreviewReact
           fileSystem={props.fileSystem}

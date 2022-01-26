@@ -7,5 +7,6 @@ export default defineConfig({
   plugins: [],
   routes: routes,
   fastRefresh: {},
+  // headScripts: ['https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js'],
   mfsu: {},
 });

@@ -57,7 +57,7 @@ fs.saveToLs(
   <div class="test">
   这是个渲染的Vue3.vue组件, 颜色绿
   <h1>{{a}} ref: {{b}}</h1>
-</div>
+  </div>
   </div>
 </template>
 <script setup>
@@ -80,7 +80,6 @@ fs.saveToLs(
       <img src="./assets/vue.png" style="width: 100px"/>
       <h2>HELLO Vue in VIS-CODE-EDITOR</h2>
       <Main />
-
     </div>
   </template>
   <script>
@@ -94,15 +93,12 @@ fs.saveToLs(
     img{
       margin: 20px
     }
-    div{
-      >h2{
-        color: red
-      }
+    h2{
+      color: red
     }
   </style>
    
    `,
 );
 fs.activeFile(fs.files['/index.vue']);
-window.fs = fs;
 export default fs;

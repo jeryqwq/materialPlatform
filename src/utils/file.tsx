@@ -2,7 +2,9 @@ import { TreeDataNode } from 'antd';
 import { TreeFile, TreeFileItem } from 'types';
 import { PictureOutlined, FileOutlined } from '@ant-design/icons';
 export const isImgFile = function (path: string) {
-  return ['gif', 'jpeg', 'png', 'jpg', 'bmp'].some((i) => path.endsWith(i));
+  return ['gif', 'jpeg', 'png', 'jpg', 'bmp'].some((i) =>
+    path.endsWith(`.${i}`),
+  );
 };
 export const isResource = function (type: string) {
   return ['img', 'mp4', 'mp3', 'pdf', 'word', 'exal', 'ps', 'html'].some(

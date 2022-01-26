@@ -117,7 +117,6 @@ function FileTree(props: { fileSystem: FileSys }) {
     setFileData(new Array(...fileTree));
   };
   const uploadFile = useCallback((file: File, node: TreeFileItem) => {
-    console.log(file, node);
     const { name } = file;
     const key = (node.key as string).replace('project-name', '');
     fileSystem.saveToLs(key + '/' + name, file);
