@@ -1,5 +1,6 @@
 import { TreeDataNode, Tree, Cascader, Input, Button, Upload } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
+import ContextMenu from '@/components/contentMenu/index';
 const { DirectoryTree } = Tree;
 import {
   FileAddOutlined,
@@ -10,36 +11,21 @@ import {
   UploadOutlined,
 } from '@ant-design/icons';
 import styles from './index.less';
-import { file2Tree, fileIcons, getFileType } from '@/utils/file';
-import { TreeFileItem } from 'types';
+import {
+  file2Tree,
+  fileIcons,
+  findFileItemByFileTree,
+  getFileType,
+} from '@/utils/file';
+import { ContextMenuItem, TreeFileItem } from 'types';
 import { updateTreeData, withInputWrap } from '@/utils';
-
-const CONTEXT_MENU = [
-  {
-    value: 'addFile',
-    label: '新增文件',
-  },
-  {
-    value: 'addFolder',
-    label: '新增文件夹',
-  },
-  {
-    value: 'upload',
-    label: '上传文件',
-  },
-  {
-    value: 'rename',
-    label: '重命名',
-  },
-  {
-    value: 'delete',
-    label: '删除',
-  },
-  {
-    value: 'download',
-    label: '下载到本地',
-  },
-];
+import {
+  CONTEXT_MENU_FILE,
+  CONTEXT_MENU_FOLDER,
+  MENU_FILE,
+  MENU_FOLDER,
+} from '@/contants/MENU_TYPE';
+import { ContextMenuTrigger } from 'react-contextmenu';
 
 function FileTree(props: { fileSystem: FileSys }) {
   const [expandedKeys, setExpandedKey] = useState<Array<TreeDataNode['key']>>([
@@ -122,9 +108,40 @@ function FileTree(props: { fileSystem: FileSys }) {
     fileSystem.saveToLs(key + '/' + name, file);
     fileSystem.reloadFile();
   }, []);
+  const contextMenuHandle = (
+    e: MouseEvent,
+    item: ContextMenuItem & { target: HTMLElement },
+  ) => {
+    const { value, target } = item;
+    const nodeKye =
+      (target.parentNode as HTMLElement).getAttribute('accessKey') || '';
+    const node = findFileItemByFileTree(nodeKye, fileTree);
+    if (!node) return;
+    console.log(value, node);
+    switch (value) {
+      case 'addFile':
+        addFile(node, 'TEMP_FILE_NAME');
+        break;
+      case 'addFolder':
+        addFolder(node, 'TEMP_FOLDER_NAME');
+        break;
+      default:
+        break;
+    }
+  };
   return (
     <div style={{ padding: '5px' }}>
       {/* <Search  placeholder="Search" onChange={() => {  }} /> */}
+      <ContextMenu
+        id={MENU_FOLDER}
+        contextMenu={CONTEXT_MENU_FOLDER}
+        handle={contextMenuHandle}
+      />
+      <ContextMenu
+        id={MENU_FILE}
+        contextMenu={CONTEXT_MENU_FILE}
+        handle={contextMenuHandle}
+      />
       <DirectoryTree
         showIcon={false}
         blockNode={true}
@@ -137,69 +154,82 @@ function FileTree(props: { fileSystem: FileSys }) {
           if (node.isLeaf) {
             // 文件
             return (
-              <span
-                className={styles['file-tree-node']}
-                onClick={(e) => fileSystem.activeFile(node.file)}
+              <ContextMenuTrigger
+                id={MENU_FILE}
+                attributes={{ accessKey: node.key }}
               >
-                {node.title === 'TEMP_FILE_NAME' ? (
-                  <Input
-                    size="small"
-                    ref={(e) => e?.focus()}
-                    onPressEnter={(e) =>
-                      updateFileName(node, (e.target as HTMLInputElement).value)
-                    }
-                  ></Input>
-                ) : (
-                  node.title
-                )}
-                <span className={styles['icon-wrap']}>
-                  <FormOutlined /> <DeleteOutlined />
+                <span
+                  className={styles['file-tree-node']}
+                  onClick={(e) => fileSystem.activeFile(node.file)}
+                >
+                  {node.title === 'TEMP_FILE_NAME' ? (
+                    <Input
+                      size="small"
+                      ref={(e) => e?.focus()}
+                      onPressEnter={(e) =>
+                        updateFileName(
+                          node,
+                          (e.target as HTMLInputElement).value,
+                        )
+                      }
+                    ></Input>
+                  ) : (
+                    node.title
+                  )}
+                  <span className={styles['icon-wrap']}>
+                    <FormOutlined /> <DeleteOutlined />
+                  </span>
                 </span>
-              </span>
+              </ContextMenuTrigger>
             );
           } else {
             // 文件夹  folder
             return (
               // <Cascader options={CONTEXT_MENU} >
-              <span className={styles['file-tree-node']}>
-                {node.title === 'TEMP_FILE_NAME' ? (
-                  <Input
-                    ref={(e) => e?.focus()}
-                    size="small"
-                    onPressEnter={(e) =>
-                      updateFolderName(
-                        node,
-                        (e.target as HTMLInputElement).value,
-                      )
-                    }
-                  ></Input>
-                ) : (
-                  node.title
-                )}
-                <span className={styles['icon-wrap']}>
-                  <FileAddOutlined
-                    onClick={(e) => {
-                      addFile(node, 'TEMP_FILE_NAME');
-                      e.stopPropagation();
-                    }}
-                  />
-                  <FolderAddOutlined
-                    style={{ margin: '0 5px' }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addFolder(node, 'TEMP_FILE_NAME');
-                    }}
-                  />
-                  <Upload
-                    onChange={(e) => {
-                      uploadFile((e.file as any).originFileObj as File, node);
-                    }}
-                    fileList={[]}
-                  >
-                    <UploadOutlined />
-                  </Upload>
+              <ContextMenuTrigger
+                id={MENU_FOLDER}
+                attributes={{ accessKey: node.key }}
+              >
+                <span className={styles['file-tree-node']}>
+                  {node.title === 'TEMP_FOLDER_NAME' ? (
+                    <Input
+                      ref={(e) => e?.focus()}
+                      size="small"
+                      onPressEnter={(e) =>
+                        updateFolderName(
+                          node,
+                          (e.target as HTMLInputElement).value,
+                        )
+                      }
+                    ></Input>
+                  ) : (
+                    node.title
+                  )}
+                  <span className={styles['icon-wrap']}>
+                    <FileAddOutlined
+                      onClick={(e) => {
+                        addFile(node, 'TEMP_FILE_NAME');
+                        e.stopPropagation();
+                      }}
+                    />
+                    <FolderAddOutlined
+                      style={{ margin: '0 5px' }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addFolder(node, 'TEMP_FOLDER_NAME');
+                      }}
+                    />
+                    <Upload
+                      onChange={(e) => {
+                        uploadFile((e.file as any).originFileObj as File, node);
+                      }}
+                      fileList={[]}
+                    >
+                      <UploadOutlined />
+                    </Upload>
+                  </span>
                 </span>
-              </span>
+              </ContextMenuTrigger>
               // </Cascader>
             );
           }

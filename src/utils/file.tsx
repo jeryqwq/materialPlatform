@@ -175,3 +175,22 @@ export const file2Tree = function (fileSystem: FileSys, projectName: string) {
   });
   return fileTree;
 };
+
+export const findFileItemByFileTree = function (
+  key: string,
+  fileTree: TreeFile,
+) {
+  let retNode;
+  function deepFind(fileTree: TreeFile) {
+    for (let i = 0; i < fileTree.length; i++) {
+      const item = fileTree[i];
+      if (item.key === key) {
+        retNode = item;
+        return;
+      }
+      item.children && deepFind(item.children);
+    }
+  }
+  deepFind(fileTree);
+  return retNode;
+};

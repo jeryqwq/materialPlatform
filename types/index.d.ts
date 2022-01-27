@@ -11,13 +11,19 @@ declare type ReactPropsWithRouter = {
   match: _RouterMatch;
   [key: string]: any;
 };
-declare type TreeFileItem = TreeDataNode & { file?: FileDescription };
-declare type TreeFile = Array<
-  TreeDataNode & { file?: FileDescription; children?: Array<TreeFileItem> }
->;
+declare type TreeFileItem = TreeDataNode & {
+  file?: FileDescription;
+  children: Array<TreeFileItem>;
+};
+declare type TreeFile = Array<TreeFileItem>;
 declare type RenderOptions = {
   shadow: boolean;
   width: number;
   height: number;
   scale: number;
+};
+declare type ContextMenuItem = {
+  value: string;
+  title: string;
+  children?: Array<ContextMenuItem>;
 };
