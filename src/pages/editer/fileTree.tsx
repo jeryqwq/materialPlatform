@@ -1,5 +1,5 @@
 import { TreeDataNode, Tree, Cascader, Input, Button, Upload } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ContextMenu from '@/components/contentMenu/index';
 const { DirectoryTree } = Tree;
 import {
@@ -34,8 +34,9 @@ import {
 } from '@/contants';
 
 function FileTree(props: { fileSystem: FileSys }) {
+  let curNode = useRef<TreeFileItem>();
   const [expandedKeys, setExpandedKey] = useState<Array<TreeDataNode['key']>>([
-    INIT_PROJECT_NAME,
+    'project-name',
   ]);
   const { fileSystem } = props;
   const [fileTree, setFileData] = useState(
@@ -96,7 +97,21 @@ function FileTree(props: { fileSystem: FileSys }) {
     node.isEditName = isEdit;
     const splitArr = (node.key as string).split('/');
     splitArr.pop();
+    const beforeKey = node.key as string;
     node.key = splitArr.join('/') + '/' + name;
+    function deppReplaceFile(_node: TreeFileItem) {
+      if (_node.children) {
+        _node.children.forEach((i) => {
+          const file = (i as TreeFileItem).file as any;
+          if (file) {
+            file.path = file.path.replace(beforeKey, node.key as string);
+            i.key = file.path;
+          }
+          i.children && deppReplaceFile(i as TreeFileItem);
+        });
+      }
+    }
+    deppReplaceFile(node);
     setFileData(new Array(...fileTree));
   };
   const updateFileName = (
@@ -121,7 +136,9 @@ function FileTree(props: { fileSystem: FileSys }) {
     fileSystem.saveToLs(node.key, file?.target || '');
     setFileData(new Array(...fileTree));
   };
-  const uploadFile = useCallback((file: File, node: TreeFileItem) => {
+  const uploadFile = useCallback((file: File, node?: TreeFileItem) => {
+    node = node || curNode.current;
+    if (!node) return;
     const { name } = file;
     const key = (node.key as string).replace(INIT_PROJECT_NAME, '');
     fileSystem.saveToLs(key + '/' + name, file);
@@ -149,10 +166,12 @@ function FileTree(props: { fileSystem: FileSys }) {
         node.isLeaf
           ? updateFileName(node, node.title as string, true)
           : updateFolderName(node, node.title as string, true);
-      case MENU_KEYS.COPY_CONTENT:
+      case MENU_KEYS.COPY_PATH:
         node && copyPath(node.key as string);
       case MENU_KEYS.COPY_CONTENT:
-        node && copyPath(node.key as string);
+        node && copyPath(node.file?.target as string);
+      case MENU_KEYS.UPLODAD:
+        node && (curNode.current = node);
       default:
         break;
     }
@@ -164,6 +183,7 @@ function FileTree(props: { fileSystem: FileSys }) {
         id={MENU_FOLDER}
         contextMenu={CONTEXT_MENU_FOLDER}
         handle={contextMenuHandle}
+        uploadFile={uploadFile}
       />
       <ContextMenu
         id={MENU_FILE}
@@ -194,6 +214,7 @@ function FileTree(props: { fileSystem: FileSys }) {
                     <Input
                       size="small"
                       ref={(e) => e?.focus()}
+                      defaultValue={node.title}
                       onPressEnter={(e) =>
                         updateFileName(
                           node,
@@ -223,6 +244,7 @@ function FileTree(props: { fileSystem: FileSys }) {
                     <Input
                       ref={(e) => e?.focus()}
                       size="small"
+                      defaultValue={node.title}
                       onPressEnter={(e) =>
                         updateFolderName(
                           node,

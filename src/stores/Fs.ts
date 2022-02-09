@@ -103,4 +103,5 @@ fs.saveToLs(
    `,
 );
 fs.activeFile(fs.files['/index.vue']);
+window.fs = fs;
 export default fs;

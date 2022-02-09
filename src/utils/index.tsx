@@ -1,7 +1,9 @@
 import { Input, Popconfirm } from 'antd';
 import { TreeFile, TreeFileItem } from 'types';
 
-export const copyPath = function (str: string) {};
+export const copyPath = function (str: string) {
+  navigator.clipboard.writeText(str);
+};
 let uid = 0;
 export const genUid = () => uid++;
 export const withInputWrap = function (props: {
