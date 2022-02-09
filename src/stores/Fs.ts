@@ -1,3 +1,4 @@
+import { genUid } from '@/utils';
 import { resolveFile } from '@/utils/file';
 import { observable, action, makeAutoObservable } from 'mobx';
 
@@ -30,6 +31,7 @@ class FileSystem implements FileSys {
           target: content,
           path,
           ...other,
+          id: genUid(),
         };
       },
     );

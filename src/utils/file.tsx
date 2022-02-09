@@ -179,7 +179,7 @@ export const file2Tree = function (fileSystem: FileSys, projectName: string) {
 export const findFileItemByFileTree = function (
   key: string,
   fileTree: TreeFile,
-) {
+): TreeFileItem | undefined {
   let retNode;
   function deepFind(fileTree: TreeFile) {
     for (let i = 0; i < fileTree.length; i++) {

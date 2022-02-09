@@ -13,6 +13,7 @@ declare type ReactPropsWithRouter = {
 };
 declare type TreeFileItem = TreeDataNode & {
   file?: FileDescription;
+  isEditName?: boolean;
   children: Array<TreeFileItem>;
 };
 declare type TreeFile = Array<TreeFileItem>;

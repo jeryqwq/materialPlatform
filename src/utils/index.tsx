@@ -1,6 +1,9 @@
 import { Input, Popconfirm } from 'antd';
 import { TreeFile, TreeFileItem } from 'types';
 
+export const copyPath = function (str: string) {};
+let uid = 0;
+export const genUid = () => uid++;
 export const withInputWrap = function (props: {
   children: JSX.Element;
   title: string;

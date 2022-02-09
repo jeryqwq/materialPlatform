@@ -18,22 +18,28 @@ import {
   getFileType,
 } from '@/utils/file';
 import { ContextMenuItem, TreeFileItem } from 'types';
-import { updateTreeData, withInputWrap } from '@/utils';
+import { copyPath, genUid, updateTreeData, withInputWrap } from '@/utils';
 import {
   CONTEXT_MENU_FILE,
   CONTEXT_MENU_FOLDER,
   MENU_FILE,
   MENU_FOLDER,
+  MENU_KEYS,
 } from '@/contants/MENU_TYPE';
 import { ContextMenuTrigger } from 'react-contextmenu';
+import {
+  INIT_PROJECT_NAME,
+  _FILE_TEMP_MARK_NAME,
+  _FOLDER_TEMP_MARK_NAME,
+} from '@/contants';
 
 function FileTree(props: { fileSystem: FileSys }) {
   const [expandedKeys, setExpandedKey] = useState<Array<TreeDataNode['key']>>([
-    'project-name',
+    INIT_PROJECT_NAME,
   ]);
   const { fileSystem } = props;
   const [fileTree, setFileData] = useState(
-    file2Tree(fileSystem, 'project-name'),
+    file2Tree(fileSystem, INIT_PROJECT_NAME),
   );
   const onExpand = (selectedKeys: React.Key[], info: any) => {
     setExpandedKey(selectedKeys);
@@ -48,6 +54,7 @@ function FileTree(props: { fileSystem: FileSys }) {
       title: fileName,
       key: key,
       children: [],
+      isEditName: true,
       file: {
         path: key,
         url: '',
@@ -56,6 +63,7 @@ function FileTree(props: { fileSystem: FileSys }) {
         compiled: true,
         result: '',
         name: fileInfo.name,
+        id: genUid(),
       },
     };
     curFileNode.switcherIcon =
@@ -71,24 +79,35 @@ function FileTree(props: { fileSystem: FileSys }) {
       title: folderName,
       key: node.key + '/' + folderName,
       children: [],
+      isEditName: true,
     };
     node?.children?.push(folderItem);
     setFileData((origin) => new Array(...origin));
   }, []);
   useEffect(() => {
-    setFileData(file2Tree(fileSystem, 'project-name'));
+    setFileData(file2Tree(fileSystem, INIT_PROJECT_NAME));
   }, [fileSystem.files]);
-  const updateFolderName = (node: TreeFileItem, name: string) => {
+  const updateFolderName = (
+    node: TreeFileItem,
+    name: string,
+    isEdit?: boolean,
+  ) => {
     node.title = name;
+    node.isEditName = isEdit;
     const splitArr = (node.key as string).split('/');
     splitArr.pop();
     node.key = splitArr.join('/') + '/' + name;
     setFileData(new Array(...fileTree));
   };
-  const updateFileName = (node: TreeFileItem, name: string) => {
+  const updateFileName = (
+    node: TreeFileItem,
+    name: string,
+    isEdit?: boolean,
+  ) => {
     const { file } = node;
     node.title = name;
-    node.key = (node.key as string).replace('project-name', '');
+    node.key = (node.key as string).replace(INIT_PROJECT_NAME, '');
+    node.isEditName = isEdit;
     const splitArr = (node.key as string).split('/');
     splitArr.pop();
     node.key = splitArr.join('/') + '/' + name;
@@ -104,7 +123,7 @@ function FileTree(props: { fileSystem: FileSys }) {
   };
   const uploadFile = useCallback((file: File, node: TreeFileItem) => {
     const { name } = file;
-    const key = (node.key as string).replace('project-name', '');
+    const key = (node.key as string).replace(INIT_PROJECT_NAME, '');
     fileSystem.saveToLs(key + '/' + name, file);
     fileSystem.reloadFile();
   }, []);
@@ -119,12 +138,21 @@ function FileTree(props: { fileSystem: FileSys }) {
     if (!node) return;
     console.log(value, node);
     switch (value) {
-      case 'addFile':
-        addFile(node, 'TEMP_FILE_NAME');
+      case MENU_KEYS.ADD_FILE:
+        addFile(node, '');
         break;
-      case 'addFolder':
-        addFolder(node, 'TEMP_FOLDER_NAME');
+      case MENU_KEYS.ADD_FOLDER:
+        addFolder(node, '');
         break;
+      case MENU_KEYS.RENAME:
+        // node.isLeaf ?   file || folder
+        node.isLeaf
+          ? updateFileName(node, node.title as string, true)
+          : updateFolderName(node, node.title as string, true);
+      case MENU_KEYS.COPY_CONTENT:
+        node && copyPath(node.key as string);
+      case MENU_KEYS.COPY_CONTENT:
+        node && copyPath(node.key as string);
       default:
         break;
     }
@@ -147,7 +175,7 @@ function FileTree(props: { fileSystem: FileSys }) {
         blockNode={true}
         autoExpandParent={true}
         expandedKeys={expandedKeys}
-        defaultExpandedKeys={['project-name']}
+        defaultExpandedKeys={[INIT_PROJECT_NAME]}
         treeData={fileTree}
         onExpand={onExpand}
         titleRender={(node: any) => {
@@ -162,7 +190,7 @@ function FileTree(props: { fileSystem: FileSys }) {
                   className={styles['file-tree-node']}
                   onClick={(e) => fileSystem.activeFile(node.file)}
                 >
-                  {node.title === 'TEMP_FILE_NAME' ? (
+                  {node.isEditName ? (
                     <Input
                       size="small"
                       ref={(e) => e?.focus()}
@@ -191,7 +219,7 @@ function FileTree(props: { fileSystem: FileSys }) {
                 attributes={{ accessKey: node.key }}
               >
                 <span className={styles['file-tree-node']}>
-                  {node.title === 'TEMP_FOLDER_NAME' ? (
+                  {node.isEditName ? (
                     <Input
                       ref={(e) => e?.focus()}
                       size="small"
@@ -208,7 +236,7 @@ function FileTree(props: { fileSystem: FileSys }) {
                   <span className={styles['icon-wrap']}>
                     <FileAddOutlined
                       onClick={(e) => {
-                        addFile(node, 'TEMP_FILE_NAME');
+                        addFile(node, '');
                         e.stopPropagation();
                       }}
                     />
@@ -216,7 +244,7 @@ function FileTree(props: { fileSystem: FileSys }) {
                       style={{ margin: '0 5px' }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        addFolder(node, 'TEMP_FOLDER_NAME');
+                        addFolder(node, '');
                       }}
                     />
                     <Upload

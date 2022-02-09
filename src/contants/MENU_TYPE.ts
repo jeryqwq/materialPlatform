@@ -1,56 +1,67 @@
 export const MENU_FILE = 'MENU_FILE';
 export const MENU_FOLDER = 'MENU_FOLDER';
 export const MENU_FILE_HISTORY = 'MENU_FILE_HISTORY';
+
+export const MENU_KEYS = {
+  RENAME: 'RENAME',
+  COPY_PATH: 'COPY_PATH',
+  DELETE: 'DELETE',
+  DOWNLOAD: 'DOWNLOAD',
+  COPY_CONTENT: 'COPY_CONTENT',
+  ADD_FILE: 'ADD_FILE',
+  ADD_FOLDER: 'ADD_FOLDER',
+  UPLODAD: 'UPLODAD',
+};
 export const CONTEXT_MENU_FOLDER = [
   {
-    value: 'addFile',
+    value: MENU_KEYS.ADD_FILE,
     title: '新增文件',
   },
   {
-    value: 'addFolder',
+    value: MENU_KEYS.ADD_FOLDER,
     title: '新增文件夹',
   },
   {
-    value: 'upload',
+    value: MENU_KEYS.UPLODAD,
     title: '上传文件',
   },
   {
-    value: 'rename',
+    value: MENU_KEYS.RENAME,
     title: '重命名',
   },
   {
-    value: 'copyPath',
+    value: MENU_KEYS.COPY_PATH,
     title: '复制路径',
   },
   {
-    value: 'delete',
+    value: MENU_KEYS.DELETE,
     title: '删除',
   },
   {
-    value: 'download',
+    value: MENU_KEYS.DOWNLOAD,
     title: '下载到本地',
   },
 ];
 
 export const CONTEXT_MENU_FILE = [
   {
-    value: 'rename',
+    value: MENU_KEYS.RENAME,
     title: '重命名',
   },
   {
-    value: 'copyPath',
+    value: MENU_KEYS.COPY_PATH,
     title: '复制路径',
   },
   {
-    value: 'delete',
+    value: MENU_KEYS.DELETE,
     title: '删除',
   },
   {
-    value: 'download',
+    value: MENU_KEYS.DOWNLOAD,
     title: '下载到本地',
   },
   {
-    value: 'copyContent',
+    value: MENU_KEYS.COPY_CONTENT,
     title: '复制内容',
   },
 ];

@@ -33,6 +33,7 @@ declare type FileDescription = {
   result: string;
   path: string;
   name: string;
+  id: number;
 };
 declare type FileSys = {
   files: Record<string, FileDescription>;
