@@ -51,7 +51,9 @@ export default class SimpleMenu extends Component<
                     }}
                     fileList={[]}
                   >
-                    {i.title}
+                    <div style={{ fontSize: '12px', width: '140px' }}>
+                      {i.title}
+                    </div>
                   </Upload>
                 ) : (
                   i.title
