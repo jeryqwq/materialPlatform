@@ -27,7 +27,7 @@ export default (props: { fileSystem: FileSys }) => {
                 title: '提示',
                 icon: <ExclamationCircleOutlined />,
                 content:
-                  '关闭沙箱模式可能会导致你的代码收到主应用的其他通用css属性污染，导致渲染效果与本地不一致，是否关闭？',
+                  '关闭沙箱模式可能会导致你的代码受到主应用的其他通用css属性和js代码污染，导致渲染效果和js执行与本地不一致，是否继续关闭？',
                 okText: '确认',
                 cancelText: '取消',
                 onOk: () => setOptions({ ...options, shadow: checked }),

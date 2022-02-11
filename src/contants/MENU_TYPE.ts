@@ -53,16 +53,16 @@ export const CONTEXT_MENU_FILE = [
     title: '复制路径',
   },
   {
+    value: MENU_KEYS.COPY_CONTENT,
+    title: '复制内容',
+  },
+  {
     value: MENU_KEYS.DELETE,
     title: '删除',
   },
   {
     value: MENU_KEYS.DOWNLOAD,
     title: '下载到本地',
-  },
-  {
-    value: MENU_KEYS.COPY_CONTENT,
-    title: '复制内容',
   },
 ];
 export const EVENT_HANDLE_MAP_FILE = {};

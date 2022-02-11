@@ -1,11 +1,19 @@
-import { TreeDataNode, Tree, Cascader, Input, Button, Upload } from 'antd';
+import {
+  TreeDataNode,
+  Tree,
+  Cascader,
+  Input,
+  Button,
+  Upload,
+  Modal,
+} from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ContextMenu from '@/components/contentMenu/index';
 const { DirectoryTree } = Tree;
 import {
   FileAddOutlined,
   FolderAddOutlined,
-  PictureOutlined,
+  ExclamationCircleOutlined,
   FormOutlined,
   DeleteOutlined,
   UploadOutlined,
@@ -144,6 +152,28 @@ function FileTree(props: { fileSystem: FileSys }) {
     fileSystem.saveToLs(key + '/' + name, file);
     fileSystem.reloadFile();
   }, []);
+  const removeFileNode = useCallback((node: TreeFileItem) => {
+    const isFile = node.isLeaf;
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: `删除文件${
+        !isFile ? '夹' : ''
+      }会导致有引用的代码执行发生意外的错误${
+        !isFile ? '并删除该文件夹下的所有子文件和文件夹' : ''
+      }，是否继续？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        if (isFile) {
+          fileSystem.removeFile(node.key as string);
+        } else {
+          fileSystem.removeFolder(node.key + '/');
+        }
+        fileSystem.reloadFile();
+      },
+    });
+  }, []);
   const contextMenuHandle = (
     e: MouseEvent,
     item: ContextMenuItem & { target: HTMLElement },
@@ -166,12 +196,19 @@ function FileTree(props: { fileSystem: FileSys }) {
         node.isLeaf
           ? updateFileName(node, node.title as string, true)
           : updateFolderName(node, node.title as string, true);
+        break;
       case MENU_KEYS.COPY_PATH:
         node && copyPath(node.key as string);
+        break;
       case MENU_KEYS.COPY_CONTENT:
         node && copyPath(node.file?.target as string);
+        break;
       case MENU_KEYS.UPLODAD:
         node && (curNode.current = node);
+        break;
+      case MENU_KEYS.DELETE:
+        node && removeFileNode(node);
+        break;
       default:
         break;
     }
@@ -271,6 +308,7 @@ function FileTree(props: { fileSystem: FileSys }) {
                     />
                     <Upload
                       onChange={(e) => {
+                        // antd doesnot support file types ----- onChange：（(parameter) e: UploadChangeParam<unknown>）
                         uploadFile((e.file as any).originFileObj as File, node);
                       }}
                       fileList={[]}

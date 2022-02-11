@@ -17,6 +17,18 @@ class FileSystem implements FileSys {
     // hack 触发file对象对应的依赖组件重新刷新
     this.files = { ...this.files };
   };
+  @action removeFile = (perfix: string) => {
+    this.files[perfix] && delete this.files[perfix];
+  };
+  @action removeFolder = (perfix: string) => {
+    for (const key in this.files) {
+      const file = this.files[key];
+      if (file.path.startsWith(perfix)) {
+        // should check path props, in fileTree.tsx can change the filename
+        delete this.files[key];
+      }
+    }
+  };
   @action saveToLs = (path: string, content: FileTarget) => {
     // 数据写入stroge, 只有ctrl + s 的时候才会保存， onchange参数写入内存，没必要每次都保存到硬盘， 做持久化存储
     resolveFile(

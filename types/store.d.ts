@@ -42,4 +42,6 @@ declare type FileSys = {
   saveToLs: (path: string, content: FileTarget) => void;
   reloadFile: () => void;
   activeKey: string;
+  removeFile: (perfix: string) => void;
+  removeFolder: (perfix: string) => void;
 };
