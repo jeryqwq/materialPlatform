@@ -11,13 +11,8 @@ type ContextMenuProps = {
   handle: (e: MouseEvent, _: ContextMenuItem & { target: HTMLElement }) => void;
   uploadFile?: (a: File) => void;
 };
-type ContextMenuState = {
-  logs: Array<string>;
-};
-export default class SimpleMenu extends Component<
-  ContextMenuProps,
-  ContextMenuState
-> {
+
+export default class SimpleMenu extends Component<ContextMenuProps, {}> {
   constructor(props: ContextMenuProps) {
     super(props);
   }

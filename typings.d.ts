@@ -9,6 +9,5 @@ declare module '*.svg' {
   export default url;
 }
 
-declare module 'vue3-sfc-loader-vis'{
-  type loadModule = Function
-}
+declare module 'vue3-sfc-loader-vis' {}
+declare module 'jszip/vendor/FileSaver' {}

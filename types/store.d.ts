@@ -45,3 +45,10 @@ declare type FileSys = {
   removeFile: (perfix: string) => void;
   removeFolder: (perfix: string) => void;
 };
+
+declare type Library = {
+  version: string;
+  versionList: Array<string>;
+  target: string;
+  loaded?: boolean;
+};
