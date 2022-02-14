@@ -1,4 +1,4 @@
-.ant-tabs-top > div.ant-tabs-nav{
+.ant-tabs-top > div.ant-tabs-nav {
   margin-bottom: 0;
 }
 .react-contextmenu-wrapper {
@@ -71,7 +71,8 @@
   padding: 0;
 }
 
-.react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item::after {
+.react-contextmenu-item.react-contextmenu-submenu
+  > .react-contextmenu-item::after {
   content: '▶';
   display: inline-block;
   position: absolute;
@@ -81,4 +82,8 @@
 .example-multiple-targets::after {
   content: attr(data-count);
   display: block;
+}
+
+ul {
+  list-style: none;
 }

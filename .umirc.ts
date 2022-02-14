@@ -9,4 +9,11 @@ export default defineConfig({
   fastRefresh: {},
   // headScripts: ['https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js'],
   mfsu: {},
+
+  proxy: {
+    '/ssa': {
+      target: 'http://10.28.185.173:8089',
+      changeOrigin: true,
+    },
+  },
 });
