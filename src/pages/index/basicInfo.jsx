@@ -6,20 +6,29 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const BasicInfo = (props) => {
-  const { actionType, visible } = props;
-  const { setVisible } = props;
+  const { actionType, visible, itemInfo = {} } = props;
+  const { setVisible, getData } = props;
   const [form] = Form.useForm();
 
   // useEffect(() => {
   //   form.validateFields(['name']);
   // }, []);
   const saveData = async (values) => {
+    let res;
     if (actionType === ACTION_TYPE.ADD) {
-      const res = await doMaterialAdd(values);
-      console.log(res);
+      values.cssType = values.cssType.toString(); // 存储转换字符串
+      res = await doMaterialAdd(values);
     } else {
-      const res = await doMaterialUpdate(values);
-      console.log(res);
+      values.id = itemInfo.id;
+      res = await doMaterialUpdate(values);
+    }
+
+    console.log(res);
+
+    if (res.ok) {
+      // 数据保存成功
+      setVisible(false);
+      getData();
     }
   };
   const handleOk = async () => {
@@ -52,7 +61,7 @@ const BasicInfo = (props) => {
         name="basicInfo"
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
-        initialValues={{ remember: true }}
+        initialValues={itemInfo}
         // onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -62,41 +71,45 @@ const BasicInfo = (props) => {
           name="name"
           rules={[{ required: true, message: '请输入名称!' }]}
         >
-          <Input maxLength="30" />
+          <Input maxLength="30" value />
         </Form.Item>
+        {actionType === ACTION_TYPE.ADD && (
+          <>
+            <Form.Item
+              label="样式"
+              name="cssType"
+              rules={[{ required: true, message: '请选择样式!' }]}
+            >
+              <Select
+                mode="multiple"
+                allowClear
+                style={{ width: '100%' }}
+                placeholder="请选择样式"
+                // defaultValue={['a10', 'c12']}
+                onChange={handleChange}
+              >
+                <Option key="1">1</Option>
+                <Option key="2">2</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="类型"
+              name="type"
+              rules={[{ required: true, message: '请选择类型!' }]}
+            >
+              <Select
+                style={{ width: '100%' }}
+                placeholder="请选择类型"
+                // defaultValue={['a10', 'c12']}
+                onChange={handleChange}
+              >
+                <Option key="1">1</Option>
+                <Option key="2">2</Option>
+              </Select>
+            </Form.Item>
+          </>
+        )}
 
-        <Form.Item
-          label="样式"
-          name="cssType"
-          rules={[{ required: true, message: '请选择样式!' }]}
-        >
-          <Select
-            mode="multiple"
-            allowClear
-            style={{ width: '100%' }}
-            placeholder="请选择样式"
-            // defaultValue={['a10', 'c12']}
-            onChange={handleChange}
-          >
-            <Option key="1">1</Option>
-            <Option key="2">2</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label="类型"
-          name="type"
-          rules={[{ required: true, message: '请选择类型!' }]}
-        >
-          <Select
-            style={{ width: '100%' }}
-            placeholder="请选择类型"
-            // defaultValue={['a10', 'c12']}
-            onChange={handleChange}
-          >
-            <Option key="1">1</Option>
-            <Option key="2">2</Option>
-          </Select>
-        </Form.Item>
         <Form.Item
           label="项目"
           name="project"
@@ -105,13 +118,17 @@ const BasicInfo = (props) => {
           <Input maxLength="30" />
         </Form.Item>
 
-        <Form.Item
-          label="版本"
-          name="version"
-          rules={[{ required: true, message: '请输入版本!' }]}
-        >
-          <Input maxLength="30" />
-        </Form.Item>
+        {actionType === ACTION_TYPE.ADD && (
+          <>
+            <Form.Item
+              label="版本"
+              name="version"
+              rules={[{ required: true, message: '请输入版本!' }]}
+            >
+              <Input maxLength="30" />
+            </Form.Item>
+          </>
+        )}
 
         <Form.Item label="简介" name="description">
           <TextArea rows={4} maxLength="256" />
