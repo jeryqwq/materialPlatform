@@ -33,7 +33,7 @@ import {
   MENU_FILE,
   MENU_FOLDER,
   MENU_KEYS,
-} from '@/contants/MENU_TYPE';
+} from '@/contants/menuTypes';
 import { ContextMenuTrigger } from 'react-contextmenu';
 import {
   INIT_PROJECT_KEY,

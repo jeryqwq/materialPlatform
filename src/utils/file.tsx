@@ -36,16 +36,18 @@ export const getFileType = function (path: string) {
 };
 export const fileAdapter = function (
   file: FileTarget,
+  name: string,
   mimeType?: string,
 ): string {
   if (file.constructor === File) {
     return window.URL.createObjectURL(file);
-  } else if (file.constructor === ArrayBuffer) {
-    return window.URL.createObjectURL(
-      new Blob([file], {
-        type: mimeType,
-      }),
-    );
+  } else if (file.constructor === Uint8Array) {
+    // jszip压缩后的buffer格式
+    const _file = new File([file], name, {
+      type: mimeType,
+    });
+    console.log(_file);
+    return window.URL.createObjectURL(_file);
   } else if (file.constructor === String) {
     return file;
   }
@@ -68,7 +70,7 @@ export const resolveFile = function (
   let url = '';
   if (isRes) {
     console.log(MIME_TYPES[fileInfo.type]);
-    url = fileAdapter(content, MIME_TYPES[fileInfo.type]);
+    url = fileAdapter(content, fileInfo.name, MIME_TYPES[fileInfo.type]);
   }
   if (fileInfo.type) {
     path2UrlMap[path] = '';

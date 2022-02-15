@@ -116,6 +116,5 @@ const fs = new FileSystem();
 //    `,
 // );
 // fs.activeFile(fs.files['/index.vue']);
-loadZipFile('/test_demo.zip', fs);
-window.fs = fs;
+loadZipFile('/test.zip', fs);
 export default fs;

@@ -64,7 +64,7 @@ export const loadZipFile = async function (url: string, fs: FileSys) {
       const fileType = getFileType(key).type;
       if (isResource(fileType)) {
         // console.log(key, 'resource----')
-        fs.saveToLs(key, compressedContent.buffer);
+        fs.saveToLs(key, compressedContent);
       } else {
         fs.saveToLs(key, new TextDecoder().decode(compressedContent));
       }

@@ -1,4 +1,4 @@
-import { MENU_KEYS } from '@/contants/MENU_TYPE';
+import { MENU_KEYS } from '@/contants/menuTypes';
 import { Upload } from 'antd';
 import React, { Component } from 'react';
 import { SubMenu, MenuItem, ContextMenu } from 'react-contextmenu';
