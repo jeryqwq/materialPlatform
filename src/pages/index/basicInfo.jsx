@@ -71,7 +71,7 @@ const BasicInfo = (props) => {
           name="name"
           rules={[{ required: true, message: '请输入名称!' }]}
         >
-          <Input maxLength="30" value />
+          <Input maxLength="32" value />
         </Form.Item>
         {actionType === ACTION_TYPE.ADD && (
           <>
@@ -85,11 +85,12 @@ const BasicInfo = (props) => {
                 allowClear
                 style={{ width: '100%' }}
                 placeholder="请选择样式"
-                // defaultValue={['a10', 'c12']}
+                optionFilterProp="children"
                 onChange={handleChange}
               >
-                <Option key="1">1</Option>
-                <Option key="2">2</Option>
+                <Option key="1">scss</Option>
+                <Option key="2">stylus </Option>
+                <Option key="3">css </Option>
               </Select>
             </Form.Item>
             <Form.Item
@@ -100,11 +101,11 @@ const BasicInfo = (props) => {
               <Select
                 style={{ width: '100%' }}
                 placeholder="请选择类型"
-                // defaultValue={['a10', 'c12']}
+                optionFilterProp="children"
                 onChange={handleChange}
               >
-                <Option key="1">1</Option>
-                <Option key="2">2</Option>
+                <Option key="1">组件</Option>
+                <Option key="2">区块</Option>
               </Select>
             </Form.Item>
           </>
@@ -115,7 +116,7 @@ const BasicInfo = (props) => {
           name="project"
           rules={[{ required: true, message: '请输入项目!' }]}
         >
-          <Input maxLength="30" />
+          <Input maxLength="32" />
         </Form.Item>
 
         {actionType === ACTION_TYPE.ADD && (
@@ -125,7 +126,7 @@ const BasicInfo = (props) => {
               name="version"
               rules={[{ required: true, message: '请输入版本!' }]}
             >
-              <Input maxLength="30" />
+              <Input maxLength="32" />
             </Form.Item>
           </>
         )}
