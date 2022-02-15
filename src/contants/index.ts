@@ -11,4 +11,30 @@ export const ACTION_TYPE = {
 export const SHOW_MODE = {
   THUMBNAIL: 'thumbnail',
   LIST: 'list',
+}
+export const DOWNLOAD_MESSAGE_TIP_KEY = 'DOWNLOAD_MESSAGE_TIP_KEY';
+export const INIT_PROJECT_KEY = 'INIT_PROJECT_KEY';
+// The type represents the general category into which the data type falls, such as video or text.
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+// https://www.iana.org/assignments/media-types/media-types.xhtml#audio
+// https://www.iana.org/assignments/media-types/media-types.xhtml#video
+// https://www.iana.org/assignments/media-types/media-types.xhtml#image
+// mime type 太多， 目前先支持常用即可
+export const MIME_TYPES: Record<string, string> = {
+  js: 'application/javascript',
+  css: 'text/css',
+  apng: 'image/apng',
+  pdf: 'application/pdf',
+  avif: 'image/avif',
+  gif: 'image/gif',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  svg: 'image/svg+xml',
+  webp: 'image/webp',
+  webm: 'audio/webm',
+  wave: 'audio/wave',
+  wav: 'video/wav',
+  ogg: 'video/ogg',
+  mp4: 'video/mp4',
+  mp3: 'audio/mp3',
 };

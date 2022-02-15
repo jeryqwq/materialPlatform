@@ -3,7 +3,7 @@ declare type CounterStore = {
   handleInc: () => void;
   handleDec: () => void;
 };
-declare type FileTarget = string | File; //  File对象， 多媒体文件
+declare type FileTarget = string | File | ArrayBuffer; //  File对象， 多媒体文件
 declare enum FileTypes {
   PNG = 'png',
   JPG = 'jpg',
@@ -44,6 +44,10 @@ declare type FileSys = {
   activeKey: string;
   removeFile: (perfix: string) => void;
   removeFolder: (perfix: string) => void;
+};
+declare type ThemeStore = {
+  themeConfig: Record<string, any>;
+  setTheme: (config: any) => void;
 };
 
 declare type Library = {

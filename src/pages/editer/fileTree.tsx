@@ -8,7 +8,7 @@ import {
   Modal,
 } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import ContextMenu from '@/components/contentMenu/index';
+import ContextMenu from '@/components/ContentMenu/index';
 const { DirectoryTree } = Tree;
 import {
   FileAddOutlined,
@@ -36,6 +36,7 @@ import {
 } from '@/contants/MENU_TYPE';
 import { ContextMenuTrigger } from 'react-contextmenu';
 import {
+  INIT_PROJECT_KEY,
   INIT_PROJECT_NAME,
   _FILE_TEMP_MARK_NAME,
   _FOLDER_TEMP_MARK_NAME,
@@ -44,7 +45,7 @@ import {
 function FileTree(props: { fileSystem: FileSys }) {
   let curNode = useRef<TreeFileItem>();
   const [expandedKeys, setExpandedKey] = useState<Array<TreeDataNode['key']>>([
-    'project-name',
+    INIT_PROJECT_KEY,
   ]);
   const { fileSystem } = props;
   const [fileTree, setFileData] = useState(
@@ -56,7 +57,10 @@ function FileTree(props: { fileSystem: FileSys }) {
   const addFile = useCallback((node: TreeFileItem, fileName: string) => {
     !expandedKeys.includes(node.key) &&
       setExpandedKey(expandedKeys.concat(node.key));
-    const key = (node.key as string) + '/' + fileName;
+    const key =
+      node.key === INIT_PROJECT_KEY
+        ? ''
+        : (node.key as string) + '/' + fileName;
     const fileInfo = getFileType(key);
     const curFileNode: TreeFileItem = {
       isLeaf: true,
@@ -86,7 +90,7 @@ function FileTree(props: { fileSystem: FileSys }) {
     const folderItem = {
       isLeaf: false,
       title: folderName,
-      key: node.key + '/' + folderName,
+      key: node.key === INIT_PROJECT_KEY ? '' : node.key + '/' + folderName,
       children: [],
       isEditName: true,
     };

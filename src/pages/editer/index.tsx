@@ -7,15 +7,17 @@ import Preview from './previewTool';
 import FileHistory from './fileHistory';
 import { Alert, Button, Spin, Upload } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
-import VuePreview from '@/components/previews/vue';
-import TsPreview from '@/components/previews/ts';
-import StylusPreview from '@/components/previews/stylus';
-import JsPreview from '@/components/previews/js';
-import ScssPreview from '@/components/previews/scss';
-import ImgPreview from '@/components/previews/img';
-import CssPreview from '@/components/previews/css';
-import PdfPreview from '@/components/previews/pdf';
-import Mp4Preview from '@/components/previews/mp4';
+import VuePreview from '@/components/FilePreviews/vue';
+import TsPreview from '@/components/FilePreviews/ts';
+import StylusPreview from '@/components/FilePreviews/stylus';
+import JsPreview from '@/components/FilePreviews/js';
+import ScssPreview from '@/components/FilePreviews/scss';
+import ImgPreview from '@/components/FilePreviews/img';
+import CssPreview from '@/components/FilePreviews/css';
+import PdfPreview from '@/components/FilePreviews/pdf';
+import Mp4Preview from '@/components/FilePreviews/mp4';
+import { resolveZipFile } from '@/utils/zip';
+import { INIT_PROJECT_KEY } from '@/contants';
 
 type StateType = {
   inputVal: string;
@@ -23,10 +25,15 @@ type StateType = {
 type StoreProps = {
   counterStore: CounterStore;
   fileSystem: FileSys;
+  themeStore: ThemeStore;
 };
 let cacheLoadComp: Record<
   string,
-  (props: { file: FileDescription; onChange: Function }) => JSX.Element
+  (props: {
+    file: FileDescription;
+    onChange: Function;
+    theme: 'light' | 'dark' | 'realdark';
+  }) => JSX.Element
 > = {
   vue: VuePreview,
   ts: TsPreview,
@@ -38,7 +45,7 @@ let cacheLoadComp: Record<
   pdf: PdfPreview,
   mp4: Mp4Preview,
 };
-@inject('counterStore', 'fileSystem')
+@inject('fileSystem', 'themeStore')
 @observer
 class Editer extends React.Component<StoreProps, StateType> {
   constructor(props: StoreProps) {
@@ -61,7 +68,7 @@ class Editer extends React.Component<StoreProps, StateType> {
   }
   render() {
     const store = this.props;
-    const { fileSystem } = store;
+    const { fileSystem, themeStore } = store;
     const { actives, files } = fileSystem as FileSys;
     return (
       <div className={styles['editer-wrap']}>
@@ -78,7 +85,10 @@ class Editer extends React.Component<StoreProps, StateType> {
               <Upload onChange={(e) => console.log(e)} fileList={[]}>
                 <UploadOutlined />
               </Upload>
-              <DownloadOutlined style={{ margin: '0 5px' }} />
+              <DownloadOutlined
+                style={{ margin: '0 5px' }}
+                onClick={() => resolveZipFile(fileSystem.files, 'test.zip')}
+              />
             </div>
           </div>
           <FileTree fileSystem={fileSystem} />
@@ -86,7 +96,7 @@ class Editer extends React.Component<StoreProps, StateType> {
             fileTree={[
               {
                 title: '依赖管理',
-                key: 'project-name',
+                key: INIT_PROJECT_KEY,
                 children: [{ title: 'lodash', key: '2', isLeaf: true }],
               },
             ]}
@@ -128,6 +138,7 @@ class Editer extends React.Component<StoreProps, StateType> {
                         onChange={(i: FileDescription, val: string) => {
                           fileSystem.saveToLs(i.path, val);
                         }}
+                        theme={themeStore.themeConfig.navTheme}
                       />
                     </div>
                   ),

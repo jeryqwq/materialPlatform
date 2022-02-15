@@ -1,15 +1,28 @@
 import { TreeDataNode } from 'antd';
 import { TreeFile, TreeFileItem } from 'types';
 import { PictureOutlined, FileOutlined } from '@ant-design/icons';
+import { INIT_PROJECT_KEY, MIME_TYPES } from '@/contants';
 export const isImgFile = function (path: string) {
   return ['gif', 'jpeg', 'png', 'jpg', 'bmp'].some((i) =>
     path.endsWith(`.${i}`),
   );
 };
 export const isResource = function (type: string) {
-  return ['img', 'mp4', 'mp3', 'pdf', 'word', 'exal', 'ps', 'html'].some(
-    (i) => i === type,
-  );
+  return [
+    'gif',
+    'jpeg',
+    'png',
+    'jpg',
+    'bmp',
+    'img',
+    'mp4',
+    'mp3',
+    'pdf',
+    'word',
+    'exal',
+    'ps',
+    'html',
+  ].some((i) => i === type);
 };
 export const getFileType = function (path: string) {
   const splitRes = path.split('.');
@@ -20,6 +33,23 @@ export const getFileType = function (path: string) {
     type: filePostfix,
     name,
   };
+};
+export const fileAdapter = function (
+  file: FileTarget,
+  mimeType?: string,
+): string {
+  if (file.constructor === File) {
+    return window.URL.createObjectURL(file);
+  } else if (file.constructor === ArrayBuffer) {
+    return window.URL.createObjectURL(
+      new Blob([file], {
+        type: mimeType,
+      }),
+    );
+  } else if (file.constructor === String) {
+    return file;
+  }
+  return '';
 };
 const path2UrlMap: Record<string, string> = {};
 export const resolveFile = function (
@@ -37,13 +67,9 @@ export const resolveFile = function (
   const isRes = isResource(fileType); // 是资源类型生成url做预览和持久化
   let url = '';
   if (isRes) {
-    url =
-      content.constructor === File
-        ? window.URL.createObjectURL(content as File)
-        : (content as string);
+    console.log(MIME_TYPES[fileInfo.type]);
+    url = fileAdapter(content, MIME_TYPES[fileInfo.type]);
   }
-  // const adaptBlob = typeof content === 'string' ? new Blob([content]): content
-  // const url = window.URL.createObjectURL(adaptBlob)
   if (fileInfo.type) {
     path2UrlMap[path] = '';
     cb &&
@@ -115,7 +141,7 @@ export const fileIcons: Record<FileTypes, JSX.Element> = {
 export const file2Tree = function (fileSystem: FileSys, projectName: string) {
   const { files } = fileSystem;
   const fileTree: TreeFile = [
-    { title: projectName, key: 'project-name', children: [] },
+    { title: projectName, key: INIT_PROJECT_KEY, children: [] },
   ];
   let cacheFiles = new WeakMap<Array<string>, FileDescription>();
   // /a/b/a.vue /a/b.vue /a.vue => [{ title: 'a', children: [ { title: 'b', children: [{ title: 'a.vue' }] },{ title: 'b.vue' } ] }, { title: 'a.vue' }]
@@ -173,6 +199,7 @@ export const file2Tree = function (fileSystem: FileSys, projectName: string) {
       curFolder?.children?.push(fileNode);
     }
   });
+  console.log(fileTree, '----');
   return fileTree;
 };
 

@@ -8,6 +8,7 @@ class Dependencies {
   @action addDep(name: string, value: string) {}
   @action getDep(name: string) {}
   @action async loadDepList(perfix: string) {}
+  @action removeDep(name: string) {}
 }
 const dep = new Dependencies();
 export default dep;

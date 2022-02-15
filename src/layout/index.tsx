@@ -2,21 +2,12 @@ import React, { useState } from 'react';
 import { ReactPropsWithRouter } from 'types';
 import styles from './layout.less';
 import IndexProvider from '@/provider/index';
-import ProLayout, {
-  PageContainer,
-  SettingDrawer,
-} from '@ant-design/pro-layout';
-import type { ProSettings } from '@ant-design/pro-layout';
-
+import ProLayout, { SettingDrawer } from '@ant-design/pro-layout';
 import { editerPages } from '@/routes';
-
+import themeStore from '@/stores/Theme';
 function LayoutIndex(props: ReactPropsWithRouter) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
-    fixSiderbar: true,
-    navTheme: 'realDark',
-  });
   const pathname = props.route.path;
+  const [refreshCount, setRefreshCount] = useState<number>(0); // hack
   return (
     <IndexProvider>
       <div
@@ -32,9 +23,6 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           }}
           collapsed={true}
           contentStyle={{ margin: 0 }}
-          // waterMarkProps={{
-          //   content: 'Vis Layout',
-          // }}
           menuFooterRender={(props) => {
             return (
               <a
@@ -78,7 +66,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
               {/* <Avatar shape="square" size="small" icon={<UserOutlined />} /> */}
             </div>
           )}
-          {...settings}
+          {...themeStore.themeConfig}
         >
           {props.children}
         </ProLayout>
@@ -86,9 +74,10 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           pathname={pathname}
           enableDarkTheme
           getContainer={() => document.getElementById('pro-layout')}
-          settings={settings}
+          settings={themeStore.themeConfig}
           onSettingChange={(changeSetting) => {
-            setSetting(changeSetting);
+            themeStore.setTheme(changeSetting);
+            setRefreshCount(refreshCount + 1);
           }}
           disableUrlParams
         />
@@ -96,5 +85,4 @@ function LayoutIndex(props: ReactPropsWithRouter) {
     </IndexProvider>
   );
 }
-
 export default LayoutIndex;

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Console from './console';
 import styles from './index.less';
 import { ChromeOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import PreviewReact from '@/components/renderPreview';
+import PreviewReact from '@/components/RenderPreview';
 import { RenderOptions } from 'types';
 
 export default (props: { fileSystem: FileSys }) => {
