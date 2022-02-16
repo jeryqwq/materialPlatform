@@ -1,6 +1,7 @@
 import React from 'react';
-import Editor from '@monaco-editor/react';
+import Editor, { loader } from '@monaco-editor/react';
 import Theme from '@/stores/Theme';
+
 function Editer(props: {
   file: FileDescription;
   onChange: Function;
