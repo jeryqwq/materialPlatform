@@ -24,7 +24,7 @@ export const resolveZipFile = async function (
       // resolve as buffer
       try {
         const buffer = await loadFileBuffer(item.url);
-        zip.file(key, buffer);
+        zip.file(item.path, buffer);
       } catch (error) {
         message.error({
           content: `文件${item.path}处理异常，请检查文件是否存在`,
@@ -33,7 +33,7 @@ export const resolveZipFile = async function (
       }
     } else {
       // string content
-      zip.file(key, item.target);
+      zip.file(item.path, item.target);
     }
   }
   message.loading({
@@ -50,7 +50,11 @@ export const resolveZipFile = async function (
   saveAs(fileContent, name);
   return zip;
 };
-export const loadZipFile = async function (url: string, fs: FileSys) {
+export const loadZipFile = async function (
+  url: string,
+  fs: FileSys,
+  cb?: Function,
+) {
   const zipBuffer = await loadFileBuffer(url);
   const zipFile = await JSZip.loadAsync(zipBuffer);
   const { files } = zipFile;
@@ -63,14 +67,14 @@ export const loadZipFile = async function (url: string, fs: FileSys) {
       } = (element as any)._data;
       const fileType = getFileType(key).type;
       if (isResource(fileType)) {
-        // console.log(key, 'resource----')
+        //  buffer => file => url
         fs.saveToLs(key, compressedContent);
       } else {
         fs.saveToLs(key, new TextDecoder().decode(compressedContent));
       }
     }
   }
-  console.log(zipFile, '解析后的压缩包内容');
+  cb && cb();
 };
 export const loadFileBuffer = function (url: string): Promise<ArrayBuffer> {
   const req = new Request(url, { method: 'GET' });

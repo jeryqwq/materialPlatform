@@ -5,6 +5,7 @@ import IndexProvider from '@/provider/index';
 import ProLayout, { SettingDrawer } from '@ant-design/pro-layout';
 import { editerPages } from '@/routes';
 import themeStore from '@/stores/Theme';
+
 function LayoutIndex(props: ReactPropsWithRouter) {
   const pathname = props.route.path;
   const [refreshCount, setRefreshCount] = useState<number>(0); // hack
@@ -79,7 +80,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
             themeStore.setTheme(changeSetting);
             setRefreshCount(refreshCount + 1);
           }}
-          disableUrlParams
+          disableUrlParams={false}
         />
       </div>
     </IndexProvider>

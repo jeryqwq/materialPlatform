@@ -110,17 +110,17 @@ class Editer extends React.Component<StoreProps, StateType> {
           >
             <FileHistory
               activeKey={fileSystem.activeKey}
-              onChange={(val: string) =>
-                fileSystem.activeFile(
-                  [...fileSystem.actives].find(
-                    (i) => i.path === val,
-                  ) as FileDescription,
-                )
-              }
+              onChange={(val: string) => {
+                const curFile = [...fileSystem.actives].find(
+                  (i) => i.path === val,
+                ) as FileDescription;
+                fileSystem.activeFile(curFile);
+              }}
               onRemove={(key: string) => {
-                fileSystem.files[key] && fileSystem.removeActiveItem(fileSystem.files[key])
-                const keys = fileSystem.actives.keys()
-                // fileSystem.activeFile(fileSystem.actives.)
+                fileSystem.files[key] &&
+                  fileSystem.removeActiveItem(fileSystem.files[key]);
+                [...fileSystem.actives].length &&
+                  fileSystem.activeFile([...fileSystem.actives][0]);
               }}
               panes={[...actives].map((i) => {
                 const Editor = cacheLoadComp[i.type] || (

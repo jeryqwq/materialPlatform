@@ -1,15 +1,7 @@
-import {
-  TreeDataNode,
-  Tree,
-  Cascader,
-  Input,
-  Button,
-  Upload,
-  Modal,
-} from 'antd';
+import { TreeDataNode, Tree, Input, Upload, Modal } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ContextMenu from '@/components/ContentMenu/index';
-const { DirectoryTree } = Tree;
+const { DirectoryTree, TreeNode } = Tree;
 import {
   FileAddOutlined,
   FolderAddOutlined,

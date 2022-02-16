@@ -22,8 +22,8 @@ class FileSystem implements FileSys {
     this.files[perfix] && delete this.files[perfix];
   };
   @action removeActiveItem = (item: FileDescription) => {
-    this.actives.delete(item)
-  }
+    this.actives.delete(item);
+  };
   @action removeFolder = (perfix: string) => {
     for (const key in this.files) {
       const file = this.files[key];
@@ -117,6 +117,8 @@ const fs = new FileSystem();
 //   </style>
 //    `,
 // );
-await loadZipFile('/test.zip', fs);
-fs.activeFile(fs.files['/index.vue']);
+loadZipFile('/test.zip', fs, () => {
+  fs.activeFile(fs.files['/index.vue']);
+});
+
 export default fs;

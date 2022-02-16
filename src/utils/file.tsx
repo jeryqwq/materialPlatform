@@ -118,7 +118,13 @@ export const fileIcons: Record<FileTypes, JSX.Element> = {
       style={{ width: '15px', transform: 'translateX(-5px)' }}
     />
   ),
-  img: <PictureOutlined />,
+  img: (
+    <img
+      src="/imgs/icon/img.png"
+      alt="image"
+      style={{ width: '15px', transform: 'translateX(-5px)' }}
+    />
+  ),
   common: <FileOutlined />,
   png: <PictureOutlined />,
   jpeg: <PictureOutlined />,
@@ -132,13 +138,31 @@ export const fileIcons: Record<FileTypes, JSX.Element> = {
       style={{ width: '15px', transform: 'translateX(-5px)' }}
     />
   ),
-  css: <FileOutlined />,
-  scss: <FileOutlined />,
+  css: (
+    <img
+      src="/imgs/icon/CSS.png"
+      alt="vue"
+      style={{ height: '15px', transform: 'translateX(-5px)' }}
+    />
+  ),
+  scss: (
+    <img
+      src="/imgs/icon/scss.png"
+      alt="vue"
+      style={{ height: '15px', transform: 'translateX(-5px)' }}
+    />
+  ),
   stylus: <FileOutlined />,
   mp4: <FileOutlined />,
   mp3: <FileOutlined />,
-  pdf: <PictureOutlined />,
-  ts: <PictureOutlined />,
+  pdf: <FileOutlined />,
+  ts: (
+    <img
+      src="/imgs/icon/ts.png"
+      alt="vue"
+      style={{ height: '15px', transform: 'translateX(-5px)' }}
+    />
+  ),
 };
 export const file2Tree = function (fileSystem: FileSys, projectName: string) {
   const { files } = fileSystem;
@@ -201,7 +225,6 @@ export const file2Tree = function (fileSystem: FileSys, projectName: string) {
       curFolder?.children?.push(fileNode);
     }
   });
-  console.log(fileTree, '----');
   return fileTree;
 };
 

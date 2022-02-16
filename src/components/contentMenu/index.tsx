@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { SubMenu, MenuItem, ContextMenu } from 'react-contextmenu';
 import { ContextMenuItem, TreeFileItem } from 'types';
 import styles from './index.less';
-import { UploadOutlined } from '@ant-design/icons';
 type ContextMenuProps = {
   contextMenu: Array<ContextMenuItem>;
   id: string;
