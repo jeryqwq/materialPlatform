@@ -44,6 +44,7 @@ declare type FileSys = {
   activeKey: string;
   removeFile: (perfix: string) => void;
   removeFolder: (perfix: string) => void;
+  removeActiveItem: (_: FileDescription) => void
 };
 declare type ThemeStore = {
   themeConfig: Record<string, any>;

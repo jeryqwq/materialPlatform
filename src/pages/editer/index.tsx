@@ -117,6 +117,11 @@ class Editer extends React.Component<StoreProps, StateType> {
                   ) as FileDescription,
                 )
               }
+              onRemove={(key: string) => {
+                fileSystem.files[key] && fileSystem.removeActiveItem(fileSystem.files[key])
+                const keys = fileSystem.actives.keys()
+                // fileSystem.activeFile(fileSystem.actives.)
+              }}
               panes={[...actives].map((i) => {
                 const Editor = cacheLoadComp[i.type] || (
                   <Alert
