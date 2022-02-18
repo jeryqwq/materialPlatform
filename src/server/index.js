@@ -19,9 +19,16 @@ export const doMaterialUpdate = (params) => {
  */
 export const doMaterialRemove = (params) => {
   const { id } = params || {};
-  return axios.post(`/ssa/vis/material/remove?id=${id}`);
+  return axios.get(`/ssa/vis/material/remove?id=${id}`);
 };
 
+/**
+ * 物料上架
+ */
+export const doMaterialOn = (params) => {
+  const { id } = params || {};
+  return axios.get(`/ssa/vis/material/on?id=${id}`);
+};
 /**
  * 物料列表查询（分页）
  */
@@ -42,4 +49,11 @@ export const doMaterialUpload = (params) => {
 export const doMaterialQueryVersions = (params) => {
   const { id } = params || {};
   return axios.post(`/ssa/vis/material/query/versions?id=${id}`);
+};
+
+/**
+ * 物料复制
+ */
+export const doMaterialCopy = (params) => {
+  return axios.post(`/ssa/vis/material/copy`, params);
 };

@@ -6,12 +6,21 @@ export const INIT_PROJECT_NAME = 'initProjectName';
 export const ACTION_TYPE = {
   ADD: 'add',
   EDITOR: 'editor',
+  COPY: 'copy',
+};
+
+export const ACTION_TYPE_TITLE = {
+  [ACTION_TYPE.ADD]: '新增',
+  [ACTION_TYPE.EDITOR]: '编辑',
+  [ACTION_TYPE.COPY]: '复制',
 };
 
 export const SHOW_MODE = {
   THUMBNAIL: 'thumbnail',
   LIST: 'list',
-}
+};
+export const DEFAULT_PROJECT_LIST = ['光大A', '光大B', '光大C'];
+
 export const DOWNLOAD_MESSAGE_TIP_KEY = 'DOWNLOAD_MESSAGE_TIP_KEY';
 export const INIT_PROJECT_KEY = 'INIT_PROJECT_KEY';
 // The type represents the general category into which the data type falls, such as video or text.

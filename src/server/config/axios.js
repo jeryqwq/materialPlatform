@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { get as _get } from 'lodash';
 
 /**
  * 网络请求配置
@@ -28,13 +29,17 @@ axios.interceptors.request.use(
  */
 axios.interceptors.response.use(
   (response) => {
-    if (response.data.errCode === 2) {
-      console.log('过期');
+    const code = _get(response, 'data.code', 0);
+    if (response.data.code !== 200) {
+      msg(response);
     }
+    console.info('请求结果 :', response.data);
     return response;
   },
   (error) => {
-    console.log('请求出错：', error);
+    console.error('请求出错：', error);
+    message.error('请求出错!');
+    return error;
   },
 );
 
@@ -51,7 +56,6 @@ export function get(url, params = {}) {
         params: params,
       })
       .then((response) => {
-        landing(url, params, response.data);
         resolve(response.data);
       })
       .catch((error) => {
@@ -71,8 +75,6 @@ export function post(url, data) {
   return new Promise((resolve, reject) => {
     axios.post(url, data).then(
       (response = {}) => {
-        //关闭进度条
-        // const { ok, message: mes } = response.data;
         resolve(response.data);
       },
       (err) => {
@@ -125,63 +127,45 @@ export function put(url, data = {}) {
 
 //失败提示
 function msg(err) {
-  if (err && err.response) {
-    switch (err.response.code) {
-      case 400:
-        message.error(err.response.message);
-        break;
-      case 401:
-        message.error('未授权，请登录');
-        break;
-
-      case 403:
-        message.error('拒绝访问');
-        break;
-
-      case 404:
-        message.error('请求地址出错');
-        break;
-
-      case 408:
-        message.error('请求超时');
-        break;
-
-      case 500:
-        message.error('服务器内部错误');
-        break;
-
-      case 501:
-        message.error('服务未实现');
-        break;
-
-      case 502:
-        message.error('网关错误');
-        break;
-
-      case 503:
-        message.error('服务不可用');
-        break;
-
-      case 504:
-        message.error('网关超时');
-        break;
-
-      case 505:
-        message.error('HTTP版本不受支持');
-        break;
-      default:
-    }
-  }
-}
-
-/**
- * 查看返回的数据
- * @param url
- * @param params
- * @param data
- */
-function landing(url, params, data) {
-  if (data.code === -1) {
+  const msg = _get(err, 'data.message', '请求错误!');
+  msg && message.error(msg);
+  if (err && err.message) {
+    // switch (err.response.code) {
+    //   case 400:
+    //     message.error(err.response.message);
+    //     break;
+    //   case 401:
+    //     message.error('未授权，请登录');
+    //     break;
+    //   case 403:
+    //     message.error('拒绝访问');
+    //     break;
+    //   case 404:
+    //     message.error('请求地址出错');
+    //     break;
+    //   case 408:
+    //     message.error('请求超时');
+    //     break;
+    //   case 500:
+    //     message.error('服务器内部错误');
+    //     break;
+    //   case 501:
+    //     message.error('服务未实现');
+    //     break;
+    //   case 502:
+    //     message.error('网关错误');
+    //     break;
+    //   case 503:
+    //     message.error('服务不可用');
+    //     break;
+    //   case 504:
+    //     message.error('网关超时');
+    //     break;
+    //   case 505:
+    //     message.error('HTTP版本不受支持');
+    //     break;
+    //   default:
+    // }
   }
 }
 

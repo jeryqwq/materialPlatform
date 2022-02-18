@@ -1,40 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Form, Input, message, Modal, Select } from 'antd';
-import { ACTION_TYPE } from '@/contants';
+import {
+  ACTION_TYPE,
+  ACTION_TYPE_TITLE,
+  DEFAULT_PROJECT_LIST,
+} from '@/contants';
 import { doMaterialAdd, doMaterialUpdate } from '@/server';
+import { get } from 'lodash';
 const { Option } = Select;
 const { TextArea } = Input;
-
-const projectList = ['光大A', '光大B', '光大C'];
 
 const BasicInfo = (props) => {
   const { actionType, visible, itemInfo = {} } = props;
   const { setVisible, getData } = props;
   const [form] = Form.useForm();
 
-  // useEffect(() => {
-  //   form.validateFields(['name']);
-  // }, []);
   const saveData = async (values) => {
     let res;
-    if (actionType === ACTION_TYPE.ADD) {
-      values.cssType = values.cssType.toString(); // 存储转换字符串
-      res = await doMaterialAdd(values);
-    } else {
-      values.id = itemInfo.id;
-      res = await doMaterialUpdate(values);
-    }
-
-    console.log(res);
-
-    if (res.ok) {
-      // 数据保存成功
+    const actionMap = {
+      [ACTION_TYPE.ADD]: async () => {
+        const cssType = get(values, 'cssType', '');
+        values.cssType = cssType.toString(); // 存储转换字符串
+        res = await doMaterialAdd(values);
+        if (res.code === 200) {
+          message.success('创建成功');
+        }
+      },
+      [ACTION_TYPE.EDITOR]: async () => {
+        values.id = itemInfo.id;
+        res = await doMaterialUpdate(values);
+        if (res.code === 200) {
+          message.success('创建成功');
+        }
+      },
+      [ACTION_TYPE.COPY]: async () => {
+        values.id = itemInfo.id;
+        res = await doMaterialUpdate(values);
+        if (res.code === 200) {
+          message.success('复制成功');
+        }
+      },
+    };
+    try {
+      actionMap[actionType] && actionMap[actionType]();
       setVisible(false);
       getData();
-    }
+    } catch (error) {}
   };
   const handleOk = async () => {
-    // form.submit();
     try {
       const values = await form.validateFields();
       console.log('Success:', values);
@@ -49,14 +62,16 @@ const BasicInfo = (props) => {
   };
 
   const handleChange = () => {};
+
   return (
     <Modal
-      title={(actionType === ACTION_TYPE.ADD ? '新增' : '编辑') + '基础信息'}
+      title={`${ACTION_TYPE_TITLE[actionType]}物料`}
       visible={visible}
       onOk={handleOk}
       onCancel={handleCancel}
       okText="确认"
       cancelText="取消"
+      maskClosable={false}
     >
       <Form
         form={form}
@@ -64,8 +79,6 @@ const BasicInfo = (props) => {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
         initialValues={itemInfo}
-        // onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item
@@ -76,43 +89,42 @@ const BasicInfo = (props) => {
           <Input maxLength="32" value />
         </Form.Item>
         {actionType === ACTION_TYPE.ADD && (
-          <>
-            <Form.Item
-              label="样式"
-              name="cssType"
-              rules={[{ required: true, message: '请选择样式!' }]}
+          <Form.Item
+            label="样式"
+            name="cssType"
+            rules={[{ required: true, message: '请选择样式!' }]}
+          >
+            <Select
+              mode="multiple"
+              allowClear
+              style={{ width: '100%' }}
+              placeholder="请选择样式"
+              optionFilterProp="children"
+              onChange={handleChange}
             >
-              <Select
-                mode="multiple"
-                allowClear
-                style={{ width: '100%' }}
-                placeholder="请选择样式"
-                optionFilterProp="children"
-                onChange={handleChange}
-              >
-                <Option key="1">scss</Option>
-                <Option key="2">stylus </Option>
-                <Option key="3">css </Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label="类型"
-              name="type"
-              rules={[{ required: true, message: '请选择类型!' }]}
-            >
-              <Select
-                style={{ width: '100%' }}
-                placeholder="请选择类型"
-                optionFilterProp="children"
-                onChange={handleChange}
-              >
-                <Option key="1">组件</Option>
-                <Option key="2">区块</Option>
-              </Select>
-            </Form.Item>
-          </>
+              <Option key="1">scss</Option>
+              <Option key="2">stylus </Option>
+              <Option key="3">css </Option>
+            </Select>
+          </Form.Item>
         )}
-
+        {[ACTION_TYPE.ADD, ACTION_TYPE.COPY].includes(actionType) && (
+          <Form.Item
+            label="类型"
+            name="type"
+            rules={[{ required: true, message: '请选择类型!' }]}
+          >
+            <Select
+              style={{ width: '100%' }}
+              placeholder="请选择类型"
+              optionFilterProp="children"
+              onChange={handleChange}
+            >
+              <Option key="1">组件</Option>
+              <Option key="2">区块</Option>
+            </Select>
+          </Form.Item>
+        )}
         <Form.Item
           label="项目"
           name="project"
@@ -123,26 +135,12 @@ const BasicInfo = (props) => {
             placeholder="请选择项目"
             onChange={handleChange}
           >
-            {projectList.map((item) => {
+            {DEFAULT_PROJECT_LIST.map((item) => {
               return <Option value={item}>{item}</Option>;
             })}
           </Select>
-          {/* <Select
-          className="project"
-          showSearch
-          optionFilterProp="children"
-          style={{ width: 120 }}
-          onChange={handleChangeProject}
-          placeholder="请选择项目"
-        >
-          {projectList.map((item) => {
-            return <Option value={item}>{item}</Option>;
-            return;
-          })}
-        </Select> */}
         </Form.Item>
-
-        {actionType === ACTION_TYPE.ADD && (
+        {[ACTION_TYPE.ADD, ACTION_TYPE.COPY].includes(actionType) && (
           <>
             <Form.Item
               label="版本"
@@ -153,7 +151,6 @@ const BasicInfo = (props) => {
             </Form.Item>
           </>
         )}
-
         <Form.Item label="简介" name="description">
           <TextArea rows={4} maxLength="256" />
         </Form.Item>

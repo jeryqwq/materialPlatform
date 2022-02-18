@@ -28,6 +28,7 @@
     "lodash": "^4.17.21",
     "mobx": "^6.3.12",
     "mobx-react": "^7.2.1",
+    "moment": "^2.29.1",
     "react": "17.x",
     "react-contextmenu": "^2.14.0",
     "react-dom": "17.x",

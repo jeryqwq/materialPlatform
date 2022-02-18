@@ -14,12 +14,13 @@
       .project {
         position: absolute;
         left: 16px;
+        width: 314px;
       }
       .search {
         width: 400px;
         height: 32px;
       }
-      .action {
+      .topAction {
         height: 32px;
         display: flex;
         position: absolute;
@@ -34,6 +35,9 @@
           align-items: center;
           background-color: #d9dae1;
           border-radius: 4px;
+          &:hover {
+            opacity: 0.6;
+          }
         }
       }
     }
@@ -55,30 +59,57 @@
     }
 
     .itemList {
-      display: grid;
-      justify-content: space-between;
-      grid-template-columns: repeat(auto-fill, 300px);
-      grid-gap: 24px;
+      // display: grid;
+      // justify-content: space-between;
+      // grid-template-columns: repeat(auto-fill, 300px);
+      // grid-gap: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: start;
+      margin-right: -24px;
       padding: 24px;
       .itemBox {
         display: flex;
         flex-direction: column;
-        width: 344px;
+        width: 355px;
         height: 242px;
         background-color: #ffffff;
         border-radius: 4px;
         position: relative;
         cursor: pointer;
         overflow: hidden;
+        margin: 0 24px 24px 0;
         .action {
           position: absolute;
-          right: 10px;
-          top: 10px;
+          right: 16px;
+          top: 16px;
+          display: flex;
+          .iconBox {
+            width: 32px;
+            height: 32px;
+            margin-right: 4px;
+            background-color: #000000;
+            border-radius: 4px;
+            opacity: 0.8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &:hover {
+              opacity: 0.6;
+            }
+            img {
+              width: 14px;
+            }
+          }
         }
-        img {
+        .thumbnail {
           width: 100%;
           height: calc(100% - 40px);
-          // flex: 1;
+          padding: 16px 26px;
+          img {
+            width: 100%;
+            height: 100%;
+          }
         }
         .name {
           width: 100%;
@@ -95,5 +126,8 @@
       margin-right: 24px;
       padding-bottom: 24px;
     }
+  }
+  .red {
+    color: #ff4d4f;
   }
 }

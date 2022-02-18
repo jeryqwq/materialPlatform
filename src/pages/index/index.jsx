@@ -1,5 +1,4 @@
-import counterStore from '@/stores/Counter';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import {
   Popconfirm,
   Table,
@@ -8,107 +7,136 @@ import {
   Select,
   Space,
   Pagination,
+  Tooltip,
 } from 'antd';
 import { BarsOutlined, AppstoreFilled } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
+import moment from 'moment';
 import styles from './index.less';
 import BasicInfo from './basicInfo';
-import { SHOW_MODE, ACTION_TYPE } from '@/contants';
-import { doQueryPage, doMaterialRemove } from '@/server';
+import { SHOW_MODE, ACTION_TYPE, DEFAULT_PROJECT_LIST } from '@/contants';
+import { doQueryPage, doMaterialRemove, doMaterialOn } from '@/server';
 import { get } from 'lodash';
-
+import copyIcon from '@/assets/img/copy.svg';
+import editorIcon from '@/assets/img/editor.svg';
+import infoIcon from '@/assets/img/info.svg';
+import offIcon from '@/assets/img/off.svg';
+import onIcon from '@/assets/img/on.svg';
+import defaultBg from '@/assets/img/defaultBg.png';
+import greenState from '@/assets/img/greenState.png';
+import orangeState from '@/assets/img/orangeState.png';
 const { Search } = Input;
 const { Option } = Select;
 
-let dataSource = [];
-for (let index = 0; index < 10; index++) {
-  dataSource.push({
-    key: index,
-    id: index,
-    name: '胡彦斌',
-    type: index,
-    project: '西湖区湖底公园1号' + index,
-    createTime: '2020/2/15',
-    updateTime: '2020/2/16',
-    thumbnail:
-      'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-  });
-}
-
-const projectList = ['光大A', '光大B', '光大C'];
 const Index = (props) => {
-  console.log('===', props);
+  const [searchValue, setSearchValue] = useState('');
+  const [project, setProject] = useState('');
   const [mode, setMode] = useState(SHOW_MODE.THUMBNAIL);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [actionType, setActionType] = useState(ACTION_TYPE.ADD);
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  // const [total, setTotal] = useState(1);
   const [dataList, setDataList] = useState([]);
   const [itemInfo, setItemInfo] = useState({});
-  // const pageSize = 10;
 
-  const {
-    location: { query },
-    history,
-  } = props;
   const columns = [
     {
       title: '名称',
       dataIndex: 'name',
       key: 'name',
-      width: '35%',
+      width: '25%',
     },
     {
       title: '归属',
       dataIndex: 'project',
       key: 'project',
-      width: '35%',
+      width: '25%',
+    },
+    {
+      title: '状态',
+      dataIndex: 'state',
+      key: 'state',
+      width: '15%',
+      render: (value) => {
+        return (
+          <div>
+            <>
+              <img
+                style={{ margin: '-3px 2px 0 0' }}
+                src={value ? orangeState : greenState}
+                alt=""
+              />
+              {value ? '未上架' : '已上架'}
+            </>
+          </div>
+        );
+      },
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       key: 'updateTime',
+      width: '15%',
+      render: (value) => {
+        return moment(value).format('YYYY-MM-DD HH:MM:SS');
+      },
     },
     {
       title: '操作',
       key: 'action',
       width: '200px',
+      width: '15%',
       render: (record) => {
         return (
           <Space size="middle">
             <a>编辑</a>
             <a
               onClick={() => {
-                handleEditorItem(record.key);
+                handleEditorItem(record);
               }}
             >
               基础
             </a>
             <Popconfirm
-              title="是否下架该物料?"
+              title={`是否${record.state ? '上架' : '下架'}该物料`}
               onConfirm={() => {
-                handleConfirm(record.id);
+                handleConfirm(record.id, record.state);
               }}
               okText="确认"
               cancelText="取消"
             >
-              <a>下架</a>
+              {record.state ? (
+                <a>上架</a>
+              ) : (
+                <a style={{ color: '#ff4d4f' }}>下架</a>
+              )}
             </Popconfirm>
+            <a
+              onClick={() => {
+                handleCopyItem(record);
+              }}
+            >
+              复制
+            </a>
           </Space>
         );
       },
     },
   ];
-  const onSearch = (value) => console.log(value);
+
   const handleChangeMode = () => {
     setCurrent(1);
     setMode(
       mode === SHOW_MODE.THUMBNAIL ? SHOW_MODE.TABLE : SHOW_MODE.THUMBNAIL,
     );
   };
+  const onSearch = (value) => {
+    console.log(value);
+    setSearchValue(value);
+  };
+
   const handleChangeProject = (val) => {
-    console.log('===', val);
+    setProject(val);
   };
   const showModal = () => {
     setIsModalVisible(true);
@@ -122,11 +150,18 @@ const Index = (props) => {
   };
   //编辑
   const handleEditorItem = (item) => {
-    console.log('===', item);
     showModal();
     setActionType(ACTION_TYPE.EDITOR);
     setItemInfo(item);
   };
+
+  //复制
+  const handleCopyItem = (item) => {
+    showModal();
+    setActionType(ACTION_TYPE.COPY);
+    setItemInfo(item);
+  };
+
   const onChangePagination = (page) => {
     console.log('===', page);
     setCurrent(page);
@@ -140,28 +175,31 @@ const Index = (props) => {
     const param = {
       pageSize,
       pageIndex: current - 1,
-      name: '',
-      project: '',
+      name: searchValue,
+      project: project,
       type: '',
     };
     const res = await doQueryPage(param);
-    // const { records2 } = res.data;
     const records = get(res, 'data.records', []);
-    console.log('===', res, records);
-
-    // setDataList(records);
-    setDataList(dataSource);
+    setDataList(records);
   };
-  const handleConfirm = async (id) => {
-    //下架确认
-    const res = await doMaterialRemove({ id });
-    console.log('===', res);
-    getData();
+  const handleConfirm = async (id, state) => {
+    //  1表示 已经下架
+    try {
+      let res;
+      if (state === 1) {
+        // 进行上架
+        res = await doMaterialOn({ id });
+      } else {
+        res = await doMaterialRemove({ id });
+      }
+      getData();
+    } catch (error) {}
   };
 
   useEffect(() => {
     getData();
-  }, [current, pageSize]);
+  }, [current, pageSize, project, searchValue, mode]);
 
   return (
     <div className={styles.index}>
@@ -170,11 +208,11 @@ const Index = (props) => {
           className="project"
           showSearch
           optionFilterProp="children"
-          style={{ width: 120 }}
           onChange={handleChangeProject}
           placeholder="请选择项目"
+          allowClear
         >
-          {projectList.map((item) => {
+          {DEFAULT_PROJECT_LIST.map((item) => {
             return <Option value={item}>{item}</Option>;
           })}
         </Select>
@@ -183,7 +221,7 @@ const Index = (props) => {
           placeholder="请输入物料名称"
           onSearch={onSearch}
         />
-        <div className="action">
+        <div className="topAction">
           <Button type="primary" onClick={handleCreateItem}>
             创建
           </Button>
@@ -200,32 +238,56 @@ const Index = (props) => {
       {mode === SHOW_MODE.THUMBNAIL ? (
         <>
           <ul className="itemList">
-            {dataList.map((item) => {
+            {dataList.map((item, index) => {
               return (
-                <li className="itemBox" key={item.id}>
+                <li className="itemBox" key={index}>
                   <p className="action">
-                    <Button
-                      type="primary"
-                      onClick={() => {
-                        handleEditorItem(item);
-                      }}
+                    <Tooltip placement="topLeft" title={'基础'}>
+                      <div
+                        className="iconBox"
+                        onClick={() => {
+                          handleEditorItem(item);
+                        }}
+                      >
+                        <img src={infoIcon} alt="" />
+                      </div>
+                    </Tooltip>
+                    <Tooltip placement="topLeft" title={'编辑'}>
+                      <div className="iconBox">
+                        <img src={editorIcon} alt="" />
+                      </div>
+                    </Tooltip>
+                    <Tooltip
+                      placement="topLeft"
+                      title={item.state ? '上架' : '下架'}
                     >
-                      基础
-                    </Button>
-                    <Button>编辑</Button>
-
-                    <Popconfirm
-                      title="是否下架该物料?"
-                      onConfirm={() => {
-                        handleConfirm(item.id);
-                      }}
-                      okText="确认"
-                      cancelText="取消"
-                    >
-                      <Button danger>下架</Button>
-                    </Popconfirm>
+                      <Popconfirm
+                        title={`是否${item.state ? '上架' : '下架'}该物料`}
+                        onConfirm={() => {
+                          handleConfirm(item.id, item.state);
+                        }}
+                        okText="确认"
+                        cancelText="取消"
+                      >
+                        <div className="iconBox">
+                          <img src={item.state ? onIcon : offIcon} alt="" />
+                        </div>
+                      </Popconfirm>
+                    </Tooltip>
+                    <Tooltip placement="topLeft" title={'复制'}>
+                      <div
+                        className="iconBox"
+                        onClick={() => {
+                          handleCopyItem(item);
+                        }}
+                      >
+                        <img src={copyIcon} alt="" />
+                      </div>
+                    </Tooltip>
                   </p>
-                  <img src={item.thumbnail} alt="" />
+                  <div className="thumbnail">
+                    <img src={item.thumbnail || defaultBg} alt="" />
+                  </div>
                   <div className="name">{item.name}</div>
                 </li>
               );
