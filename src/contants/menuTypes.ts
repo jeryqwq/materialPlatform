@@ -65,11 +65,3 @@ export const CONTEXT_MENU_FILE = [
     title: '下载到本地',
   },
 ];
-export const EVENT_HANDLE_MAP_FILE = {};
-export const EVENT_HANDLE_MAP_FOLDER: Record<
-  string,
-  (fs: FileSys, path: string) => void
-> = {
-  addFile: function (fs, path) {},
-  addFolder: function (fs, path) {},
-};

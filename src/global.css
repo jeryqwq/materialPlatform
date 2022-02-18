@@ -79,9 +79,8 @@
   right: 7px;
 }
 
-.example-multiple-targets::after {
-  content: attr(data-count);
-  display: block;
+.dep-collapse.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  padding: 0 0 0 8px;
 }
 
 html,

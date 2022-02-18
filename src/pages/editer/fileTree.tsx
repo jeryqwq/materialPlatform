@@ -9,6 +9,7 @@ import {
   FormOutlined,
   DeleteOutlined,
   UploadOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
 import styles from './index.less';
 import {
@@ -16,9 +17,11 @@ import {
   fileIcons,
   findFileItemByFileTree,
   getFileType,
+  renderSearchKeywordNode,
+  searchTitleByKeyword,
 } from '@/utils/file';
-import { ContextMenuItem, TreeFileItem } from 'types';
-import { copyPath, genUid, updateTreeData, withInputWrap } from '@/utils';
+import { ContextMenuItem, TreeFile, TreeFileItem } from 'types';
+import { copyPath, genUid } from '@/utils';
 import {
   CONTEXT_MENU_FILE,
   CONTEXT_MENU_FOLDER,
@@ -36,6 +39,7 @@ import {
 
 function FileTree(props: { fileSystem: FileSys }) {
   let curNode = useRef<TreeFileItem>();
+  let keyword = useRef<string>('');
   const [expandedKeys, setExpandedKey] = useState<Array<TreeDataNode['key']>>([
     INIT_PROJECT_KEY,
   ]);
@@ -209,9 +213,19 @@ function FileTree(props: { fileSystem: FileSys }) {
         break;
     }
   };
+  const handleSearch = (e: any) => {
+    const { value } = e.target;
+    keyword.current = value;
+    setExpandedKey(searchTitleByKeyword(value, fileTree));
+  };
   return (
     <div style={{ padding: '5px' }}>
-      {/* <Search  placeholder="Search" onChange={() => {  }} /> */}
+      <Input
+        placeholder="请输入关键词"
+        style={{ margin: '10px', width: 'calc( 100% - 20px )' }}
+        suffix={<SearchOutlined />}
+        onChange={handleSearch}
+      />
       <ContextMenu
         id={MENU_FOLDER}
         contextMenu={CONTEXT_MENU_FOLDER}
@@ -255,19 +269,17 @@ function FileTree(props: { fileSystem: FileSys }) {
                         )
                       }
                     ></Input>
+                  ) : keyword.current ? (
+                    renderSearchKeywordNode(keyword.current, node.title)
                   ) : (
                     node.title
                   )}
-                  <span className={styles['icon-wrap']}>
-                    <FormOutlined /> <DeleteOutlined />
-                  </span>
                 </span>
               </ContextMenuTrigger>
             );
           } else {
             // 文件夹  folder
             return (
-              // <Cascader options={CONTEXT_MENU} >
               <ContextMenuTrigger
                 id={MENU_FOLDER}
                 attributes={{ accessKey: node.key }}
@@ -285,36 +297,13 @@ function FileTree(props: { fileSystem: FileSys }) {
                         )
                       }
                     ></Input>
+                  ) : keyword.current ? (
+                    renderSearchKeywordNode(keyword.current, node.title)
                   ) : (
                     node.title
                   )}
-                  <span className={styles['icon-wrap']}>
-                    <FileAddOutlined
-                      onClick={(e) => {
-                        addFile(node, '');
-                        e.stopPropagation();
-                      }}
-                    />
-                    <FolderAddOutlined
-                      style={{ margin: '0 5px' }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addFolder(node, '');
-                      }}
-                    />
-                    <Upload
-                      onChange={(e) => {
-                        // antd doesnot support file types ----- onChange：（(parameter) e: UploadChangeParam<unknown>）
-                        uploadFile((e.file as any).originFileObj as File, node);
-                      }}
-                      fileList={[]}
-                    >
-                      <UploadOutlined />
-                    </Upload>
-                  </span>
                 </span>
               </ContextMenuTrigger>
-              // </Cascader>
             );
           }
         }}

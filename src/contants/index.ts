@@ -47,3 +47,8 @@ export const MIME_TYPES: Record<string, string> = {
   mp4: 'video/mp4',
   mp3: 'audio/mp3',
 };
+export const RENDER_PREVIEW_MODE = {
+  // 右侧渲染状态： 全部 ｜ 用户配置（机型｜宽高）
+  FULL_SCREEN: Symbol(),
+  USER_CUSTOM: Symbol(),
+};

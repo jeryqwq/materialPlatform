@@ -246,3 +246,42 @@ export const findFileItemByFileTree = function (
   deepFind(fileTree);
   return retNode;
 };
+// 命中的关键词展开
+export const searchTitleByKeyword = function (
+  key: string,
+  fileTree: TreeFile,
+): Array<string> {
+  let ret: Array<string> = [];
+  if (!key) return [INIT_PROJECT_KEY];
+  function deepChildren(children: TreeFile) {
+    for (let i = 0; i < children.length; i++) {
+      const node = children[i];
+      if ((node.title as string).includes(key)) {
+        ret.push(node.key as string);
+      }
+      node.children && deepChildren(node.children);
+    }
+  }
+  deepChildren(fileTree);
+  return ret;
+};
+// 给命中的关键词标红
+export const renderSearchKeywordNode = function (
+  key: string,
+  title: string,
+): React.ReactNode {
+  const startIndex = title.indexOf(key);
+  if (startIndex > -1) {
+    const beforeStr = title.substr(0, startIndex);
+    const afterStr = title.substr(startIndex + key.length);
+    return (
+      <span>
+        {beforeStr}
+        <a>{key}</a>
+        {afterStr}
+      </span>
+    );
+  } else {
+    return title;
+  }
+};

@@ -23,9 +23,9 @@ type StateType = {
   inputVal: string;
 };
 type StoreProps = {
-  counterStore: CounterStore;
   fileSystem: FileSys;
   themeStore: ThemeStore;
+  dependenciesStore: Dependencies;
 };
 let cacheLoadComp: Record<
   string,
@@ -45,7 +45,7 @@ let cacheLoadComp: Record<
   pdf: PdfPreview,
   mp4: Mp4Preview,
 };
-@inject('fileSystem', 'themeStore')
+@inject('fileSystem', 'themeStore', 'dependenciesStore')
 @observer
 class Editer extends React.Component<StoreProps, StateType> {
   constructor(props: StoreProps) {
@@ -68,7 +68,7 @@ class Editer extends React.Component<StoreProps, StateType> {
   }
   render() {
     const store = this.props;
-    const { fileSystem, themeStore } = store;
+    const { fileSystem, themeStore, dependenciesStore } = store;
     const { actives, files } = fileSystem as FileSys;
     return (
       <div className={styles['editer-wrap']}>
@@ -92,15 +92,7 @@ class Editer extends React.Component<StoreProps, StateType> {
             </div>
           </div>
           <FileTree fileSystem={fileSystem} />
-          <NpmTree
-            fileTree={[
-              {
-                title: '依赖管理',
-                key: INIT_PROJECT_KEY,
-                children: [{ title: 'lodash', key: '2', isLeaf: true }],
-              },
-            ]}
-          />
+          <NpmTree dep={dependenciesStore} />
         </div>
         <div className={styles['content-wrap']}>
           <div
@@ -135,7 +127,7 @@ class Editer extends React.Component<StoreProps, StateType> {
                   key: i.path,
                   content: (
                     <div style={{ height: 'calc( 100vh - 85px )' }}>
-                      <div style={{ paddingLeft: '10px' }}>
+                      <div className={styles['path-wrap']}>
                         {i.path.split('/').join(' > ')}
                       </div>
                       <Editor

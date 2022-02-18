@@ -22,20 +22,19 @@
   }
 }
 .util-btn {
-  height: 45px;
+  height: 36px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   font-size: 12px;
   > .font-label {
     margin: 0 5px;
   }
 }
 .file-tree-node {
-  display: inline-block;
+  display: block;
   padding-right: 10px;
   white-space: nowrap;
-
   > .icon-wrap {
     opacity: 0;
     margin-left: 5px;
@@ -51,4 +50,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.path-wrap {
+  padding-left: 10px;
+  box-shadow: 0 3px 3px #f1f0f0;
+  background: white;
+  z-index: 9;
+  position: relative;
 }

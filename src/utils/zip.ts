@@ -13,7 +13,6 @@ export const resolveZipFile = async function (
     key: DOWNLOAD_MESSAGE_TIP_KEY,
   });
   const zip = new JSZip();
-  // zip.file('/a/b.js', 'console.log(123)');
   for (const key in files) {
     const item = files[key];
     message.loading({
