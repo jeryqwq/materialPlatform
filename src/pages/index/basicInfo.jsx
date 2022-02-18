@@ -5,6 +5,8 @@ import { doMaterialAdd, doMaterialUpdate } from '@/server';
 const { Option } = Select;
 const { TextArea } = Input;
 
+const projectList = ['光大A', '光大B', '光大C'];
+
 const BasicInfo = (props) => {
   const { actionType, visible, itemInfo = {} } = props;
   const { setVisible, getData } = props;
@@ -116,7 +118,28 @@ const BasicInfo = (props) => {
           name="project"
           rules={[{ required: true, message: '请输入项目!' }]}
         >
-          <Input maxLength="32" />
+          <Select
+            style={{ width: '100%' }}
+            placeholder="请选择项目"
+            onChange={handleChange}
+          >
+            {projectList.map((item) => {
+              return <Option value={item}>{item}</Option>;
+            })}
+          </Select>
+          {/* <Select
+          className="project"
+          showSearch
+          optionFilterProp="children"
+          style={{ width: 120 }}
+          onChange={handleChangeProject}
+          placeholder="请选择项目"
+        >
+          {projectList.map((item) => {
+            return <Option value={item}>{item}</Option>;
+            return;
+          })}
+        </Select> */}
         </Form.Item>
 
         {actionType === ACTION_TYPE.ADD && (

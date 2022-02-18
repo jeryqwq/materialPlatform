@@ -24,4 +24,7 @@ export default defineConfig({
       changeOrigin: true,
     },
   },
+  locale: {
+    default: 'zh-CN',
+  },
 });

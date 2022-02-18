@@ -70,9 +70,9 @@ export function get(url, params = {}) {
 export function post(url, data) {
   return new Promise((resolve, reject) => {
     axios.post(url, data).then(
-      (response) => {
+      (response = {}) => {
         //关闭进度条
-        const { ok, message: mes } = response.data;
+        // const { ok, message: mes } = response.data;
         resolve(response.data);
       },
       (err) => {
