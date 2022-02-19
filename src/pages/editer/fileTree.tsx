@@ -2,15 +2,7 @@ import { TreeDataNode, Tree, Input, Upload, Modal } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ContextMenu from '@/components/ContentMenu/index';
 const { DirectoryTree, TreeNode } = Tree;
-import {
-  FileAddOutlined,
-  FolderAddOutlined,
-  ExclamationCircleOutlined,
-  FormOutlined,
-  DeleteOutlined,
-  UploadOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
+import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import {
   file2Tree,

@@ -56,11 +56,11 @@ declare type Library = {
   versionList: Array<string>;
   target: string;
   loaded?: boolean;
+  name: string;
 };
 declare type Dependencies = {
   dependencies: Record<string, Library>;
-  addDep(name: string, value: string): void;
+  addDep(name: string, value: Library): void;
   getDep(name: string): void;
-  loadDepList(perfix: string): void;
   removeDep(name: string): void;
 };

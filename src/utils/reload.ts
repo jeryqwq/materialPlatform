@@ -1,3 +1,8 @@
+import {
+  VIS_STYLE_CLASSNAME,
+  VIS_LIB_SCRIPT_CLASSNAME,
+} from '@/contants/render';
+
 export const addStyles = function (
   content: string,
   scopedId: string,
@@ -15,7 +20,7 @@ export const addStyles = function (
     elTarget.textContent = content;
   } else {
     const style = document.createElement('style');
-    style.classList.add('vis-style-tag');
+    style.classList.add(VIS_STYLE_CLASSNAME);
     style.id = `${scopedId}-vis-style`;
     style.textContent = content;
     // const ref = document.head.getElementsByTagName('style')[0] || null;
@@ -24,9 +29,15 @@ export const addStyles = function (
 };
 export const destoryPreview = function () {
   const styles = document.getElementsByClassName(
-    'vis-style-tag',
+    VIS_STYLE_CLASSNAME,
+  ) as unknown as Array<HTMLElement>;
+  const scripts = document.getElementsByClassName(
+    VIS_LIB_SCRIPT_CLASSNAME,
   ) as unknown as Array<HTMLElement>;
   styles.forEach((element) => {
+    element.parentNode?.removeChild(element);
+  });
+  scripts.forEach((element) => {
     element.parentNode?.removeChild(element);
   });
 };
@@ -50,4 +61,21 @@ export const makeShadowRaw = function (el: HTMLElement) {
   } catch (e) {
     console.error('[shadow] make shadow-root failed', el, childNodes);
   }
+};
+
+export const loadScript = function (
+  el: HTMLElement,
+  lib: Library,
+  cb: (name: string, obj?: Record<string, any>) => {},
+  global?: Object,
+) {
+  const beforeKeys = Object.keys(global || window);
+  const scriptEl = document.createElement('script');
+  scriptEl.className = VIS_LIB_SCRIPT_CLASSNAME;
+  scriptEl.textContent = lib.target;
+  scriptEl.id = `vis-lib-${lib.name}`;
+  const afterKeys = Object.keys(global || window);
+  const libKey = afterKeys.find((i) => !beforeKeys.includes(i));
+  libKey && cb && cb(libKey, ((global || window) as any)[libKey]);
+  el.appendChild(scriptEl);
 };
