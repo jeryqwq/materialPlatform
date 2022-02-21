@@ -29,6 +29,7 @@ const { Search } = Input;
 const { Option } = Select;
 
 const Index = (props) => {
+  const { history } = props;
   const [searchValue, setSearchValue] = useState('');
   const [project, setProject] = useState('');
   const [mode, setMode] = useState(SHOW_MODE.THUMBNAIL);
@@ -36,6 +37,7 @@ const Index = (props) => {
   const [actionType, setActionType] = useState(ACTION_TYPE.ADD);
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
   const [dataList, setDataList] = useState([]);
   const [itemInfo, setItemInfo] = useState({});
 
@@ -89,7 +91,13 @@ const Index = (props) => {
       render: (record) => {
         return (
           <Space size="middle">
-            <a>编辑</a>
+            <a
+              onClick={() => {
+                goEditerPage(record);
+              }}
+            >
+              编辑
+            </a>
             <a
               onClick={() => {
                 handleEditorItem(record);
@@ -131,7 +139,6 @@ const Index = (props) => {
     );
   };
   const onSearch = (value) => {
-    console.log(value);
     setSearchValue(value);
   };
 
@@ -149,38 +156,39 @@ const Index = (props) => {
     setActionType(ACTION_TYPE.ADD);
   };
   //编辑
-  const handleEditorItem = (item) => {
+  const handleEditorItem = (item = {}) => {
     showModal();
     setActionType(ACTION_TYPE.EDITOR);
     setItemInfo(item);
   };
 
   //复制
-  const handleCopyItem = (item) => {
+  const handleCopyItem = (item = {}) => {
     showModal();
     setActionType(ACTION_TYPE.COPY);
-    setItemInfo(item);
+    setItemInfo({ id: item.id });
   };
 
   const onChangePagination = (page) => {
-    console.log('===', page);
     setCurrent(page);
   };
 
   const onShowSizeChange = (current, pageSize) => {
-    console.log('===onShowSizeChange', current, pageSize);
+    setCurrent(1);
     setPageSize(pageSize);
   };
   const getData = async () => {
     const param = {
       pageSize,
-      pageIndex: current - 1,
+      pageIndex: current,
       name: searchValue,
       project: project,
       type: '',
     };
     const res = await doQueryPage(param);
     const records = get(res, 'data.records', []);
+    const count = get(res, 'data.total', []);
+    setTotal(count);
     setDataList(records);
   };
   const handleConfirm = async (id, state) => {
@@ -197,6 +205,9 @@ const Index = (props) => {
     } catch (error) {}
   };
 
+  const goEditerPage = (item = {}) => {
+    history.push({ pathname: '/editer', query: { id: item.id } });
+  };
   useEffect(() => {
     getData();
   }, [current, pageSize, project, searchValue, mode]);
@@ -212,8 +223,12 @@ const Index = (props) => {
           placeholder="请选择项目"
           allowClear
         >
-          {DEFAULT_PROJECT_LIST.map((item) => {
-            return <Option value={item}>{item}</Option>;
+          {DEFAULT_PROJECT_LIST.map((item, index) => {
+            return (
+              <Option key={index} value={item}>
+                {item}
+              </Option>
+            );
           })}
         </Select>
         <Search
@@ -241,7 +256,7 @@ const Index = (props) => {
             {dataList.map((item, index) => {
               return (
                 <li className="itemBox" key={index}>
-                  <p className="action">
+                  <div className="action">
                     <Tooltip placement="topLeft" title={'基础'}>
                       <div
                         className="iconBox"
@@ -253,7 +268,12 @@ const Index = (props) => {
                       </div>
                     </Tooltip>
                     <Tooltip placement="topLeft" title={'编辑'}>
-                      <div className="iconBox">
+                      <div
+                        className="iconBox"
+                        onClick={() => {
+                          goEditerPage(item);
+                        }}
+                      >
                         <img src={editorIcon} alt="" />
                       </div>
                     </Tooltip>
@@ -284,7 +304,7 @@ const Index = (props) => {
                         <img src={copyIcon} alt="" />
                       </div>
                     </Tooltip>
-                  </p>
+                  </div>
                   <div className="thumbnail">
                     <img src={item.thumbnail || defaultBg} alt="" />
                   </div>
@@ -297,8 +317,8 @@ const Index = (props) => {
             className="listPagination"
             current={current}
             onChange={onChangePagination}
-            total={dataList.length}
-            showTotal={(total) => `共 ${dataList.length} 条`}
+            total={total}
+            showTotal={(total) => `共 ${total} 条`}
             showSizeChanger
             onShowSizeChange={onShowSizeChange}
           />
@@ -309,10 +329,10 @@ const Index = (props) => {
             dataSource={dataList}
             columns={columns}
             pagination={{
-              total: dataList.length,
+              total: total,
               current,
               showTotal: () => {
-                return `共 ${dataList.length} 条`;
+                return `共 ${total} 条`;
               },
               onChange: onChangePagination,
               showSizeChanger: true,

@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, message, Modal, Select } from 'antd';
 import {
   ACTION_TYPE,
   ACTION_TYPE_TITLE,
   DEFAULT_PROJECT_LIST,
 } from '@/contants';
-import { doMaterialAdd, doMaterialUpdate } from '@/server';
+import {
+  doMaterialAdd,
+  doMaterialUpdate,
+  doMaterialQueryVersions,
+  doMaterialCopy,
+} from '@/server';
 import { get } from 'lodash';
 const { Option } = Select;
 const { TextArea } = Input;
@@ -13,36 +18,35 @@ const { TextArea } = Input;
 const BasicInfo = (props) => {
   const { actionType, visible, itemInfo = {} } = props;
   const { setVisible, getData } = props;
+  const [originalVersionList, setOriginalVersionList] = useState([]);
   const [form] = Form.useForm();
 
   const saveData = async (values) => {
     let res;
+    let mes;
     const actionMap = {
       [ACTION_TYPE.ADD]: async () => {
         const cssType = get(values, 'cssType', '');
         values.cssType = cssType.toString(); // 存储转换字符串
         res = await doMaterialAdd(values);
-        if (res.code === 200) {
-          message.success('创建成功');
-        }
+        mes = '创建成功';
       },
       [ACTION_TYPE.EDITOR]: async () => {
         values.id = itemInfo.id;
         res = await doMaterialUpdate(values);
-        if (res.code === 200) {
-          message.success('创建成功');
-        }
+        mes = '创建成功';
       },
       [ACTION_TYPE.COPY]: async () => {
         values.id = itemInfo.id;
-        res = await doMaterialUpdate(values);
-        if (res.code === 200) {
-          message.success('复制成功');
-        }
+        res = await doMaterialCopy(values);
+        mes = '复制成功';
       },
     };
     try {
-      actionMap[actionType] && actionMap[actionType]();
+      actionMap[actionType] && (await actionMap[actionType]());
+      if (res.code === 200) {
+        message.success(mes);
+      }
       setVisible(false);
       getData();
     } catch (error) {}
@@ -62,6 +66,20 @@ const BasicInfo = (props) => {
   };
 
   const handleChange = () => {};
+
+  useEffect(() => {
+    async function queryVersions() {
+      if (actionType !== ACTION_TYPE.COPY) return;
+      const params = {
+        id: itemInfo.id,
+      };
+      try {
+        let res = await doMaterialQueryVersions(params);
+        setOriginalVersionList([]);
+      } catch (error) {}
+    }
+    queryVersions();
+  }, [actionType]);
 
   return (
     <Modal
@@ -128,15 +146,19 @@ const BasicInfo = (props) => {
         <Form.Item
           label="项目"
           name="project"
-          rules={[{ required: true, message: '请输入项目!' }]}
+          rules={[{ required: true, message: '请选择项目!' }]}
         >
           <Select
             style={{ width: '100%' }}
             placeholder="请选择项目"
             onChange={handleChange}
           >
-            {DEFAULT_PROJECT_LIST.map((item) => {
-              return <Option value={item}>{item}</Option>;
+            {DEFAULT_PROJECT_LIST.map((item, index) => {
+              return (
+                <Option key={index} value={item}>
+                  {item}
+                </Option>
+              );
             })}
           </Select>
         </Form.Item>
@@ -150,6 +172,28 @@ const BasicInfo = (props) => {
               <Input maxLength="32" />
             </Form.Item>
           </>
+        )}
+        {[ACTION_TYPE.COPY].includes(actionType) && (
+          <Form.Item
+            label="源版本"
+            name="originalVersion"
+            rules={[{ required: true, message: '请选择源版本!' }]}
+          >
+            <Select
+              style={{ width: '100%' }}
+              placeholder="请选择源版本"
+              optionFilterProp="children"
+              onChange={handleChange}
+            >
+              {originalVersionList.map((item) => {
+                return (
+                  <Option key={item.id} value={item.version}>
+                    {item.version}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
         )}
         <Form.Item label="简介" name="description">
           <TextArea rows={4} maxLength="256" />
