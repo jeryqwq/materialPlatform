@@ -3,7 +3,7 @@ import {
   VIS_LIB_SCRIPT_CLASSNAME,
 } from '@/contants/render';
 import { renderSandbox } from '@/sandbox/sandboxInstance';
-
+window.__RENDER_SANDBOX = renderSandbox;
 export const addStyles = function (
   content: string,
   scopedId: string,
@@ -71,20 +71,24 @@ export const loadScript = function (
   global?: Object,
 ) {
   const beforeKeys = Object.keys(global || window);
-  renderSandbox.active();
+  renderSandbox.active(); // 激活沙箱
   const scriptEl = document.createElement('script');
   scriptEl.className = VIS_LIB_SCRIPT_CLASSNAME;
-  scriptEl.textContent = `
-    ${lib.target}
-  `;
   scriptEl.id = `vis-lib-${lib.name}`;
   scriptEl.type = 'text/javascript';
+  // 代理window执行
+  scriptEl.textContent = `
+  (function(window){
+    ${lib.target}
+  })(window.__RENDER_SANDBOX.proxy)
+  `;
+  renderSandbox.inactive(); // 退出沙箱
+
   // scriptEl.src = lib.url
   el.appendChild(scriptEl);
   // scriptEl.onload = function () {
   const afterKeys = Object.keys(global || window);
   const libKey = afterKeys.find((i) => !beforeKeys.includes(i));
-  renderSandbox.inactive();
   cb && cb(libKey || lib.name, ((global || window) as any)[libKey || lib.name]);
   // }
 };

@@ -12,6 +12,11 @@ export default class ProxySandbox {
     this.addValue = {};
     const rawWindow: Record<string | symbol, any> = window;
     const fakeWindow: Record<string | symbol, any> = {};
+    // js sandbox
+    // https://stackoverflow.com/questions/10743596/why-are-certain-function-calls-termed-illegal-invocations-in-javascript
+    // VM73:3 Uncaught TypeError: Illegal invocation
+    fakeWindow.document = window.document;
+    fakeWindow.setTimeout = window.setTimeout.bind(window);
     const that = this;
     const proxy = new Proxy(fakeWindow, {
       get(target, prop) {
