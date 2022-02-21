@@ -46,7 +46,6 @@ export const fileAdapter = function (
     const _file = new File([file], name, {
       type: mimeType,
     });
-    console.log(_file);
     return window.URL.createObjectURL(_file);
   } else if (file.constructor === String) {
     return file;
@@ -69,7 +68,6 @@ export const resolveFile = function (
   const isRes = isResource(fileType); // 是资源类型生成url做预览和持久化
   let url = '';
   if (isRes) {
-    console.log(MIME_TYPES[fileInfo.type]);
     url = fileAdapter(content, fileInfo.name, MIME_TYPES[fileInfo.type]);
   }
   if (fileInfo.type) {

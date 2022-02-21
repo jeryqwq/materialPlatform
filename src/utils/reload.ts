@@ -2,6 +2,7 @@ import {
   VIS_STYLE_CLASSNAME,
   VIS_LIB_SCRIPT_CLASSNAME,
 } from '@/contants/render';
+import { renderSandbox } from '@/sandbox/sandboxInstance';
 
 export const addStyles = function (
   content: string,
@@ -66,16 +67,24 @@ export const makeShadowRaw = function (el: HTMLElement) {
 export const loadScript = function (
   el: HTMLElement,
   lib: Library,
-  cb: (name: string, obj?: Record<string, any>) => {},
+  cb: (name: string, obj?: Record<string, any>) => void,
   global?: Object,
 ) {
   const beforeKeys = Object.keys(global || window);
+  renderSandbox.active();
   const scriptEl = document.createElement('script');
   scriptEl.className = VIS_LIB_SCRIPT_CLASSNAME;
-  scriptEl.textContent = lib.target;
+  scriptEl.textContent = `
+    ${lib.target}
+  `;
   scriptEl.id = `vis-lib-${lib.name}`;
+  scriptEl.type = 'text/javascript';
+  // scriptEl.src = lib.url
+  el.appendChild(scriptEl);
+  // scriptEl.onload = function () {
   const afterKeys = Object.keys(global || window);
   const libKey = afterKeys.find((i) => !beforeKeys.includes(i));
-  libKey && cb && cb(libKey, ((global || window) as any)[libKey]);
-  el.appendChild(scriptEl);
+  renderSandbox.inactive();
+  cb && cb(libKey || lib.name, ((global || window) as any)[libKey || lib.name]);
+  // }
 };

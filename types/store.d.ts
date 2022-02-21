@@ -57,6 +57,8 @@ declare type Library = {
   target: string;
   loaded?: boolean;
   name: string;
+  globalName: string;
+  url: string;
 };
 declare type Dependencies = {
   dependencies: Record<string, Library>;

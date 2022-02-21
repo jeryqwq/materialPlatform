@@ -5,9 +5,7 @@ function Console() {
   return (
     <div style={{ marginTop: '10px' }}>
       <Badge count={5}>
-        <Tag  color="#55acee">
-          Console
-        </Tag>
+        <Tag color="#55acee">Console</Tag>
       </Badge>
     </div>
   );

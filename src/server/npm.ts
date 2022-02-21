@@ -2,7 +2,9 @@ import axios from 'axios';
 import { CDN_SERVER, NPM_PACKAGE_SERVER } from '@/contants/host';
 
 export const searchPackage = function (queryStr: string): Promise<any> {
-  return axios.get(`${CDN_SERVER}libraries?search=${queryStr}`);
+  return axios.get(
+    `${CDN_SERVER}libraries?search=${queryStr}&fields=filename,version`,
+  );
 };
 export const loadFileScript = function (url: string) {
   return axios.get(url);

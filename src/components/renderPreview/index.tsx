@@ -1,9 +1,16 @@
 import { makeShadowRaw } from '@/utils/reload';
 import { fileTransform, isResource } from '@/utils/file';
 import { addStyles, destoryPreview } from '@/utils/reload';
-import React, { LegacyRef, useCallback, useLayoutEffect, useRef } from 'react';
+import React, {
+  LegacyRef,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import * as loader from 'vue3-sfc-loader-vis';
 import { RenderOptions } from 'types';
+import depStore from '@/stores/Dependencies';
 declare global {
   interface Window {
     Vue: any;
@@ -16,7 +23,9 @@ const stylus = window['stylus'] || {};
 const sass = new window.Sass();
 function Preview(props: { fileSystem: FileSys; options: RenderOptions }) {
   const ref = useRef<HTMLDivElement>();
+  const [errorTips, setErrorTips] = useState<[title: string, desc: string]>();
   useLayoutEffect(() => {
+    setErrorTips(() => undefined);
     destoryPreview();
     const config = {
       files: fileTransform(props.fileSystem),
@@ -51,6 +60,12 @@ function Preview(props: { fileSystem: FileSys; options: RenderOptions }) {
         path: string,
         options: any,
       ) {
+        const _window = window as Record<string, any>;
+        const depItem = depStore.dependencies[path];
+        if (depItem) {
+          // 依赖库
+          return _window[depItem.globalName];
+        }
         switch (type) {
           case '.css':
             options.addStyle(await getContentData(false));
@@ -68,22 +83,25 @@ function Preview(props: { fileSystem: FileSys; options: RenderOptions }) {
           default:
             if (isResource(type)) {
               return options.getFile(path);
+            } else if (_window[path as string]) {
+              return _window[path as string];
             }
         }
       },
       getFile(url: string, options: any) {
-        // return config.files[url] || (() => { throw new Error('404 ' + url) })(); options.log('error', `canot resolve the url ${url}`)
-        return config.files[url];
+        if (url === 'scss') return;
+        return (
+          config.files[url] ||
+          setErrorTips(() => [`cant reslove url or module '${url}' `, ''])
+        );
       },
       log(type: string, err: string) {
         // compiler error
-        alert('log' + type + err);
+        setErrorTips([err, type]);
       },
       getResource(pathCx: any, options: any) {
-        // 其次使用getResource ， 当handleModule返回null或者不返回时， 源码位置 tools.ts:294
-        // getResource 偏运行时，能支撑适配运行时参数
         const { refPath, relPath } = pathCx;
-        // console.log(refPath, relPath, options)
+        // console.log(pathCx, refPath, relPath, options)
         const { pathResolve, getFile, log } = options;
         const path = pathResolve(pathCx);
         const pathStr = path.toString();
@@ -116,22 +134,13 @@ function Preview(props: { fileSystem: FileSys; options: RenderOptions }) {
       },
     };
     const _loader = loader as { loadModule: Function };
-    const myConsol = window.console;
     elWrap && makeShadowRaw(elWrap);
+    // (function() {
 
-    window.console = {
-      ...myConsol,
-      log: (str: string) => {
-        myConsol.log(str, '----proxy');
-      },
-      warn: () => {},
-    };
+    // })()
     Vue.createApp(
       Vue.defineAsyncComponent(() => _loader.loadModule('/index.vue', options)),
     ).mount(elWrap?.shadowRoot);
-    setTimeout(() => {
-      window.console = myConsol;
-    }, 0);
     return destoryPreview;
   }, [props.fileSystem.files]);
   return <div ref={ref as LegacyRef<HTMLDivElement>}></div>;

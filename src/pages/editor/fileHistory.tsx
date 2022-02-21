@@ -12,14 +12,14 @@ function FileHistory(props: {
   panes: Array<TabPaneItem>;
   activeKey: string;
   onChange: (_: string) => void;
-  onRemove: (_: string) => void
+  onRemove: (_: string) => void;
 }) {
   const { panes } = props;
   const handleOnEdit = useCallback((key, action: string) => {
-    if(action === 'remove') {
-      props.onRemove(key)
+    if (action === 'remove') {
+      props.onRemove(key);
     }
-  }, [])
+  }, []);
   return (
     <div style={{ height: '100%' }}>
       <Tabs
@@ -33,7 +33,17 @@ function FileHistory(props: {
         onEdit={handleOnEdit}
       >
         {panes?.map((pane) => (
-          <TabPane tab={<span> {fileIcons[getFileType(pane.key as string).type as 'png']} {pane.title}</span>} key={pane.key} style={{ height: '100%' }}>
+          <TabPane
+            tab={
+              <span>
+                {' '}
+                {fileIcons[getFileType(pane.key as string).type as 'png']}{' '}
+                {pane.title}
+              </span>
+            }
+            key={pane.key}
+            style={{ height: '100%' }}
+          >
             {pane.content}
           </TabPane>
         ))}

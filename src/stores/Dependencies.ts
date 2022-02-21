@@ -20,4 +20,5 @@ class Dependencies {
   }
 }
 const dep = new Dependencies();
+// window.dep = dep
 export default dep;

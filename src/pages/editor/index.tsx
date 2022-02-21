@@ -15,6 +15,7 @@ import ScssPreview from '@/components/FilePreviews/scss';
 import ImgPreview from '@/components/FilePreviews/img';
 import CssPreview from '@/components/FilePreviews/css';
 import PdfPreview from '@/components/FilePreviews/pdf';
+import JsonPreview from '@/components/FilePreviews/json';
 import Mp4Preview from '@/components/FilePreviews/mp4';
 import { resolveZipFile } from '@/utils/zip';
 import { INIT_PROJECT_KEY } from '@/contants';
@@ -44,10 +45,11 @@ let cacheLoadComp: Record<
   css: CssPreview,
   pdf: PdfPreview,
   mp4: Mp4Preview,
+  json: JsonPreview,
 };
 @inject('fileSystem', 'themeStore', 'dependenciesStore')
 @observer
-class Editer extends React.Component<StoreProps, StateType> {
+class Editor extends React.Component<StoreProps, StateType> {
   constructor(props: StoreProps) {
     super(props);
     this.state = {
@@ -115,13 +117,18 @@ class Editer extends React.Component<StoreProps, StateType> {
                   fileSystem.activeFile([...fileSystem.actives][0]);
               }}
               panes={[...actives].map((i) => {
-                const Editor = cacheLoadComp[i.type] || (
-                  <Alert
-                    message="提示"
-                    type="info"
-                    closeText="目前暂不支持此类文件的预览， 请联系相关开发人员"
-                  />
-                );
+                const Editor =
+                  cacheLoadComp[i.type] ||
+                  function () {
+                    return (
+                      <Alert
+                        message="提示"
+                        type="info"
+                        closeText="目前暂不支持此类文件的预览， 请联系相关开发人员"
+                        style={{ marginTop: '50px' }}
+                      />
+                    );
+                  };
                 return {
                   title: i.name,
                   key: i.path,
@@ -153,4 +160,4 @@ class Editer extends React.Component<StoreProps, StateType> {
   }
 }
 
-export default Editer;
+export default Editor;
