@@ -8,6 +8,9 @@ class Dependencies {
   @action addDep(name: string, value: Library) {
     this.dependencies[name] = value;
   }
+  @action resetDep() {
+    this.dependencies = {};
+  }
   @action getDep(name: string) {
     return this.dependencies[name];
   }
@@ -20,5 +23,4 @@ class Dependencies {
   }
 }
 const dep = new Dependencies();
-// window.dep = dep
 export default dep;

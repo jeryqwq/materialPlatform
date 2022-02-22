@@ -45,6 +45,7 @@ declare type FileSys = {
   removeFile: (perfix: string) => void;
   removeFolder: (perfix: string) => void;
   removeActiveItem: (_: FileDescription) => void;
+  resetFile: () => void;
 };
 declare type ThemeStore = {
   themeConfig: Record<string, any>;
@@ -65,4 +66,5 @@ declare type Dependencies = {
   addDep(name: string, value: Library): void;
   getDep(name: string): void;
   removeDep(name: string): void;
+  resetDep: () => void;
 };

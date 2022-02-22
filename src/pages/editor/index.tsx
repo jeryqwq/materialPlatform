@@ -17,8 +17,7 @@ import CssPreview from '@/components/FilePreviews/css';
 import PdfPreview from '@/components/FilePreviews/pdf';
 import JsonPreview from '@/components/FilePreviews/json';
 import Mp4Preview from '@/components/FilePreviews/mp4';
-import { resolveZipFile } from '@/utils/zip';
-import { INIT_PROJECT_KEY } from '@/contants';
+import { loadZipFile, resolveZipFile } from '@/utils/zip';
 
 type StateType = {
   inputVal: string;
@@ -28,6 +27,7 @@ type StoreProps = {
   themeStore: ThemeStore;
   dependenciesStore: Dependencies;
 };
+// 需要缓存用户代码编辑记录，不能使用懒加载和自动注册, () => {} functional return obj !== obj , vue data () {  return {} } 同理
 let cacheLoadComp: Record<
   string,
   (props: {
@@ -68,6 +68,17 @@ class Editor extends React.Component<StoreProps, StateType> {
       e.preventDefault();
     }
   }
+  uplaodZipFile = (e: any) => {
+    const {
+      file: { originFileObj },
+    } = e;
+    const fileUrl = URL.createObjectURL(originFileObj as File);
+    const { fileSystem } = this.props;
+    loadZipFile(fileUrl, fileSystem, () => {
+      URL.revokeObjectURL(fileUrl);
+      fileSystem.reloadFile();
+    });
+  };
   render() {
     const store = this.props;
     const { fileSystem, themeStore, dependenciesStore } = store;
@@ -84,7 +95,7 @@ class Editor extends React.Component<StoreProps, StateType> {
                 cursor: 'pointer',
               }}
             >
-              <Upload onChange={(e) => console.log(e)} fileList={[]}>
+              <Upload onChange={this.uplaodZipFile} fileList={[]}>
                 <UploadOutlined />
               </Upload>
               <DownloadOutlined

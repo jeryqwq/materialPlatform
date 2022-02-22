@@ -11,6 +11,9 @@ import React, {
 import * as loader from 'vue3-sfc-loader-vis';
 import { RenderOptions } from 'types';
 import depStore from '@/stores/Dependencies';
+import sandboxs from '@/sandbox/sandboxInstance';
+import { CONSOLE_TYPES } from '@/contants/render';
+const { renderSandbox } = sandboxs;
 declare global {
   interface Window {
     Vue: any;
@@ -21,11 +24,14 @@ declare global {
 const Vue = window['Vue'] || {};
 const stylus = window['stylus'] || {};
 const sass = new window.Sass();
-function Preview(props: { fileSystem: FileSys; options: RenderOptions }) {
+function Preview(props: {
+  fileSystem: FileSys;
+  options: RenderOptions;
+  pushConsole: Function;
+}) {
   const ref = useRef<HTMLDivElement>();
   const [errorTips, setErrorTips] = useState<[title: string, desc: string]>();
   useLayoutEffect(() => {
-    setErrorTips(() => undefined);
     destoryPreview();
     const config = {
       files: fileTransform(props.fileSystem),
@@ -64,40 +70,45 @@ function Preview(props: { fileSystem: FileSys; options: RenderOptions }) {
         const depItem = depStore.dependencies[path];
         if (depItem) {
           // 依赖库
-          return _window[depItem.globalName];
-        }
-        switch (type) {
-          case '.css':
-            options.addStyle(await getContentData(false));
-            return;
-          case '.scss': // 处理单个scss文件
-            return new Promise((reslove, reject) => {
-              sass.compile(options.getFile(path), function (result: any) {
-                result.status !== 3 &&
-                  options.addStyle(result.text, undefined, path);
-                reslove(result);
+          return renderSandbox.proxy[depItem.globalName];
+        } else {
+          switch (type) {
+            case '.css':
+              options.addStyle(await getContentData(false));
+              return;
+            case '.scss': // 处理单个scss文件
+              return new Promise((reslove, reject) => {
+                sass.compile(options.getFile(path), function (result: any) {
+                  result.status !== 3 &&
+                    options.addStyle(result.text, undefined, path);
+                  reslove(result);
+                });
               });
-            });
-          case '.png':
-            return options.getFile(path);
-          default:
-            if (isResource(type)) {
+            case '.png':
               return options.getFile(path);
-            } else if (_window[path as string]) {
-              return _window[path as string];
-            }
+            default:
+              if (isResource(type)) {
+                return options.getFile(path);
+              } else if (_window[path as string]) {
+                return _window[path as string];
+              }
+          }
         }
       },
       getFile(url: string, options: any) {
         if (url === 'scss') return;
         return (
           config.files[url] ||
-          setErrorTips(() => [`cant reslove url or module '${url}' `, ''])
+          props.pushConsole(
+            CONSOLE_TYPES.ERROR,
+            `cant reslove url or module '${url}' `,
+          )
         );
       },
       log(type: string, err: string) {
         // compiler error
-        setErrorTips([err, type]);
+        // console.log(type, err)
+        props.pushConsole(CONSOLE_TYPES.ERROR, err);
       },
       getResource(pathCx: any, options: any) {
         const { refPath, relPath } = pathCx;
@@ -135,12 +146,36 @@ function Preview(props: { fileSystem: FileSys; options: RenderOptions }) {
     };
     const _loader = loader as { loadModule: Function };
     elWrap && makeShadowRaw(elWrap);
-    // (function() {
-
-    // })()
-    Vue.createApp(
-      Vue.defineAsyncComponent(() => _loader.loadModule('/index.vue', options)),
-    ).mount(elWrap?.shadowRoot);
+    const prevConsole = window.console;
+    window.console = {
+      ...prevConsole,
+      log(str: string) {
+        props.pushConsole({ type: CONSOLE_TYPES.USER, text: str });
+      },
+      warn(str: string) {
+        props.pushConsole({ type: CONSOLE_TYPES.WARN, text: str });
+      },
+      error(str: string) {
+        props.pushConsole({ type: CONSOLE_TYPES.ERROR, text: str });
+      },
+    };
+    // https://v3.cn.vuejs.org/api/global-api.html#createapp
+    // https://v3.cn.vuejs.org/api/global-api.html#defineasynccomponent
+    // props in vm.$attrs
+    (async function () {
+      const App = await _loader.loadModule('/index.vue', options);
+      const prevMounted = App.mounted;
+      Vue.createApp({
+        ...App,
+        mounted() {
+          prevMounted && prevMounted();
+          window.console = prevConsole;
+        },
+      }).mount(elWrap?.shadowRoot);
+    })();
+    // Vue.createApp(
+    //   Vue.defineAsyncComponent(() => _loader.loadModule('/index.vue', options)), {a: 1}
+    // ).mount(elWrap?.shadowRoot);
     return destoryPreview;
   }, [props.fileSystem.files]);
   return <div ref={ref as LegacyRef<HTMLDivElement>}></div>;

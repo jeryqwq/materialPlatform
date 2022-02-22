@@ -7,7 +7,8 @@ import styles from './index.less';
 import { loadScript } from '@/utils/reload';
 const { Panel } = Collapse;
 const { TreeNode } = TreeSelect;
-
+import sandbox from '@/sandbox/sandboxInstance';
+const { renderSandbox } = sandbox;
 const searchDebounce = debounce(async function (
   setCb: Function,
   keyword: string,
@@ -40,14 +41,19 @@ function FileTree(props: { dep: Dependencies }) {
       globalName: '',
       url: latest,
     };
-    loadScript(document.head, lib, (key, obj) => {
-      if (key) {
-        lib.globalName = key;
-      } else {
-        message.info('该依赖未提供umd格式代码');
-      }
-      dep.addDep(value, lib);
-    });
+    loadScript(
+      document.head,
+      lib,
+      (key, obj) => {
+        if (key) {
+          lib.globalName = key;
+        } else {
+          message.info('该依赖未提供umd格式代码');
+        }
+        dep.addDep(value, lib);
+      },
+      renderSandbox.proxy,
+    );
   }, []);
   return (
     <div style={{ padding: '5px', borderTop: 'solid 1px #e3e8ee' }}>

@@ -20,7 +20,6 @@ export default class ProxySandbox {
     const that = this;
     const proxy = new Proxy(fakeWindow, {
       get(target, prop) {
-        console.log('get', prop);
         return prop in target ? target[prop] : rawWindow[prop];
       },
       set(target, prop, value) {

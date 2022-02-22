@@ -1,8 +1,24 @@
-import JSZip from 'jszip';
+import JSZip, { file } from 'jszip';
 import _saveAs from 'jszip/vendor/FileSaver';
 import { message } from 'antd';
 import { DOWNLOAD_MESSAGE_TIP_KEY } from '@/contants';
 import { getFileType, isImgFile, isResource } from './file';
+import depStore from '@/stores/Dependencies';
+import { loadScript } from './reload';
+
+export const writeLibFile = function (zip: JSZip) {
+  let materialJson = {
+    name: '物料名称',
+    desc: '这是个描述',
+    dependencies: <Record<string, Library>>{},
+  };
+  for (const key in depStore.dependencies) {
+    const item = depStore.dependencies[key];
+    materialJson.dependencies[item.name] = { ...item, target: '' };
+    zip.file(`/lib/${item.name}`, item.target);
+  }
+  zip.file('/material.json', JSON.stringify(materialJson));
+};
 
 export const resolveZipFile = async function (
   files: Record<string, FileDescription>,
@@ -36,6 +52,11 @@ export const resolveZipFile = async function (
     }
   }
   message.loading({
+    content: '依赖处理中...',
+    key: DOWNLOAD_MESSAGE_TIP_KEY,
+  });
+  writeLibFile(zip);
+  message.loading({
     content: `正在生成压缩包...`,
     key: DOWNLOAD_MESSAGE_TIP_KEY,
   });
@@ -57,6 +78,15 @@ export const loadZipFile = async function (
   const zipBuffer = await loadFileBuffer(url);
   const zipFile = await JSZip.loadAsync(zipBuffer);
   const { files } = zipFile;
+  const materialInfo = files['/material.json'] as any;
+  let depVersion = null;
+  if (materialInfo) {
+    // 解析出依赖的版本
+    const materialStr = new TextDecoder().decode(
+      materialInfo._data.compressedContent,
+    );
+    depVersion = JSON.parse(materialStr);
+  }
   for (const key in files) {
     const element = files[key];
     if (!element.dir) {
@@ -69,7 +99,17 @@ export const loadZipFile = async function (
         //  buffer => file => url
         fs.saveToLs(key, compressedContent);
       } else {
-        fs.saveToLs(key, new TextDecoder().decode(compressedContent));
+        const context = new TextDecoder().decode(compressedContent);
+        if (key.startsWith('/lib/')) {
+          // 库
+          const libName = getFileType(key).name;
+          const lib = depVersion.dependencies[libName];
+          depStore.addDep(libName, lib);
+          loadScript(document.head, { ...lib, target: context });
+        } else {
+          // 代码
+          fs.saveToLs(key, context);
+        }
       }
     }
   }

@@ -11,10 +11,15 @@ import PreviewReact from '@/components/RenderPreview';
 import { RenderOptions } from 'types';
 import { RENDER_PREVIEW_MODE } from '@/contants';
 
+declare type ConsoleType = { type: Symbol; text: string };
 export default (props: { fileSystem: FileSys }) => {
   const [previewMode, setPreviewMode] = useState(
     RENDER_PREVIEW_MODE.FULL_SCREEN,
   );
+  const [consoleList, setConsoleList] = useState<Array<ConsoleType>>([]);
+  const pushConsole = (prop: ConsoleType) => {
+    setConsoleList((val) => val.concat(prop));
+  };
   const [options, setOptions] = useState<RenderOptions>({
     shadow: true,
     width: 400,
@@ -22,7 +27,7 @@ export default (props: { fileSystem: FileSys }) => {
     scale: 1,
   });
   return (
-    <div style={{ height: '100%', margin: '0 20px 0 0' }}>
+    <div style={{ height: '100%', padding: '0 20px 0 0', background: 'white' }}>
       <div className={styles['util-btn']}>
         <div>
           <Switch
@@ -81,9 +86,10 @@ export default (props: { fileSystem: FileSys }) => {
         <PreviewReact
           fileSystem={props.fileSystem}
           options={options}
+          pushConsole={pushConsole}
         ></PreviewReact>
       </div>
-      <Console />
+      <Console consoleList={consoleList} />
     </div>
   );
 };
