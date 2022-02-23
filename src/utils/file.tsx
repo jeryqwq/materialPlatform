@@ -21,7 +21,7 @@ export const isResource = function (type: string) {
     'word',
     'exal',
     'ps',
-    'html',
+    'mov',
   ].some((i) => i === type);
 };
 export const getFileType = function (path: string) {
