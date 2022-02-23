@@ -1,7 +1,7 @@
 import { ProSettings } from '@ant-design/pro-layout';
 import { observable, action, makeAutoObservable } from 'mobx';
 
-class ThemeConfig {
+class Theme implements ThemeStore {
   @observable themeConfig: Partial<ProSettings>;
   constructor() {
     makeAutoObservable(this);
@@ -12,4 +12,4 @@ class ThemeConfig {
   };
 }
 
-export default new ThemeConfig();
+export default new Theme();

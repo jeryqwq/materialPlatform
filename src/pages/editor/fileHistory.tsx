@@ -36,7 +36,6 @@ function FileHistory(props: {
           <TabPane
             tab={
               <span>
-                {' '}
                 {fileIcons[getFileType(pane.key as string).type as 'png']}{' '}
                 {pane.title}
               </span>

@@ -15,6 +15,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
         id="pro-layout"
         style={{
           height: '100vh',
+          overflow: 'hidden',
         }}
       >
         <ProLayout

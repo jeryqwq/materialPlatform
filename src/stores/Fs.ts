@@ -14,6 +14,11 @@ class FileSystem implements FileSys {
     this.activeKey = item.path;
     this.actives.add(item);
   };
+  @action updateFile = (path: string, context: string) => {
+    if (this.files[path]) {
+      this.files[path].target = context;
+    }
+  };
   @action reloadFile = () => {
     // hack 触发file对象对应的依赖组件重新刷新
     this.files = { ...this.files };
@@ -61,7 +66,7 @@ class FileSystem implements FileSys {
 const fs = new FileSystem();
 // fs.saveToLs('/a/b.js', `console.log('/a/bjs')`);
 // fs.saveToLs('/a/b/c.js', `console.log('/a/b/cjs')`);
-// fs.saveToLs('/assets/vue.png', `https://cn.vuejs.org/images/logo.svg`);
+// fs.saveToLs('/assets/vue.png', `https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.wangyunw.com%2Ffile%2F20170324%2Fimages%2F63918611ly1fdoygy62ydj20b40b43yj.jpg&refer=http%3A%2F%2Fimg.wangyunw.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648192713&t=db201b69a1ab37a3bfdc7beb6198404d`);
 // fs.saveToLs(
 //   '/assets/test.pdf',
 //   `https://gw.alipayobjects.com/os/bmw-prod/c134022a-1088-47e2-bb76-a33ec0519101.pdf?spm=a2c4g.11186623.0.0.cf863d1fUnQY0Y&file=c134022a-1088-47e2-bb76-a33ec0519101.pdf`,
@@ -74,8 +79,7 @@ const fs = new FileSystem();
 // );
 // fs.saveToLs(
 //   '/vue3.vue',
-//   `
-//   <template>
+//   `<template>
 //   <div>
 //   <div class="test">
 //   这是个渲染的Vue3.vue组件, 颜色绿
@@ -87,18 +91,18 @@ const fs = new FileSystem();
 //   import { reative , ref} from 'vue'
 //   const a = 123
 //   const b = ref(1)
+//   console.warn('vue3.vue setup running...')
 // </script>
 // <style scoped lang="scss">
 //   div.test{
 //   color: green
 //   }
 // </style>
-//   `,
+//    `,
 // );
 // fs.saveToLs(
 //   '/index.vue',
-//   `
-//   <template>
+//   `<template>
 //     <div style="text-align: center">
 //       <img src="./assets/vue.png" style="width: 100px"/>
 //       <h2>HELLO Vue in VIS-CODE-EDITOR</h2>
@@ -108,9 +112,16 @@ const fs = new FileSystem();
 //   <script>
 //     import './a/b.js'
 //     import Main from './vue3.vue'
-//     import $ from 'jquery'
+//     console.error('exec index.vue script code')
+//     console.warn(echarts)
 //     export default {
-//       components: { Main }
+//       components: { Main },
+//       created() {
+//         console.log('index.vue created !!!!')
+//       },
+//       mounted(){
+//         console.log('index.vue mounted !!!!')
+//       }
 //     }
 //   </script>
 //   <style scoped lang="scss">

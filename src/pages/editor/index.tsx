@@ -151,7 +151,7 @@ class Editor extends React.Component<StoreProps, StateType> {
                       <Editor
                         file={i}
                         onChange={(i: FileDescription, val: string) => {
-                          fileSystem.saveToLs(i.path, val);
+                          fileSystem.updateFile(i.path, val);
                         }}
                         theme={themeStore.themeConfig.navTheme}
                       />

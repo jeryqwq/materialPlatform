@@ -30,7 +30,6 @@ function Preview(props: {
   pushConsole: Function;
 }) {
   const ref = useRef<HTMLDivElement>();
-  const [errorTips, setErrorTips] = useState<[title: string, desc: string]>();
   useLayoutEffect(() => {
     destoryPreview();
     const config = {
@@ -99,16 +98,16 @@ function Preview(props: {
         if (url === 'scss') return;
         return (
           config.files[url] ||
-          props.pushConsole(
-            CONSOLE_TYPES.ERROR,
-            `cant reslove url or module '${url}' `,
-          )
+          props.pushConsole({
+            type: CONSOLE_TYPES.ERROR,
+            text: [`cant reslove url or module '${url}' `],
+          })
         );
       },
       log(type: string, err: string) {
         // compiler error
         // console.log(type, err)
-        props.pushConsole(CONSOLE_TYPES.ERROR, err);
+        // props.pushConsole({type: CONSOLE_TYPES.ERROR, text: [err]});
       },
       getResource(pathCx: any, options: any) {
         const { refPath, relPath } = pathCx;
@@ -149,36 +148,36 @@ function Preview(props: {
     const prevConsole = window.console;
     window.console = {
       ...prevConsole,
-      log(str: string) {
-        props.pushConsole({ type: CONSOLE_TYPES.USER, text: str });
+      log(...strs: Array<string>) {
+        props.pushConsole({ type: CONSOLE_TYPES.USER, text: strs });
       },
-      warn(str: string) {
-        props.pushConsole({ type: CONSOLE_TYPES.WARN, text: str });
+      warn(...strs: Array<string>) {
+        props.pushConsole({ type: CONSOLE_TYPES.WARN, text: strs });
       },
-      error(str: string) {
-        props.pushConsole({ type: CONSOLE_TYPES.ERROR, text: str });
+      error(...strs: Array<string>) {
+        props.pushConsole({ type: CONSOLE_TYPES.ERROR, text: strs });
       },
     };
     // https://v3.cn.vuejs.org/api/global-api.html#createapp
     // https://v3.cn.vuejs.org/api/global-api.html#defineasynccomponent
     // props in vm.$attrs
-    (async function () {
-      const App = await _loader.loadModule('/index.vue', options);
-      const prevMounted = App.mounted;
-      Vue.createApp({
-        ...App,
-        mounted() {
-          prevMounted && prevMounted();
-          window.console = prevConsole;
-        },
-      }).mount(elWrap?.shadowRoot);
-    })();
-    // Vue.createApp(
-    //   Vue.defineAsyncComponent(() => _loader.loadModule('/index.vue', options)), {a: 1}
-    // ).mount(elWrap?.shadowRoot);
+    Vue.createApp(
+      Vue.defineAsyncComponent(async () => {
+        const App = await _loader.loadModule('/index.vue', options);
+        const prevMounted = App.mounted;
+        return {
+          ...App,
+          mounted() {
+            prevMounted && prevMounted.call(this);
+            window.console = prevConsole;
+          },
+        };
+      }),
+      { a: 1 },
+    ).mount(elWrap?.shadowRoot);
     return destoryPreview;
   }, [props.fileSystem.files]);
-  return <div ref={ref as LegacyRef<HTMLDivElement>}></div>;
+  return <div id="test11" ref={ref as LegacyRef<HTMLDivElement>}></div>;
 }
 
 export default Preview;

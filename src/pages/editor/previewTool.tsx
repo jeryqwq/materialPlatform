@@ -11,7 +11,7 @@ import PreviewReact from '@/components/RenderPreview';
 import { RenderOptions } from 'types';
 import { RENDER_PREVIEW_MODE } from '@/contants';
 
-declare type ConsoleType = { type: Symbol; text: string };
+declare type ConsoleType = { type: Symbol; text: Array<any> };
 export default (props: { fileSystem: FileSys }) => {
   const [previewMode, setPreviewMode] = useState(
     RENDER_PREVIEW_MODE.FULL_SCREEN,
@@ -20,6 +20,9 @@ export default (props: { fileSystem: FileSys }) => {
   const pushConsole = (prop: ConsoleType) => {
     setConsoleList((val) => val.concat(prop));
   };
+  const resetConsole = function () {
+    setConsoleList([]);
+  };
   const [options, setOptions] = useState<RenderOptions>({
     shadow: true,
     width: 400,
@@ -27,9 +30,27 @@ export default (props: { fileSystem: FileSys }) => {
     scale: 1,
   });
   return (
-    <div style={{ height: '100%', padding: '0 20px 0 0', background: 'white' }}>
+    <div style={{ height: '100%' }}>
       <div className={styles['util-btn']}>
-        <div>
+        <div></div>
+        {previewMode === RENDER_PREVIEW_MODE.FULL_SCREEN ? null : (
+          <div>
+            <span className={styles['font-label']}>W:</span>
+            <Input
+              size="small"
+              placeholder="宽度"
+              style={{ width: '60px', margin: '0 5px' }}
+            />
+            <span className={styles['font-label']}>H:</span>
+            <Input
+              size="small"
+              placeholder="高度"
+              style={{ width: '60px', margin: '0 5px' }}
+            />
+            <span className={styles['font-label']}>缩放比例 /</span>
+          </div>
+        )}
+        <div style={{ cursor: 'pointer', fontSize: '15px', marginRight: 20 }}>
           <Switch
             size="small"
             defaultChecked
@@ -51,36 +72,18 @@ export default (props: { fileSystem: FileSys }) => {
               }
             }}
           />
-        </div>
-        {previewMode === RENDER_PREVIEW_MODE.FULL_SCREEN ? null : (
-          <div>
-            <span className={styles['font-label']}>W:</span>
-            <Input
-              size="small"
-              placeholder="宽度"
-              style={{ width: '60px', margin: '0 5px' }}
-            />
-            <span className={styles['font-label']}>H:</span>
-            <Input
-              size="small"
-              placeholder="高度"
-              style={{ width: '60px', margin: '0 5px' }}
-            />
-            <span className={styles['font-label']}>缩放比例 /</span>
-          </div>
-        )}
-        <div style={{ cursor: 'pointer', fontSize: '15px' }}>
           <MobileOutlined
             onClick={() => {
               setPreviewMode(RENDER_PREVIEW_MODE.USER_CUSTOM);
             }}
+            style={{ margin: '0 5px', color: '#999999' }}
           />
-          <CreditCardOutlined style={{ marginLeft: '5px' }} />
+          <CreditCardOutlined style={{ marginLeft: '5px', color: '#999999' }} />
         </div>
       </div>
       {/* ignore element render https://github.com/darkreader/darkreader/issues/4144#issuecomment-729896113 */}
       <div
-        style={{ height: '50%', background: 'white' }}
+        style={{ height: '500px', background: 'white' }}
         className="ignore-render"
       >
         <PreviewReact
@@ -89,7 +92,7 @@ export default (props: { fileSystem: FileSys }) => {
           pushConsole={pushConsole}
         ></PreviewReact>
       </div>
-      <Console consoleList={consoleList} />
+      <Console consoleList={consoleList} resetConsole={resetConsole} />
     </div>
   );
 };

@@ -35,7 +35,7 @@ declare type FileDescription = {
   name: string;
   id: number;
 };
-declare type FileSys = {
+interface FileSys {
   files: Record<string, FileDescription>;
   actives: Set<FileDescription>;
   activeFile: (_: FileDescription) => void;
@@ -46,11 +46,12 @@ declare type FileSys = {
   removeFolder: (perfix: string) => void;
   removeActiveItem: (_: FileDescription) => void;
   resetFile: () => void;
-};
-declare type ThemeStore = {
+  updateFile: (path: string, context: string) => void;
+}
+interface ThemeStore {
   themeConfig: Record<string, any>;
   setTheme: (config: any) => void;
-};
+}
 
 declare type Library = {
   version: string;
@@ -61,10 +62,10 @@ declare type Library = {
   globalName: string;
   url: string;
 };
-declare type Dependencies = {
+interface Dependencies {
   dependencies: Record<string, Library>;
   addDep(name: string, value: Library): void;
   getDep(name: string): void;
   removeDep(name: string): void;
   resetDep: () => void;
-};
+}

@@ -1,6 +1,6 @@
 import { observable, action, makeAutoObservable } from 'mobx';
 
-class Dependencies {
+class Dep implements Dependencies {
   @observable dependencies: Record<string, Library> = {};
   constructor() {
     makeAutoObservable(this);
@@ -22,5 +22,5 @@ class Dependencies {
     // todo remove script && sandobox window varible
   }
 }
-const dep = new Dependencies();
+const dep = new Dep();
 export default dep;
