@@ -93,7 +93,7 @@ const Index = (props) => {
           <Space size="middle">
             <a
               onClick={() => {
-                goEditerPage(record);
+                goEditorPage(record);
               }}
             >
               编辑
@@ -205,8 +205,8 @@ const Index = (props) => {
     } catch (error) {}
   };
 
-  const goEditerPage = (item = {}) => {
-    history.push({ pathname: '/editer', query: { id: item.id } });
+  const goEditorPage = (item = {}) => {
+    history.push({ pathname: '/editor', query: { id: item.id } });
   };
   useEffect(() => {
     getData();
@@ -271,7 +271,7 @@ const Index = (props) => {
                       <div
                         className="iconBox"
                         onClick={() => {
-                          goEditerPage(item);
+                          goEditorPage(item);
                         }}
                       >
                         <img src={editorIcon} alt="" />

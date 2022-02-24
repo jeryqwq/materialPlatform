@@ -11,11 +11,11 @@ const manageIndex = (props: any) => {
   return (
     <div key={123}>
       receive query Val {query?.val}
-      <h1>Page index</h1>
+      {/* <h1>Page index</h1>
       <button onClick={history.goBack}>back</button>
       <button onClick={counterStore.handleDec}>
         {counterStore.count}--countStore add
-      </button>
+      </button> */}
     </div>
   );
 };

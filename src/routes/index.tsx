@@ -1,4 +1,4 @@
-import { CodeSandboxOutlined, CrownOutlined } from '@ant-design/icons';
+import { CodeSandboxOutlined, TableOutlined } from '@ant-design/icons';
 import React from 'react';
 
 export const editerPages = {
@@ -9,14 +9,14 @@ export const editerPages = {
     {
       path: '/editor',
       component: '@/pages/editor',
-      name: '编辑器',
+      name: '物料编辑器',
       icon: <CodeSandboxOutlined />,
     },
     {
       path: '/manage',
       component: '@/pages/manage',
-      name: '管理',
-      icon: <CrownOutlined />,
+      name: '物料管理',
+      icon: <TableOutlined />,
     },
   ],
 };

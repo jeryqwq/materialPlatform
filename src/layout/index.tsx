@@ -1,14 +1,86 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactPropsWithRouter } from 'types';
 import styles from './layout.less';
 import IndexProvider from '@/provider/index';
 import ProLayout, { SettingDrawer } from '@ant-design/pro-layout';
 import { editerPages } from '@/routes';
 import themeStore from '@/stores/Theme';
+import { Button, Dropdown, Form, Input, Menu, Modal } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import { doMaterialQueryVersions } from '@/server/index.js';
+import { useHistory } from 'umi';
+
+const { confirm } = Modal;
+const { TextArea } = Input;
+
+const dropDownMenu = (
+  <Menu
+    onClick={(val) => {
+      const { key } = val;
+      if (key === 'save') {
+      } else {
+        confirm({
+          title: '另存为',
+          width: 600,
+          content: (
+            <Form
+              // form={form}
+              name="basicInfo"
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              // initialValues={itemInfo}
+              autoComplete="off"
+            >
+              <Form.Item
+                label="名称"
+                name="name"
+                rules={[{ required: true, message: '请输入名称!' }]}
+              >
+                <Input maxLength={32} />
+              </Form.Item>
+              <Form.Item
+                label="版本号"
+                name="version"
+                rules={[{ required: true, message: '请输入版本号!' }]}
+              >
+                <Input maxLength={32} />
+              </Form.Item>
+              <Form.Item label="描述" name="desc">
+                <TextArea placeholder="请输入描述内容!" />
+              </Form.Item>
+            </Form>
+          ),
+          okText: '确定',
+          icon: null,
+          okType: 'primary',
+          cancelText: '取消',
+          onOk() {
+            console.log('OK');
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        });
+      }
+    }}
+  >
+    <Menu.Item key="save">保存</Menu.Item>
+    <Menu.Item key="edit">另存为</Menu.Item>
+  </Menu>
+);
 
 function LayoutIndex(props: ReactPropsWithRouter) {
   const pathname = props.route.path;
   const [refreshCount, setRefreshCount] = useState<number>(0); // hack
+  const [versionList, setVersionList] = useState<Array<any>>([]);
+  const [curVersionIndex, setCurVersionIdx] = useState(0);
+  const { location } = useHistory();
+  const id = (location as any).query.id;
+  useEffect(() => {
+    doMaterialQueryVersions({ id }).then((res: any) => {
+      setVersionList(res.data);
+    });
+  }, []);
   return (
     <IndexProvider>
       <div
@@ -25,34 +97,6 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           }}
           collapsed={true}
           contentStyle={{ margin: 0 }}
-          menuFooterRender={(props) => {
-            return (
-              <a
-                style={{
-                  lineHeight: '48rpx',
-                  display: 'flex',
-                  height: 48,
-                  color: 'rgba(255, 255, 255, 0.65)',
-                  alignItems: 'center',
-                }}
-                href="https://preview.pro.ant.design/dashboard/analysis"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  alt="pro-logo"
-                  src="https://procomponents.ant.design/favicon.ico"
-                  style={{
-                    width: 16,
-                    height: 16,
-                    margin: '0 16px',
-                    marginRight: 10,
-                  }}
-                />
-                {!props?.collapsed && 'Preview Pro'}
-              </a>
-            );
-          }}
           onMenuHeaderClick={(e) => console.log(e)}
           menuItemRender={(item, dom) => (
             <a
@@ -63,9 +107,43 @@ function LayoutIndex(props: ReactPropsWithRouter) {
               {dom}
             </a>
           )}
+          headerContentRender={() => (
+            <div style={{ textAlign: 'center', fontSize: 16 }}>
+              <span style={{ float: 'left' }}>
+                <Dropdown
+                  overlay={
+                    <Menu onClick={() => {}}>
+                      {versionList.map((i) => (
+                        <Menu.Item key={i.id}>{i.version}</Menu.Item>
+                      ))}
+                    </Menu>
+                  }
+                  trigger={['click']}
+                >
+                  <span
+                    style={{
+                      cursor: 'pointer',
+                      display: 'inline-block',
+                      minWidth: 120,
+                    }}
+                  >
+                    {versionList[curVersionIndex]?.version} <DownOutlined />
+                  </span>
+                </Dropdown>
+              </span>
+              光大银行面包屑物料1.1版本
+            </div>
+          )}
           rightContentRender={() => (
-            <div style={{ height: '30px' }}>
-              {/* <Avatar shape="square" size="small" icon={<UserOutlined />} /> */}
+            <div>
+              <Button type="primary" style={{ marginRight: 10 }}>
+                创建
+              </Button>
+              <Dropdown overlay={dropDownMenu}>
+                <Button type="primary">
+                  保存 <DownOutlined />
+                </Button>
+              </Dropdown>
             </div>
           )}
           {...themeStore.themeConfig}

@@ -1,5 +1,5 @@
 import { Button, Input, Modal, Switch, Tooltip } from 'antd';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Console from './console';
 import styles from './index.less';
 import {
@@ -10,13 +10,23 @@ import {
 import PreviewReact from '@/components/RenderPreview';
 import { RenderOptions } from 'types';
 import { RENDER_PREVIEW_MODE } from '@/contants';
+import { CONSOLE_TYPES } from '@/contants/render';
 
 declare type ConsoleType = { type: Symbol; text: Array<any> };
 export default (props: { fileSystem: FileSys }) => {
   const [previewMode, setPreviewMode] = useState(
     RENDER_PREVIEW_MODE.FULL_SCREEN,
   );
-  const [consoleList, setConsoleList] = useState<Array<ConsoleType>>([]);
+  const [consoleList, setConsoleList] = useState<Array<ConsoleType>>([
+    {
+      type: CONSOLE_TYPES.WARN,
+      text: [
+        'VisCodeEditor Tip: Ctrl + S save your code, support filetype: css, js, vue, html, mp4, mp3, mov, pdf, png, gif, jpeg, jpg ... ',
+        'next step: js sandbox ',
+      ],
+    },
+  ]);
+  const [containHeightProps, setHeight] = useState<number | string>(500);
   const pushConsole = (prop: ConsoleType) => {
     setConsoleList((val) => val.concat(prop));
   };
@@ -29,8 +39,11 @@ export default (props: { fileSystem: FileSys }) => {
     height: 400,
     scale: 1,
   });
+  const miniConsole = useCallback(() => {
+    setHeight((val) => (val === '100%' ? 500 : '100%'));
+  }, [consoleList]);
   return (
-    <div style={{ height: '100%' }}>
+    <div style={{ height: '100%' }} className={styles['preview-containter']}>
       <div className={styles['util-btn']}>
         <div></div>
         {previewMode === RENDER_PREVIEW_MODE.FULL_SCREEN ? null : (
@@ -82,17 +95,27 @@ export default (props: { fileSystem: FileSys }) => {
         </div>
       </div>
       {/* ignore element render https://github.com/darkreader/darkreader/issues/4144#issuecomment-729896113 */}
-      <div
-        style={{ height: '500px', background: 'white' }}
-        className="ignore-render"
-      >
-        <PreviewReact
-          fileSystem={props.fileSystem}
-          options={options}
-          pushConsole={pushConsole}
-        ></PreviewReact>
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <div
+          style={{
+            height: containHeightProps,
+            background: 'white',
+            transition: 'all .5s',
+          }}
+          className="ignore-render"
+        >
+          <PreviewReact
+            fileSystem={props.fileSystem}
+            options={options}
+            pushConsole={pushConsole}
+          ></PreviewReact>
+        </div>
+        <Console
+          consoleList={consoleList}
+          resetConsole={resetConsole}
+          miniConsole={miniConsole}
+        />
       </div>
-      <Console consoleList={consoleList} resetConsole={resetConsole} />
     </div>
   );
 };

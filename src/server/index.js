@@ -48,7 +48,7 @@ export const doMaterialUpload = (params) => {
  */
 export const doMaterialQueryVersions = (params) => {
   const { id } = params || {};
-  return axios.post(`/ssa/vis/material/query/versions?id=${id}`);
+  return axios.get(`/ssa/vis/material/query/versions?id=${id}`);
 };
 
 /**
@@ -56,4 +56,9 @@ export const doMaterialQueryVersions = (params) => {
  */
 export const doMaterialCopy = (params) => {
   return axios.post(`/ssa/vis/material/copy`, params);
+};
+
+// 物料详情
+export const doMaterialDetail = (id) => {
+  return axios.get(`/ssa/vis/material/query/detail?id=${id}`);
 };

@@ -20,6 +20,12 @@
       width: 400px;
       background-color: white;
       border-left: solid 1px #e3e8ee;
+      height: 100%;
+      > .preview-containter {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
     }
   }
 }
@@ -89,4 +95,11 @@
   font-size: 12px;
 }
 .console-list-wrap {
+  flex: 1 30px;
+  overflow-y: scroll;
+}
+.console-wrap {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
 }

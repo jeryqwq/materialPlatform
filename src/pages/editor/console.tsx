@@ -1,12 +1,19 @@
 import { CONSOLE_TYPES } from '@/contants/render';
 import { Badge, Select } from 'antd';
 import React, { useState } from 'react';
-import { DownOutlined, ClearOutlined } from '@ant-design/icons';
+import {
+  DownOutlined,
+  ClearOutlined,
+  InfoCircleOutlined,
+  WarningOutlined,
+  CloseCircleOutlined,
+} from '@ant-design/icons';
 
 import styles from './index.less';
 declare type ConsolleProps = {
   consoleList: Array<any>;
   resetConsole: Function;
+  miniConsole: () => void;
 };
 const { Option } = Select;
 
@@ -15,16 +22,19 @@ const colors = {
     color: 'gray',
     borderBottom: 'solid 1px rgba(128, 128, 128, 0.35)',
     backgroundColor: '#f3eeee',
+    icon: <InfoCircleOutlined style={{ margin: '0 5px' }} />,
   },
   [CONSOLE_TYPES.WARN]: {
     color: '#f38115',
     borderBottom: 'solid 1px rgb(245 199 155)',
     backgroundColor: '#fbe0c182',
+    icon: <WarningOutlined style={{ margin: '0 5px' }} />,
   },
   [CONSOLE_TYPES.ERROR]: {
     color: '#e72828',
     borderBottom: 'solid 1px #f3a2a2',
     backgroundColor: '#f3dbdb',
+    icon: <CloseCircleOutlined style={{ margin: '0 5px' }} />,
   },
 };
 
@@ -32,6 +42,7 @@ declare type ConsoleType = 'All' | 'Info' | 'Warn' | 'Error';
 function Console(props: ConsolleProps) {
   const { consoleList } = props;
   const [consoleType, setConsoleType] = useState<ConsoleType>('All');
+  const [isOpenConsole, setIsOpen] = useState<boolean>(true);
   const consoles = consoleList.filter((i) => i.type === CONSOLE_TYPES.USER);
   const warns = consoleList.filter((i) => i.type === CONSOLE_TYPES.WARN);
   const errors = consoleList.filter((i) => i.type === CONSOLE_TYPES.ERROR);
@@ -46,7 +57,7 @@ function Console(props: ConsolleProps) {
       ? errors
       : [];
   return (
-    <div>
+    <div className={styles['console-wrap']}>
       <div className={styles['console-header']}>
         <Badge count={consoleList.length}>Console</Badge>
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -68,7 +79,16 @@ function Console(props: ConsolleProps) {
             <Option value="Warn">Warn</Option>
             <Option value="Error">Error</Option>
           </Select>
-          <DownOutlined />
+          <DownOutlined
+            onClick={() => {
+              props.miniConsole();
+              setIsOpen((val) => !val);
+            }}
+            style={{
+              transform: `rotate(${isOpenConsole ? 0 : 180}deg)`,
+              transition: 'all .5s',
+            }}
+          />
         </div>
       </div>
       <div className={styles['console-list-wrap']}>
@@ -79,6 +99,7 @@ function Console(props: ConsolleProps) {
               style={colors[i.type]}
               title={JSON.stringify(i.text)}
             >
+              {colors[i.type].icon}{' '}
               {i.text.map((i: any) => JSON.stringify(i)).join(',')}
             </div>
           ))}

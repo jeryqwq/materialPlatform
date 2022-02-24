@@ -1,6 +1,5 @@
 import React from 'react';
 
-import counterStore from '../stores/Counter';
 import fileSystem from '../stores/Fs';
 import { Provider } from 'mobx-react';
 import themeStore from '../stores/Theme';
@@ -13,7 +12,6 @@ loader.config({
   // 不支持相对路径访问
   paths: { vs: location.origin + '/lib' },
 });
-import { ConfigProvider } from 'antd';
 
 const stores = {
   fileSystem,
