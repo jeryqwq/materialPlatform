@@ -95,7 +95,6 @@ export const loadZipFile = async function (
     const element = files[key];
     if (!element.dir) {
       let { compressedContent } = (element as any)._data;
-      console.log(element);
       const fileType = getFileType(key).type;
       if (isResource(fileType)) {
         //  buffer => file => url

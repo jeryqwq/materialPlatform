@@ -93,11 +93,12 @@ function Console(props: ConsolleProps) {
       </div>
       <div className={styles['console-list-wrap']}>
         {curList &&
-          curList.map((i) => (
+          curList.map((i, idx) => (
             <div
               className={styles['console-item']}
               style={colors[i.type]}
               title={JSON.stringify(i.text)}
+              key={idx}
             >
               {colors[i.type].icon}{' '}
               {i.text.map((i: any) => JSON.stringify(i)).join(',')}

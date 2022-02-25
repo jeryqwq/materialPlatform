@@ -68,6 +68,10 @@ declare global {
     define: any;
   }
 }
+export const removeScript = function (libName: string) {
+  const scriptEl = document.getElementById(`vis-lib-${libName}`);
+  scriptEl && scriptEl.parentNode?.removeChild(scriptEl);
+};
 export const loadScript = function (
   el: HTMLElement,
   lib: Library,

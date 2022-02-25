@@ -4,7 +4,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import { observer } from 'mobx-react';
 import styles from './index.less';
-import { loadScript } from '@/utils/reload';
+import { loadScript, removeScript } from '@/utils/reload';
+import { CloseOutlined } from '@ant-design/icons';
 const { Panel } = Collapse;
 const { TreeNode } = TreeSelect;
 import sandbox from '@/sandbox/sandboxInstance';
@@ -55,6 +56,11 @@ function FileTree(props: { dep: Dependencies }) {
       renderSandbox.proxy,
     );
   }, []);
+  const handleRemoveDep = (i: string) => {
+    const depItem = dep.dependencies[i];
+    dep.removeDep(depItem.name);
+    removeScript(depItem.name);
+  };
   return (
     <div style={{ padding: '5px', borderTop: 'solid 1px #e3e8ee' }}>
       <Collapse ghost className="dep-collapse">
@@ -79,8 +85,14 @@ function FileTree(props: { dep: Dependencies }) {
           </TreeSelect>
           {Object.keys(dep.dependencies).map((i) => (
             <div className={styles['version-item']} key={i}>
-              {' '}
-              <span>{i}</span> <span>{dep.dependencies[i].version}</span>{' '}
+              <span>{i}</span>{' '}
+              <span>
+                {dep.dependencies[i].version}{' '}
+                <CloseOutlined
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleRemoveDep(i)}
+                />
+              </span>
             </div>
           ))}
         </Panel>
