@@ -1,3 +1,4 @@
+import { RENDER_PREVIEW_TOOL } from '@/contants/render';
 import { Input, Popconfirm } from 'antd';
 import { TreeFile, TreeFileItem } from 'types';
 
@@ -71,5 +72,32 @@ export const updateTreeData = function (
       };
     }
     return node;
+  });
+};
+export const dataURItoBlob = function (base64Data: string) {
+  const bytes = window.atob(base64Data.split(',')[1]);
+  const ab = new ArrayBuffer(bytes.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < bytes.length; i++) {
+    ia[i] = bytes.charCodeAt(i);
+  }
+  return new Blob([ab], {
+    type: 'image/png',
+  });
+};
+export const html2Image = async function (el: HTMLElement): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    import('html2canvas').then(({ default: html2image }) => {
+      html2image(el, {
+        scale: 0.5,
+      })
+        .then(async (canvas) => {
+          resolve(dataURItoBlob(canvas.toDataURL('image/png', 1)));
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(error);
+        });
+    });
   });
 };

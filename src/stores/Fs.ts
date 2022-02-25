@@ -147,8 +147,8 @@ const fs = new FileSystem();
 // }
 // `,
 // );
-loadZipFile('/test.zip', fs, () => {
-  fs.activeFile(fs.files['/index.vue']);
-});
+// loadZipFile('/test.zip', fs, () => {
+//   fs.activeFile(fs.files['/index.vue']);
+// });
 // window.fs = fs
 export default fs;

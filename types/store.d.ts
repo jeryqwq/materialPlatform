@@ -22,6 +22,7 @@ declare enum FileTypes {
   COMMON = 'common',
   PDF = 'pdf',
   TS = 'ts',
+  JSON = 'json',
 }
 type FileTypesString = keyof typeof FileTypes;
 

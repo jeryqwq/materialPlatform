@@ -10,6 +10,7 @@ import JsonPreview from '@/components/FilePreviews/json';
 import Mp4Preview from '@/components/FilePreviews/mp4';
 export const VIS_STYLE_CLASSNAME = 'vis-style-class-name';
 export const VIS_LIB_SCRIPT_CLASSNAME = 'vis-lib-script-class-name';
+export const RENDER_PREVIEW_TOOL = 'RENDER_PREVIEW_TOOL';
 export const CONSOLE_TYPES = {
   ERROR: Symbol(),
   WARN: Symbol(),

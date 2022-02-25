@@ -1,0 +1,15 @@
+export const fakeMaterialInfo = {
+  createTime: '2022-02-24T11:17:25',
+  cssType: 1,
+  description: '',
+  id: '',
+  md5: '',
+  name: '',
+  path: '/data/asap/ssa/ssa-web/static/material/components/1493060577428307969/3.1',
+  project: '',
+  state: 1,
+  thumbnail: '',
+  type: 1,
+  updateTime: '2022-02-24T11:17:25',
+  version: '1',
+};

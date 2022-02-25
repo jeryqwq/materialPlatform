@@ -15,6 +15,10 @@ export default defineConfig({
       target: 'http://10.28.184.32:8089',
       changeOrigin: true,
     },
+    '/static/material': {
+      target: 'http://10.28.184.234:8686',
+      changeOrigin: true,
+    },
   },
   locale: {
     default: 'zh-CN',

@@ -5,11 +5,11 @@ import { DOWNLOAD_MESSAGE_TIP_KEY } from '@/contants';
 import { getFileType, isImgFile, isResource } from './file';
 import depStore from '@/stores/Dependencies';
 import { loadScript } from './reload';
+import { MaterialInfo } from 'types';
 
-export const writeLibFile = function (zip: JSZip) {
+export const writeLibFile = function (zip: JSZip, material?: MaterialInfo) {
   let materialJson = {
-    name: '物料名称',
-    desc: '这是个描述',
+    ...(material || {}),
     dependencies: <Record<string, Library>>{},
   };
   for (const key in depStore.dependencies) {
@@ -23,7 +23,8 @@ export const writeLibFile = function (zip: JSZip) {
 export const resolveZipFile = async function (
   files: Record<string, FileDescription>,
   name: string,
-): Promise<JSZip> {
+  material?: MaterialInfo,
+): Promise<Blob> {
   message.loading({
     content: '初始化压缩包内容...',
     key: DOWNLOAD_MESSAGE_TIP_KEY,
@@ -55,20 +56,22 @@ export const resolveZipFile = async function (
     content: '依赖处理中...',
     key: DOWNLOAD_MESSAGE_TIP_KEY,
   });
-  writeLibFile(zip);
+  writeLibFile(zip, material);
   message.loading({
     content: `正在生成压缩包...`,
     key: DOWNLOAD_MESSAGE_TIP_KEY,
   });
   const fileContent = await zip.generateAsync({ type: 'blob' });
   const saveAs = _saveAs as Function;
-  message.success({
-    content: '生成完成，请保存到本地！',
-    duration: 2,
-    key: DOWNLOAD_MESSAGE_TIP_KEY,
-  });
-  saveAs(fileContent, name);
-  return zip;
+  if (name) {
+    message.success({
+      content: '生成完成，请保存到本地！',
+      duration: 2,
+      key: DOWNLOAD_MESSAGE_TIP_KEY,
+    });
+    saveAs(fileContent, name);
+  }
+  return fileContent;
 };
 export const loadZipFile = async function (
   url: string,
@@ -80,6 +83,7 @@ export const loadZipFile = async function (
   const { files } = zipFile;
   const materialInfo = files['/material.json'] as any;
   let depVersion = null;
+  fs.resetFile();
   if (materialInfo) {
     // 解析出依赖的版本
     const materialStr = new TextDecoder().decode(
@@ -90,10 +94,8 @@ export const loadZipFile = async function (
   for (const key in files) {
     const element = files[key];
     if (!element.dir) {
-      const {
-        compressedContent,
-        compression: { compressWorker, uncompressWorker },
-      } = (element as any)._data;
+      let { compressedContent } = (element as any)._data;
+      console.log(element);
       const fileType = getFileType(key).type;
       if (isResource(fileType)) {
         //  buffer => file => url

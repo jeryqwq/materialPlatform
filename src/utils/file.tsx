@@ -154,6 +154,7 @@ export const fileIcons: Record<FileTypes, JSX.Element> = {
   mp4: <FileOutlined />,
   mp3: <FileOutlined />,
   pdf: <FileOutlined />,
+  json: <FileOutlined />,
   ts: (
     <img
       src="/imgs/icon/ts.png"

@@ -28,3 +28,18 @@ declare type ContextMenuItem = {
   title: string;
   children?: Array<ContextMenuItem>;
 };
+declare type MaterialInfo = {
+  createTime: string;
+  cssType: number;
+  description: string;
+  id: string;
+  md5: string;
+  name: string;
+  path: string;
+  project: string;
+  state: number;
+  thumbnail: string;
+  type: number;
+  updateTime: string;
+  version: string;
+};

@@ -39,8 +39,11 @@ export const doQueryPage = (params) => {
 /**
  * 缩略图/物料文件上传
  */
-export const doMaterialUpload = (params) => {
-  return axios.post('/ssa/vis/material/upload', params);
+export const doMaterialUpload = (formData) => {
+  return fetch('/ssa/vis/material/upload', {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    body: formData,
+  });
 };
 
 /**

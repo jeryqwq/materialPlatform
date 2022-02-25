@@ -12,7 +12,7 @@ import * as loader from 'vue3-sfc-loader-vis';
 import { RenderOptions } from 'types';
 import depStore from '@/stores/Dependencies';
 import sandboxs from '@/sandbox/sandboxInstance';
-import { CONSOLE_TYPES } from '@/contants/render';
+import { CONSOLE_TYPES, RENDER_PREVIEW_TOOL } from '@/contants/render';
 const { renderSandbox } = sandboxs;
 declare global {
   interface Window {
@@ -177,7 +177,9 @@ function Preview(props: {
     ).mount(elWrap?.shadowRoot);
     return destoryPreview;
   }, [props.fileSystem.files]);
-  return <div id="test11" ref={ref as LegacyRef<HTMLDivElement>}></div>;
+  return (
+    <div id={RENDER_PREVIEW_TOOL} ref={ref as LegacyRef<HTMLDivElement>}></div>
+  );
 }
 
 export default Preview;
