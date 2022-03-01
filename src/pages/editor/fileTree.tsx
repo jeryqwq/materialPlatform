@@ -9,6 +9,7 @@ import {
   fileIcons,
   findFileItemByFileTree,
   getFileType,
+  isResource,
   renderSearchKeywordNode,
   searchTitleByKeyword,
 } from '@/utils/file';
@@ -102,9 +103,11 @@ function FileTree(props: { fileSystem: FileSys }) {
     function deppReplaceFile(_node: TreeFileItem) {
       if (_node.children) {
         _node.children.forEach((i) => {
-          const file = (i as TreeFileItem).file as any;
+          const file = (i as TreeFileItem).file;
           if (file) {
+            fileSystem.removeFile(file.path);
             file.path = file.path.replace(beforeKey, node.key as string);
+            fileSystem.saveToLs(file.path, file?.target || '');
             i.key = file.path;
           }
           i.children && deppReplaceFile(i as TreeFileItem);
@@ -120,6 +123,7 @@ function FileTree(props: { fileSystem: FileSys }) {
     isEdit?: boolean,
   ) => {
     const { file } = node;
+    const beforeKey = node.key as string;
     node.title = name;
     node.key = (node.key as string).replace(INIT_PROJECT_NAME, '');
     node.isEditName = isEdit;
@@ -133,16 +137,28 @@ function FileTree(props: { fileSystem: FileSys }) {
       file.path = node.key;
       node.switcherIcon = fileIcons[file.type || 'common'];
     }
+    fileSystem.removeFile(beforeKey);
     fileSystem.saveToLs(node.key, file?.target || '');
     setFileData(new Array(...fileTree));
   };
   const uploadFile = useCallback((file: File, node?: TreeFileItem) => {
     node = node || curNode.current;
     if (!node) return;
+    const key = node.key === INIT_PROJECT_KEY ? '' : (node.key as string);
     const { name } = file;
-    const key = (node.key as string).replace(INIT_PROJECT_NAME, '');
-    fileSystem.saveToLs(key + '/' + name, file);
-    fileSystem.reloadFile();
+    // const key = (node.key as string).replace(INIT_PROJECT_NAME, '');
+    if (isResource(getFileType(file.name).type)) {
+      fileSystem.saveToLs(key + '/' + name, file);
+      fileSystem.reloadFile();
+    } else {
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = function (event) {
+        event?.target?.result &&
+          fileSystem.saveToLs(key + '/' + name, event.target.result);
+        fileSystem.reloadFile();
+      };
+    }
   }, []);
   const removeFileNode = useCallback((node: TreeFileItem) => {
     const isFile = node.isLeaf;
@@ -236,6 +252,13 @@ function FileTree(props: { fileSystem: FileSys }) {
         expandedKeys={expandedKeys}
         defaultExpandedKeys={[INIT_PROJECT_NAME]}
         treeData={fileTree}
+        onClick={(e, node) => {
+          const _node = node as TreeFileItem;
+          _node?.isLeaf &&
+            _node.file &&
+            !_node.isEditName &&
+            fileSystem.activeFile(_node.file);
+        }}
         onExpand={onExpand}
         titleRender={(node: any) => {
           if (node.isLeaf) {
@@ -245,21 +268,20 @@ function FileTree(props: { fileSystem: FileSys }) {
                 id={MENU_FILE}
                 attributes={{ accessKey: node.key }}
               >
-                <span
-                  className={styles['file-tree-node']}
-                  onClick={(e) => fileSystem.activeFile(node.file)}
-                >
+                <span className={styles['file-tree-node']}>
                   {node.isEditName ? (
                     <Input
                       size="small"
                       ref={(e) => e?.focus()}
                       defaultValue={node.title}
-                      onPressEnter={(e) =>
-                        updateFileName(
-                          node,
-                          (e.target as HTMLInputElement).value,
-                        )
-                      }
+                      onPressEnter={(e) => {
+                        const value = (e.target as HTMLInputElement).value;
+                        value &&
+                          updateFileName(
+                            node,
+                            (e.target as HTMLInputElement).value,
+                          );
+                      }}
                     ></Input>
                   ) : keyword.current ? (
                     renderSearchKeywordNode(keyword.current, node.title)
@@ -282,12 +304,10 @@ function FileTree(props: { fileSystem: FileSys }) {
                       ref={(e) => e?.focus()}
                       size="small"
                       defaultValue={node.title}
-                      onPressEnter={(e) =>
-                        updateFolderName(
-                          node,
-                          (e.target as HTMLInputElement).value,
-                        )
-                      }
+                      onPressEnter={(e) => {
+                        const value = (e.target as HTMLInputElement).value;
+                        value && updateFolderName(node, value);
+                      }}
                     ></Input>
                   ) : keyword.current ? (
                     renderSearchKeywordNode(keyword.current, node.title)

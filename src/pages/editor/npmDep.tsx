@@ -85,12 +85,13 @@ function FileTree(props: { dep: Dependencies }) {
           </TreeSelect>
           {Object.keys(dep.dependencies).map((i) => (
             <div className={styles['version-item']} key={i}>
-              <span>{i}</span>{' '}
+              <span>{i}</span>
               <span>
-                {dep.dependencies[i].version}{' '}
+                {dep.dependencies[i].version}
                 <CloseOutlined
                   style={{ cursor: 'pointer' }}
                   onClick={() => handleRemoveDep(i)}
+                  className={styles['close-icon']}
                 />
               </span>
             </div>
