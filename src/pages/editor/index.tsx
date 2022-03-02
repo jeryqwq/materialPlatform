@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, Suspense, useState } from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styles from './index.less';
 import FileTree from './fileTree';
@@ -9,6 +9,8 @@ import { Alert, Button, Spin, Upload } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { loadZipFile, resolveZipFile } from '@/utils/zip';
 import { CACHE_COMP_LOADED } from '@/contants/render';
+import DragResize from '@/components/DragBorderResize';
+import { DRAG_DIRECTION } from '@/contants';
 
 type StateType = {
   inputVal: string;
@@ -58,26 +60,37 @@ class Editor extends React.Component<StoreProps, StateType> {
     return (
       <div className={styles['editer-wrap']}>
         <div className={styles['left-tree']}>
-          <div className={styles['resource-header']}>
-            资源管理器
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-              }}
-            >
-              <Upload onChange={this.uplaodZipFile} fileList={[]}>
-                <UploadOutlined />
-              </Upload>
-              <DownloadOutlined
-                style={{ margin: '0 5px' }}
-                onClick={() => resolveZipFile(fileSystem.files, 'test.zip')}
-              />
+          <DragResize
+            style={{
+              height: '100%',
+              background: 'white',
+              width: 200,
+            }}
+            direction={DRAG_DIRECTION.RIGHT_LEFT}
+            min={0}
+            max={Infinity}
+          >
+            <div className={styles['resource-header']}>
+              资源管理器
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+              >
+                <Upload onChange={this.uplaodZipFile} fileList={[]}>
+                  <UploadOutlined />
+                </Upload>
+                <DownloadOutlined
+                  style={{ margin: '0 5px' }}
+                  onClick={() => resolveZipFile(fileSystem.files, 'test.zip')}
+                />
+              </div>
             </div>
-          </div>
-          <FileTree fileSystem={fileSystem} />
-          <NpmTree dep={dependenciesStore} />
+            <FileTree fileSystem={fileSystem} />
+            <NpmTree dep={dependenciesStore} />
+          </DragResize>
         </div>
         <div className={styles['content-wrap']}>
           <div
@@ -135,7 +148,17 @@ class Editor extends React.Component<StoreProps, StateType> {
             />
           </div>
           <div className={styles['preview-wrap']}>
-            <Preview fileSystem={fileSystem} />
+            <DragResize
+              style={{
+                height: '100%',
+                width: 400,
+              }}
+              direction={DRAG_DIRECTION.LEFT_RIGHT}
+              min={0}
+              max={Infinity}
+            >
+              <Preview fileSystem={fileSystem} />
+            </DragResize>
           </div>
         </div>
       </div>

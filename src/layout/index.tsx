@@ -95,28 +95,33 @@ const dropDownMenu = function (material: MaterialInfo) {
 
 function LayoutIndex(props: ReactPropsWithRouter) {
   const pathname = props.route.path;
-  const [refreshCount, setRefreshCount] = useState<number>(0); // hack
   const [versionList, setVersionList] = useState<Array<any>>([]);
-  const [curVersionIndex, setCurVersionIdx] = useState(0);
+  const [refreshCount, setRefreshCount] = useState<number>(0); // hack
+  const [curVersionIndex, setCurVersionIdx] = useState(-1);
   const [materialInfo, setMaterilaInfo] =
     useState<MaterialInfo>(fakeMaterialInfo);
   const { location } = useHistory();
   const id = (location as any).query.id;
   useEffect(() => {
-    doMaterialQueryVersions({ id }).then((res: any) => {
+    doMaterialQueryVersions({ id }).then((versions: any) => {
       // 获取版本列表
-      setVersionList(res.data);
-    });
-    doMaterialDetail(id).then((res) => {
-      // 获取物料信息
-      const materialInfo = res.data as MaterialInfo;
-      setMaterilaInfo(materialInfo);
-      const zipUrl = `/static/material/1/${materialInfo.id}/${materialInfo.version}`;
-      loadZipFile(zipUrl, fileStore, () => {
-        fileStore.reloadFile();
-      });
+      setVersionList(versions.data);
+      setCurVersionIdx(0);
     });
   }, []);
+  useEffect(() => {
+    const curMaterial = versionList[curVersionIndex] as MaterialInfo;
+    curMaterial &&
+      doMaterialDetail(curMaterial?.id).then((res) => {
+        // 获取物料信息
+        const materialInfo = res.data as MaterialInfo;
+        setMaterilaInfo(materialInfo);
+        const zipUrl = `/static/material/${versionList[curVersionIndex]?.version}/${materialInfo.id}/${materialInfo.version}`;
+        loadZipFile(zipUrl, fileStore, () => {
+          fileStore.reloadFile();
+        });
+      });
+  }, [curVersionIndex]);
   return (
     <IndexProvider>
       <div
@@ -167,7 +172,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
                   </span>
                 </Dropdown>
               </span>
-              {materialInfo.name}
+              {materialInfo?.name}
             </div>
           )}
           rightContentRender={() => (

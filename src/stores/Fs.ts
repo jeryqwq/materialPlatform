@@ -12,7 +12,8 @@ class FileSystem implements FileSys {
   }
   @action activeFile = (item: FileDescription) => {
     this.activeKey = item.path;
-    this.actives.add(item);
+    const fileItem = this.files[item.path];
+    fileItem && this.actives.add(fileItem);
   };
   @action updateFile = (path: string, context: string) => {
     if (this.files[path]) {
@@ -29,7 +30,9 @@ class FileSystem implements FileSys {
     this.activeKey = '';
   };
   @action removeFile = (perfix: string) => {
-    this.files[perfix] && delete this.files[perfix];
+    const item = this.files[perfix];
+    item && delete this.files[perfix];
+    this.removeActiveItem(item);
   };
   @action removeActiveItem = (item: FileDescription) => {
     this.actives.delete(item);
@@ -40,6 +43,7 @@ class FileSystem implements FileSys {
       if (file.path.startsWith(perfix)) {
         // should check path props, in fileTree.tsx can change the filename
         delete this.files[key];
+        this.removeActiveItem(file);
       }
     }
   };

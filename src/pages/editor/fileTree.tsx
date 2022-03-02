@@ -4,6 +4,8 @@ import ContextMenu from '@/components/ContentMenu/index';
 const { DirectoryTree, TreeNode } = Tree;
 import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import styles from './index.less';
+import DragResize from '@/components/DragBorderResize';
+
 import {
   file2Tree,
   fileIcons,
@@ -24,6 +26,7 @@ import {
 } from '@/contants/menuTypes';
 import { ContextMenuTrigger } from 'react-contextmenu';
 import {
+  DRAG_DIRECTION,
   INIT_PROJECT_KEY,
   INIT_PROJECT_NAME,
   _FILE_TEMP_MARK_NAME,
@@ -228,98 +231,107 @@ function FileTree(props: { fileSystem: FileSys }) {
   };
   return (
     <div style={{ padding: '5px' }}>
-      <Input
-        placeholder="请输入关键词"
-        style={{ margin: '10px', width: 'calc( 100% - 20px )' }}
-        suffix={<SearchOutlined />}
-        onChange={handleSearch}
-      />
-      <ContextMenu
-        id={MENU_FOLDER}
-        contextMenu={CONTEXT_MENU_FOLDER}
-        handle={contextMenuHandle}
-        uploadFile={uploadFile}
-      />
-      <ContextMenu
-        id={MENU_FILE}
-        contextMenu={CONTEXT_MENU_FILE}
-        handle={contextMenuHandle}
-      />
-      <DirectoryTree
-        showIcon={false}
-        blockNode={true}
-        autoExpandParent={true}
-        expandedKeys={expandedKeys}
-        defaultExpandedKeys={[INIT_PROJECT_NAME]}
-        treeData={fileTree}
-        onClick={(e, node) => {
-          const _node = node as TreeFileItem;
-          _node?.isLeaf &&
-            _node.file &&
-            !_node.isEditName &&
-            fileSystem.activeFile(_node.file);
+      <DragResize
+        style={{
+          height: 'auto',
         }}
-        onExpand={onExpand}
-        titleRender={(node: any) => {
-          if (node.isLeaf) {
-            // 文件
-            return (
-              <ContextMenuTrigger
-                id={MENU_FILE}
-                attributes={{ accessKey: node.key }}
-              >
-                <span className={styles['file-tree-node']}>
-                  {node.isEditName ? (
-                    <Input
-                      size="small"
-                      ref={(e) => e?.focus()}
-                      defaultValue={node.title}
-                      onPressEnter={(e) => {
-                        const value = (e.target as HTMLInputElement).value;
-                        value &&
-                          updateFileName(
-                            node,
-                            (e.target as HTMLInputElement).value,
-                          );
-                      }}
-                    ></Input>
-                  ) : keyword.current ? (
-                    renderSearchKeywordNode(keyword.current, node.title)
-                  ) : (
-                    node.title
-                  )}
-                </span>
-              </ContextMenuTrigger>
-            );
-          } else {
-            // 文件夹  folder
-            return (
-              <ContextMenuTrigger
-                id={MENU_FOLDER}
-                attributes={{ accessKey: node.key }}
-              >
-                <span className={styles['file-tree-node']}>
-                  {node.isEditName ? (
-                    <Input
-                      ref={(e) => e?.focus()}
-                      size="small"
-                      defaultValue={node.title}
-                      onPressEnter={(e) => {
-                        const value = (e.target as HTMLInputElement).value;
-                        value && updateFolderName(node, value);
-                      }}
-                    ></Input>
-                  ) : keyword.current ? (
-                    renderSearchKeywordNode(keyword.current, node.title)
-                  ) : (
-                    node.title
-                  )}
-                </span>
-              </ContextMenuTrigger>
-            );
-          }
-        }}
-      />
+        direction={DRAG_DIRECTION.TOP_BUTTOM}
+        min={0}
+        max={Infinity}
+      >
+        <Input
+          placeholder="请输入关键词"
+          style={{ margin: '10px', width: 'calc( 100% - 20px )' }}
+          suffix={<SearchOutlined />}
+          onChange={handleSearch}
+        />
+        <ContextMenu
+          id={MENU_FOLDER}
+          contextMenu={CONTEXT_MENU_FOLDER}
+          handle={contextMenuHandle}
+          uploadFile={uploadFile}
+        />
+        <ContextMenu
+          id={MENU_FILE}
+          contextMenu={CONTEXT_MENU_FILE}
+          handle={contextMenuHandle}
+        />
+        <DirectoryTree
+          showIcon={false}
+          blockNode={true}
+          autoExpandParent={true}
+          expandedKeys={expandedKeys}
+          defaultExpandedKeys={[INIT_PROJECT_NAME]}
+          treeData={fileTree}
+          onClick={(e, node) => {
+            const _node = node as TreeFileItem;
+            _node?.isLeaf &&
+              _node.file &&
+              !_node.isEditName &&
+              fileSystem.activeFile(_node.file);
+          }}
+          onExpand={onExpand}
+          titleRender={(node: any) => {
+            if (node.isLeaf) {
+              // 文件
+              return (
+                <ContextMenuTrigger
+                  id={MENU_FILE}
+                  attributes={{ accessKey: node.key }}
+                >
+                  <span className={styles['file-tree-node']}>
+                    {node.isEditName ? (
+                      <Input
+                        size="small"
+                        ref={(e) => e?.focus()}
+                        defaultValue={node.title}
+                        onPressEnter={(e) => {
+                          const value = (e.target as HTMLInputElement).value;
+                          value &&
+                            updateFileName(
+                              node,
+                              (e.target as HTMLInputElement).value,
+                            );
+                        }}
+                      ></Input>
+                    ) : keyword.current ? (
+                      renderSearchKeywordNode(keyword.current, node.title)
+                    ) : (
+                      node.title
+                    )}
+                  </span>
+                </ContextMenuTrigger>
+              );
+            } else {
+              // 文件夹  folder
+              return (
+                <ContextMenuTrigger
+                  id={MENU_FOLDER}
+                  attributes={{ accessKey: node.key }}
+                >
+                  <span className={styles['file-tree-node']}>
+                    {node.isEditName ? (
+                      <Input
+                        ref={(e) => e?.focus()}
+                        size="small"
+                        defaultValue={node.title}
+                        onPressEnter={(e) => {
+                          const value = (e.target as HTMLInputElement).value;
+                          value && updateFolderName(node, value);
+                        }}
+                      ></Input>
+                    ) : keyword.current ? (
+                      renderSearchKeywordNode(keyword.current, node.title)
+                    ) : (
+                      node.title
+                    )}
+                  </span>
+                </ContextMenuTrigger>
+              );
+            }
+          }}
+        />
+      </DragResize>
     </div>
   );
 }

@@ -52,3 +52,9 @@ export const RENDER_PREVIEW_MODE = {
   FULL_SCREEN: Symbol(),
   USER_CUSTOM: Symbol(),
 };
+export const DRAG_DIRECTION = {
+  LEFT_RIGHT: 'LEFT_RIGHT',
+  TOP_BUTTOM: 'TOP_BUTTOM',
+  RIGHT_LEFT: 'RIGHT_LEFT',
+  BUTTOM_TOP: 'BUTTOM_TOP',
+};

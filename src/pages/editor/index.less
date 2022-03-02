@@ -3,8 +3,7 @@
   flex-direction: row;
   height: 100%;
   > .left-tree {
-    width: 200px;
-    min-width: 200px;
+    position: relative;
   }
   > .content-wrap {
     flex: 1;
@@ -16,12 +15,11 @@
       overflow: hidden;
     }
     > .preview-wrap {
-      min-width: 300px;
-      width: 400px;
+      // min-width: 300px;
       background-color: white;
       border-left: solid 1px #e3e8ee;
       height: 100%;
-      > .preview-containter {
+      .preview-containter {
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -94,6 +92,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
 }
 .console-item {
   overflow: hidden;

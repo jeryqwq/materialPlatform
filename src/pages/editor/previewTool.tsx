@@ -9,8 +9,9 @@ import {
 } from '@ant-design/icons';
 import PreviewReact from '@/components/RenderPreview';
 import { RenderOptions } from 'types';
-import { RENDER_PREVIEW_MODE } from '@/contants';
+import { DRAG_DIRECTION, RENDER_PREVIEW_MODE } from '@/contants';
 import { CONSOLE_TYPES } from '@/contants/render';
+import DragResize from '@/components/DragBorderResize';
 
 declare type ConsoleType = { type: Symbol; text: Array<any> };
 export default (props: { fileSystem: FileSys }) => {
@@ -94,22 +95,28 @@ export default (props: { fileSystem: FileSys }) => {
           <CreditCardOutlined style={{ marginLeft: '5px', color: '#999999' }} />
         </div>
       </div>
-      {/* ignore element render https://github.com/darkreader/darkreader/issues/4144#issuecomment-729896113 */}
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <div
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+          userSelect: 'none',
+        }}
+      >
+        <DragResize
           style={{
             height: containHeightProps,
-            background: 'white',
-            transition: 'all .5s',
           }}
-          className="ignore-render"
+          direction={DRAG_DIRECTION.TOP_BUTTOM}
+          min={0}
+          max={Infinity}
         >
           <PreviewReact
             fileSystem={props.fileSystem}
             options={options}
             pushConsole={pushConsole}
           ></PreviewReact>
-        </div>
+        </DragResize>
         <Console
           consoleList={consoleList}
           resetConsole={resetConsole}
