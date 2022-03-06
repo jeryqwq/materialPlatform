@@ -18,7 +18,6 @@ import { fakeMaterialInfo } from '@/contants/initData';
 import { html2Image } from '@/utils';
 import { RENDER_PREVIEW_TOOL } from '@/contants/render';
 import { loadZipFile, resolveZipFile } from '@/utils/zip';
-import axios from 'axios';
 
 const { confirm } = Modal;
 const { TextArea } = Input;
@@ -142,7 +141,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           menuItemRender={(item, dom) => (
             <a
               onClick={() => {
-                props.history.push(`${item.path || '/welcome'}?`);
+                props.history.push(`${item.path}`);
               }}
             >
               {dom}
@@ -154,7 +153,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
                 <Dropdown
                   overlay={
                     <Menu onClick={() => {}}>
-                      {versionList.map((i) => (
+                      {versionList?.map((i) => (
                         <Menu.Item key={i.id}>{i.version}</Menu.Item>
                       ))}
                     </Menu>
@@ -168,6 +167,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
                       minWidth: 120,
                     }}
                   >
+                    {console.dir(versionList)}
                     {versionList[curVersionIndex]?.version} <DownOutlined />
                   </span>
                 </Dropdown>

@@ -19,8 +19,8 @@ declare type TreeFileItem = TreeDataNode & {
 declare type TreeFile = Array<TreeFileItem>;
 declare type RenderOptions = {
   shadow: boolean;
-  width: number;
-  height: number;
+  width: number | string;
+  height: number | string;
   scale: number;
 };
 declare type ContextMenuItem = {

@@ -13,6 +13,8 @@ import { RenderOptions } from 'types';
 import depStore from '@/stores/Dependencies';
 import sandboxs from '@/sandbox/sandboxInstance';
 import { CONSOLE_TYPES, RENDER_PREVIEW_TOOL } from '@/contants/render';
+import { observerEl, disConnectObs } from '@/utils/reload';
+import { RENDER_PREVIEW_MODE } from '@/contants';
 const { renderSandbox } = sandboxs;
 declare global {
   interface Window {
@@ -28,14 +30,30 @@ function Preview(props: {
   fileSystem: FileSys;
   options: RenderOptions;
   pushConsole: Function;
+  elObserverChange: (rect: DOMRect, _: number) => void;
+  previewMode: number;
 }) {
   const ref = useRef<HTMLDivElement>();
   useLayoutEffect(() => {
     destoryPreview();
+    disConnectObs();
     const config = {
       files: fileTransform(props.fileSystem),
     };
     const { current: elWrap } = ref;
+    elWrap &&
+      observerEl(elWrap, function (rect) {
+        const isScale = props.previewMode !== RENDER_PREVIEW_MODE.FULL_SCREEN;
+        let transform = 1;
+        if (isScale) {
+          const childNode = elWrap?.shadowRoot?.firstChild as HTMLElement;
+          let factWidth = childNode?.clientWidth;
+          if (!factWidth) return;
+          transform = rect.width / factWidth;
+          elWrap.style.transform = `scale(${transform})`;
+        }
+        props.elObserverChange(rect, transform);
+      });
     const options = {
       moduleCache: {
         vue: Vue,
@@ -145,7 +163,7 @@ function Preview(props: {
     };
     const _loader = loader as { loadModule: Function };
     elWrap && makeShadowRaw(elWrap);
-    const prevConsole = window.console;
+    const prevConsole = { ...window.console };
     window.console = {
       ...prevConsole,
       log(...strs: Array<string>) {
@@ -178,7 +196,13 @@ function Preview(props: {
     return destoryPreview;
   }, [props.fileSystem.files]);
   return (
-    <div id={RENDER_PREVIEW_TOOL} ref={ref as LegacyRef<HTMLDivElement>}></div>
+    <div style={{ overflow: 'scroll' }}>
+      <div
+        style={{ transformOrigin: '0 0' }}
+        id={RENDER_PREVIEW_TOOL}
+        ref={ref as LegacyRef<HTMLDivElement>}
+      ></div>
+    </div>
   );
 }
 

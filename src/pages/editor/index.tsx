@@ -63,7 +63,6 @@ class Editor extends React.Component<StoreProps, StateType> {
           <DragResize
             style={{
               height: '100%',
-              background: 'white',
               width: 200,
             }}
             direction={DRAG_DIRECTION.RIGHT_LEFT}

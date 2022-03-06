@@ -1,5 +1,5 @@
 import { Button, Input, Modal, Switch, Tooltip } from 'antd';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Console from './console';
 import styles from './index.less';
 import {
@@ -22,12 +22,11 @@ export default (props: { fileSystem: FileSys }) => {
     {
       type: CONSOLE_TYPES.WARN,
       text: [
-        'VisCodeEditor Tip: Ctrl + S save your code, support filetype: css, js, vue, html, mp4, mp3, mov, pdf, png, gif, jpeg, jpg ... ',
+        'VisCodeEditor Tip: Ctrl + S save your code, support filetype: css, js, vue, ts, html, mp4, mp3, mov, pdf, png, gif, jpeg, jpg ... ',
         'next step: js sandbox ',
       ],
     },
   ]);
-  const [containHeightProps, setHeight] = useState<number | string>(500);
   const pushConsole = (prop: ConsoleType) => {
     setConsoleList((val) => val.concat(prop));
   };
@@ -41,7 +40,10 @@ export default (props: { fileSystem: FileSys }) => {
     scale: 1,
   });
   const miniConsole = useCallback(() => {
-    setHeight((val) => (val === '100%' ? 500 : '100%'));
+    setOptions((val) => ({
+      ...val,
+      height: val.height === '100%' ? 400 : '100%',
+    }));
   }, [consoleList]);
   return (
     <div style={{ height: '100%' }} className={styles['preview-containter']}>
@@ -54,14 +56,18 @@ export default (props: { fileSystem: FileSys }) => {
               size="small"
               placeholder="宽度"
               style={{ width: '60px', margin: '0 5px' }}
+              value={options.width}
             />
             <span className={styles['font-label']}>H:</span>
             <Input
               size="small"
               placeholder="高度"
+              value={options.height}
               style={{ width: '60px', margin: '0 5px' }}
             />
-            <span className={styles['font-label']}>缩放比例 /</span>
+            <span className={styles['font-label']}>
+              缩放比例：{options.scale}
+            </span>
           </div>
         )}
         <div style={{ cursor: 'pointer', fontSize: '15px', marginRight: 20 }}>
@@ -88,7 +94,11 @@ export default (props: { fileSystem: FileSys }) => {
           />
           <MobileOutlined
             onClick={() => {
-              setPreviewMode(RENDER_PREVIEW_MODE.USER_CUSTOM);
+              setPreviewMode((val) =>
+                val === RENDER_PREVIEW_MODE.USER_CUSTOM
+                  ? RENDER_PREVIEW_MODE.FULL_SCREEN
+                  : RENDER_PREVIEW_MODE.USER_CUSTOM,
+              );
             }}
             style={{ margin: '0 5px', color: '#999999' }}
           />
@@ -105,7 +115,7 @@ export default (props: { fileSystem: FileSys }) => {
       >
         <DragResize
           style={{
-            height: containHeightProps,
+            height: options.height,
           }}
           direction={DRAG_DIRECTION.TOP_BUTTOM}
           min={0}
@@ -115,6 +125,15 @@ export default (props: { fileSystem: FileSys }) => {
             fileSystem={props.fileSystem}
             options={options}
             pushConsole={pushConsole}
+            elObserverChange={(rect: DOMRect, scale: number) => {
+              setOptions({
+                ...options,
+                width: rect.width,
+                height: rect.height,
+                scale,
+              });
+            }}
+            previewMode={previewMode}
           ></PreviewReact>
         </DragResize>
         <Console

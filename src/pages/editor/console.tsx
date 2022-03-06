@@ -59,7 +59,15 @@ function Console(props: ConsolleProps) {
   return (
     <div className={styles['console-wrap']}>
       <div className={styles['console-header']}>
-        <Badge count={consoleList.length}>Console</Badge>
+        <Badge
+          count={curList.length}
+          style={{
+            right: -20,
+            top: 6,
+          }}
+        >
+          Console
+        </Badge>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <ClearOutlined
             style={{ cursor: 'pointer' }}
@@ -100,7 +108,7 @@ function Console(props: ConsolleProps) {
               title={JSON.stringify(i.text)}
               key={idx}
             >
-              {colors[i.type].icon}{' '}
+              {colors[i.type].icon}
               {i.text.map((i: any) => JSON.stringify(i)).join(',')}
             </div>
           ))}

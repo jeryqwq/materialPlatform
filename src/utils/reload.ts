@@ -117,3 +117,25 @@ export const loadScript = function (
   cb && cb(libKey || lib.name, ((global || window) as any)[libKey || lib.name]);
   // }
 };
+
+const elObserverWeakMap = new WeakMap<HTMLElement, ResizeObserver>();
+const elObserverCollection = new Set<HTMLElement>();
+export const observerEl = function (el: HTMLElement, cb: (e: DOMRect) => void) {
+  const obs = new ResizeObserver(function (domObs) {
+    domObs.forEach((i) => {
+      if (i.target === el) {
+        cb(i.contentRect);
+      }
+    });
+  });
+  obs.observe(el, {});
+  elObserverWeakMap.set(el, obs);
+  elObserverCollection.add(el);
+  return obs;
+};
+export const disConnectObs = function () {
+  elObserverCollection.forEach((i) => {
+    elObserverWeakMap.get(i)?.unobserve(i);
+    elObserverWeakMap.get(i)?.disconnect();
+  });
+};

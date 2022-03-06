@@ -230,7 +230,7 @@ function FileTree(props: { fileSystem: FileSys }) {
     setExpandedKey(searchTitleByKeyword(value, fileTree));
   };
   return (
-    <div style={{ padding: '5px' }}>
+    <div style={{ padding: '5px 5px 0 5px' }}>
       <DragResize
         style={{
           height: 'auto',
