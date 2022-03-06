@@ -50,8 +50,8 @@ function Preview(props: {
           let factWidth = childNode?.clientWidth;
           if (!factWidth) return;
           transform = rect.width / factWidth;
-          elWrap.style.transform = `scale(${transform})`;
         }
+        elWrap.style.transform = `scale(${transform})`;
         props.elObserverChange(rect, transform);
       });
     const options = {
