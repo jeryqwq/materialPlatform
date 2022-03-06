@@ -45,6 +45,7 @@ function Preview(props: {
       observerEl(elWrap, function (rect) {
         const isScale = props.previewMode !== RENDER_PREVIEW_MODE.FULL_SCREEN;
         let transform = 1;
+        // depsList 需添加previewMode依赖，否则闭包内访问的值永远是初始化的值，即props.previewMode变化后重新生成闭包函数
         if (isScale) {
           const childNode = elWrap?.shadowRoot?.firstChild as HTMLElement;
           let factWidth = childNode?.clientWidth;
@@ -194,7 +195,7 @@ function Preview(props: {
       { a: 1 },
     ).mount(elWrap?.shadowRoot);
     return destoryPreview;
-  }, [props.fileSystem.files]);
+  }, [props.fileSystem.files, props.previewMode]);
   return (
     <div style={{ overflow: 'scroll' }}>
       <div
