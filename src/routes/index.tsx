@@ -21,7 +21,7 @@ export const editerPages = {
   ],
 };
 const routes = [
-  { path: '/index', component: '@/pages/index', name: '主页' },
+  { path: '/', component: '@/pages/index', name: '主页' },
   editerPages,
 ];
 export default routes;
