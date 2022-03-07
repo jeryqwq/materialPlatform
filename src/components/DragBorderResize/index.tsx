@@ -14,7 +14,7 @@ const EL_ATTRS = {
     height: '100%',
     right: '0px',
     top: '0px',
-    cursor: 'e-resize',
+    cursor: 'ew-resize',
   },
   [DRAG_DIRECTION.TOP_BUTTOM]: {
     width: '100%',
@@ -38,6 +38,7 @@ export default function (props: {
   max: number;
   children: React.ReactNode;
   style: Record<string, any>;
+  domId?: string;
 }) {
   let isStartMove = false;
   let closeMove: () => void, mouseMoveFn: (e: MouseEvent) => void;
@@ -82,7 +83,11 @@ export default function (props: {
     };
   });
   return (
-    <div style={{ position: 'relative', ...style }} ref={elWrap}>
+    <div
+      style={{ position: 'relative', ...style }}
+      ref={elWrap}
+      id={props?.domId}
+    >
       {children}
       <div
         style={{ ...EL_ATTRS[direction] }}

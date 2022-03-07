@@ -22,8 +22,8 @@ export default (props: { fileSystem: FileSys }) => {
     {
       type: CONSOLE_TYPES.WARN,
       text: [
-        'VisCodeEditor Tip: Ctrl + S save your code, support filetype: css, js, vue, ts, html, mp4, mp3, mov, pdf, png, gif, jpeg, jpg ... ',
-        'next step: js sandbox ',
+        'VisCodeEditor Tip: Ctrl + S 热更新代码, 支持的文件类型: css, js, vue, html, mp4, mp3, mov, pdf, png, gif, jpeg, jpg,json ... ',
+        '未完成: js sandbox ',
       ],
     },
   ]);
@@ -70,7 +70,15 @@ export default (props: { fileSystem: FileSys }) => {
             </span>
           </div>
         )}
-        <div style={{ cursor: 'pointer', fontSize: '15px', marginRight: 20 }}>
+        <div
+          style={{
+            cursor: 'pointer',
+            fontSize: '15px',
+            marginRight: 20,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <Switch
             size="small"
             defaultChecked
@@ -92,7 +100,8 @@ export default (props: { fileSystem: FileSys }) => {
               }
             }}
           />
-          <MobileOutlined
+          <img
+            src="/imgs/icon/triggerMobile.png"
             onClick={() => {
               setPreviewMode((val) =>
                 val === RENDER_PREVIEW_MODE.USER_CUSTOM
@@ -100,7 +109,7 @@ export default (props: { fileSystem: FileSys }) => {
                   : RENDER_PREVIEW_MODE.USER_CUSTOM,
               );
             }}
-            style={{ margin: '0 5px', color: '#999999' }}
+            style={{ margin: '0 5px' }}
           />
           <CreditCardOutlined style={{ marginLeft: '5px', color: '#999999' }} />
         </div>
@@ -116,6 +125,7 @@ export default (props: { fileSystem: FileSys }) => {
         <DragResize
           style={{
             height: options.height,
+            overflow: 'scroll',
           }}
           direction={DRAG_DIRECTION.TOP_BUTTOM}
           min={0}
@@ -129,7 +139,7 @@ export default (props: { fileSystem: FileSys }) => {
               setOptions({
                 ...options,
                 width: rect.width,
-                height: rect.height,
+                // height: rect.height,
                 scale,
               });
             }}

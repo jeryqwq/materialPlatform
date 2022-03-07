@@ -4,7 +4,10 @@
 .react-contextmenu-wrapper {
   display: contents;
 }
-
+.ant-tree.ant-tree-block-node{
+  background-color: transparent;
+  height: 100%;
+}
 .react-contextmenu {
   background-color: #fff;
   background-clip: padding-box;

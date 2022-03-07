@@ -11,6 +11,7 @@ import { loadZipFile, resolveZipFile } from '@/utils/zip';
 import { CACHE_COMP_LOADED } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';
 import { DRAG_DIRECTION } from '@/contants';
+import { renderFilePath } from '@/utils/file';
 
 type StateType = {
   inputVal: string;
@@ -62,8 +63,9 @@ class Editor extends React.Component<StoreProps, StateType> {
         <div className={styles['left-tree']}>
           <DragResize
             style={{
-              height: '100%',
               width: 200,
+              height: '100%',
+              overflow: 'scroll',
             }}
             direction={DRAG_DIRECTION.RIGHT_LEFT}
             min={0}
@@ -83,7 +85,7 @@ class Editor extends React.Component<StoreProps, StateType> {
                 </Upload>
                 <DownloadOutlined
                   style={{ margin: '0 5px' }}
-                  onClick={() => resolveZipFile(fileSystem.files, 'test.zip')}
+                  onClick={() => resolveZipFile(fileSystem.files, 'files.zip')}
                 />
               </div>
             </div>
@@ -130,7 +132,7 @@ class Editor extends React.Component<StoreProps, StateType> {
                   content: (
                     <div style={{ height: 'calc( 100vh - 85px )' }}>
                       <div className={styles['path-wrap']}>
-                        {i.path.split('/').join(' > ')}
+                        {renderFilePath(i.path)}
                       </div>
                       <Editor
                         file={i}
@@ -155,6 +157,7 @@ class Editor extends React.Component<StoreProps, StateType> {
               direction={DRAG_DIRECTION.LEFT_RIGHT}
               min={0}
               max={Infinity}
+              domId={'RIGHT_PREVIEW'}
             >
               <Preview fileSystem={fileSystem} />
             </DragResize>

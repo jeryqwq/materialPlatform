@@ -233,7 +233,7 @@ function FileTree(props: { fileSystem: FileSys }) {
     <div style={{ padding: '5px 5px 0 5px' }}>
       <DragResize
         style={{
-          height: 'auto',
+          overflow: 'scroll',
         }}
         direction={DRAG_DIRECTION.TOP_BUTTOM}
         min={0}

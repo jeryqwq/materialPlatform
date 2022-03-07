@@ -1,4 +1,4 @@
-import { CodeSandboxOutlined, TableOutlined } from '@ant-design/icons';
+import { CodeSandboxOutlined, SettingOutlined } from '@ant-design/icons';
 import React from 'react';
 
 export const editerPages = {
@@ -14,9 +14,9 @@ export const editerPages = {
     },
     {
       path: '/manage',
-      component: '@/pages/manage',
-      name: '物料管理',
-      icon: <TableOutlined />,
+      component: '@/pages/setting',
+      name: '设置',
+      icon: <SettingOutlined />,
     },
   ],
 };

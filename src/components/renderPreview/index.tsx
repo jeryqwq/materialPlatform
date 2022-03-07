@@ -31,7 +31,7 @@ function Preview(props: {
   options: RenderOptions;
   pushConsole: Function;
   elObserverChange: (rect: DOMRect, _: number) => void;
-  previewMode: number;
+  previewMode: symbol;
 }) {
   const ref = useRef<HTMLDivElement>();
   useLayoutEffect(() => {
@@ -197,7 +197,7 @@ function Preview(props: {
     return destoryPreview;
   }, [props.fileSystem.files, props.previewMode]);
   return (
-    <div style={{ overflow: 'scroll' }}>
+    <div>
       <div
         style={{ transformOrigin: '0 0' }}
         id={RENDER_PREVIEW_TOOL}

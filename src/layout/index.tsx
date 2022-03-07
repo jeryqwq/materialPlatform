@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MaterialInfo, ReactPropsWithRouter } from 'types';
 import styles from './layout.less';
 import IndexProvider from '@/provider/index';
@@ -6,7 +6,7 @@ import ProLayout, { SettingDrawer } from '@ant-design/pro-layout';
 import { editerPages } from '@/routes';
 import themeStore from '@/stores/Theme';
 import fileStore from '@/stores/Fs';
-import { Button, Dropdown, Form, Input, Menu, Modal } from 'antd';
+import { Button, Dropdown, Form, FormInstance, Input, Menu, Modal } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import {
   doMaterialDetail,
@@ -22,23 +22,29 @@ import { loadZipFile, resolveZipFile } from '@/utils/zip';
 const { confirm } = Modal;
 const { TextArea } = Input;
 
+const material2FromData = async function (material: MaterialInfo) {
+  const formData = new FormData();
+  formData.append('id', material.id);
+  formData.append('cssType', material.cssType + '');
+  formData.append('version', material.version);
+  formData.append('type', material.type + '');
+  const file1 = await html2Image(
+    document.getElementById(RENDER_PREVIEW_TOOL) as HTMLElement,
+  );
+  formData.append('file1', new File([file1], material.id + '.png'));
+  const file2 = await resolveZipFile(fileStore.files, '', material);
+  formData.append('file2', new File([file2], material.id + '.zip'));
+  return formData;
+};
+
 const dropDownMenu = function (material: MaterialInfo) {
+  const [form] = Form.useForm();
   return (
     <Menu
       onClick={async (val) => {
         const { key } = val;
         if (key === 'save') {
-          const formData = new FormData();
-          formData.append('id', material.id);
-          formData.append('cssType', material.cssType + '');
-          formData.append('version', material.version);
-          formData.append('type', material.type + '');
-          const file1 = await html2Image(
-            document.getElementById(RENDER_PREVIEW_TOOL) as HTMLElement,
-          );
-          formData.append('file1', new File([file1], material.id + '.png'));
-          const file2 = await resolveZipFile(fileStore.files, '', material);
-          formData.append('file2', new File([file2], material.id + '.zip'));
+          const formData = await material2FromData(material);
           doMaterialUpload(formData);
         } else {
           confirm({
@@ -46,20 +52,13 @@ const dropDownMenu = function (material: MaterialInfo) {
             width: 600,
             content: (
               <Form
-                // form={form}
+                form={form}
                 name="basicInfo"
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 20 }}
-                // initialValues={itemInfo}
+                initialValues={material}
                 autoComplete="off"
               >
-                <Form.Item
-                  label="名称"
-                  name="name"
-                  rules={[{ required: true, message: '请输入名称!' }]}
-                >
-                  <Input maxLength={32} />
-                </Form.Item>
                 <Form.Item
                   label="版本号"
                   name="version"
@@ -67,7 +66,7 @@ const dropDownMenu = function (material: MaterialInfo) {
                 >
                   <Input maxLength={32} />
                 </Form.Item>
-                <Form.Item label="描述" name="desc">
+                <Form.Item label="描述" name="description">
                   <TextArea placeholder="请输入描述内容!" />
                 </Form.Item>
               </Form>
@@ -76,8 +75,17 @@ const dropDownMenu = function (material: MaterialInfo) {
             icon: null,
             okType: 'primary',
             cancelText: '取消',
-            onOk() {
-              console.log('OK');
+            async onOk() {
+              return new Promise((resolve, reject) => {
+                form.validateFields().then(async (values) => {
+                  const formData = await material2FromData({
+                    ...material,
+                    ...values,
+                  });
+                  await doMaterialUpload(formData);
+                  resolve(false);
+                });
+              });
             },
             onCancel() {
               console.log('Cancel');
@@ -113,10 +121,9 @@ function LayoutIndex(props: ReactPropsWithRouter) {
     curMaterial &&
       doMaterialDetail(curMaterial?.id).then((res) => {
         // 获取物料信息
-        const materialInfo = res.data as MaterialInfo;
-        setMaterilaInfo(materialInfo);
-        const zipUrl = `/static/material/${versionList[curVersionIndex]?.version}/${materialInfo.id}/${materialInfo.version}`;
-        loadZipFile(zipUrl, fileStore, () => {
+        // const materialInfo = res.data as MaterialInfo;
+        setMaterilaInfo(curMaterial);
+        loadZipFile(curMaterial.path, fileStore, () => {
           fileStore.reloadFile();
         });
       });
@@ -152,9 +159,13 @@ function LayoutIndex(props: ReactPropsWithRouter) {
               <span style={{ float: 'left' }}>
                 <Dropdown
                   overlay={
-                    <Menu onClick={() => {}}>
-                      {versionList?.map((i) => (
-                        <Menu.Item key={i.id}>{i.version}</Menu.Item>
+                    <Menu
+                      onClick={(val) => {
+                        setCurVersionIdx(Number(val.key));
+                      }}
+                    >
+                      {versionList?.map((i, idx) => (
+                        <Menu.Item key={idx}>{i.version}</Menu.Item>
                       ))}
                     </Menu>
                   }
@@ -167,7 +178,6 @@ function LayoutIndex(props: ReactPropsWithRouter) {
                       minWidth: 120,
                     }}
                   >
-                    {console.dir(versionList)}
                     {versionList[curVersionIndex]?.version} <DownOutlined />
                   </span>
                 </Dropdown>
@@ -177,10 +187,10 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           )}
           rightContentRender={() => (
             <div>
-              <Button type="primary" style={{ marginRight: 10 }}>
+              {/* <Button type="primary" style={{ marginRight: 10 }}>
                 创建
-              </Button>
-              <Dropdown overlay={dropDownMenu(materialInfo)}>
+              </Button> */}
+              <Dropdown overlay={dropDownMenu(versionList[curVersionIndex])}>
                 <Button type="primary">
                   保存 <DownOutlined />
                 </Button>

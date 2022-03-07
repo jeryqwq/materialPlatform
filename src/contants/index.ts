@@ -1,7 +1,7 @@
 export const _FILE_TEMP_MARK_NAME = 'FILE_TEMP_MARK_NAME';
 export const _FOLDER_TEMP_MARK_NAME = 'FOLDER_TEMP_MARK_NAME';
 
-export const INIT_PROJECT_NAME = 'initProjectName';
+export const INIT_PROJECT_NAME = 'Files';
 
 export const ACTION_TYPE = {
   ADD: 'add',
@@ -49,12 +49,16 @@ export const MIME_TYPES: Record<string, string> = {
 };
 export const RENDER_PREVIEW_MODE = {
   // 右侧渲染状态： 全部 ｜ 用户配置（机型｜宽高）
-  FULL_SCREEN: 1,
-  USER_CUSTOM: 2,
+  FULL_SCREEN: Symbol(),
+  USER_CUSTOM: Symbol(),
 };
 export const DRAG_DIRECTION = {
   LEFT_RIGHT: 'LEFT_RIGHT',
   TOP_BUTTOM: 'TOP_BUTTOM',
   RIGHT_LEFT: 'RIGHT_LEFT',
   BUTTOM_TOP: 'BUTTOM_TOP',
+};
+
+export const EVENT_BUS_TYPES = {
+  HIDE_RIGHT_PREVIEW: Symbol(),
 };

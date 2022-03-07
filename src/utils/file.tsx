@@ -1,6 +1,10 @@
 import { TreeDataNode } from 'antd';
 import { TreeFile, TreeFileItem } from 'types';
-import { PictureOutlined, FileOutlined } from '@ant-design/icons';
+import {
+  PictureOutlined,
+  FileOutlined,
+  RightOutlined,
+} from '@ant-design/icons';
 import { INIT_PROJECT_KEY, MIME_TYPES } from '@/contants';
 export const isImgFile = function (path: string) {
   return ['gif', 'jpeg', 'png', 'jpg', 'bmp'].some((i) =>
@@ -283,4 +287,22 @@ export const renderSearchKeywordNode = function (
   } else {
     return title;
   }
+};
+
+export const renderFilePath = function (path: string) {
+  const arrs = path.split('/');
+  return (
+    <span>
+      {arrs.map((i) => {
+        return (
+          i && (
+            <span>
+              {' '}
+              <RightOutlined style={{ margin: '0 3px' }} /> {i}
+            </span>
+          )
+        );
+      })}
+    </span>
+  );
 };
