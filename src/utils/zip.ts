@@ -70,6 +70,12 @@ export const resolveZipFile = async function (
       key: DOWNLOAD_MESSAGE_TIP_KEY,
     });
     saveAs(fileContent, name);
+  } else {
+    message.success({
+      content: '压缩包生成完成！',
+      duration: 1,
+      key: DOWNLOAD_MESSAGE_TIP_KEY,
+    });
   }
   return fileContent;
 };

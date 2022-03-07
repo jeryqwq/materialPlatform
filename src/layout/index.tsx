@@ -6,7 +6,16 @@ import ProLayout, { SettingDrawer } from '@ant-design/pro-layout';
 import { editerPages } from '@/routes';
 import themeStore from '@/stores/Theme';
 import fileStore from '@/stores/Fs';
-import { Button, Dropdown, Form, FormInstance, Input, Menu, Modal } from 'antd';
+import {
+  Button,
+  Dropdown,
+  Form,
+  FormInstance,
+  Input,
+  Menu,
+  message,
+  Modal,
+} from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import {
   doMaterialDetail,
@@ -45,6 +54,7 @@ const dropDownMenu = function (material: MaterialInfo) {
         const { key } = val;
         if (key === 'save') {
           const formData = await material2FromData(material);
+          message.success('保存成功!');
           doMaterialUpload(formData);
         } else {
           confirm({
@@ -119,13 +129,14 @@ function LayoutIndex(props: ReactPropsWithRouter) {
   useEffect(() => {
     const curMaterial = versionList[curVersionIndex] as MaterialInfo;
     curMaterial &&
+      loadZipFile(curMaterial.path, fileStore, () => {
+        fileStore.reloadFile();
+      });
+    curMaterial &&
       doMaterialDetail(curMaterial?.id).then((res) => {
         // 获取物料信息
-        // const materialInfo = res.data as MaterialInfo;
-        setMaterilaInfo(curMaterial);
-        loadZipFile(curMaterial.path, fileStore, () => {
-          fileStore.reloadFile();
-        });
+        const materialInfo = res.data as MaterialInfo;
+        setMaterilaInfo(materialInfo);
       });
   }, [curVersionIndex]);
   return (
@@ -144,7 +155,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           }}
           collapsed={true}
           contentStyle={{ margin: 0 }}
-          onMenuHeaderClick={(e) => console.log(e)}
+          onMenuHeaderClick={(e) => props.history.push('/')}
           menuItemRender={(item, dom) => (
             <a
               onClick={() => {
