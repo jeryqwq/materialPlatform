@@ -90,6 +90,9 @@ function Preview(props: {
           // 依赖库
           return renderSandbox.proxy[depItem.globalName];
         } else {
+          if (isResource(type)) {
+            return options.getFile(path);
+          }
           switch (type) {
             case '.css':
               options.addStyle(await getContentData(false));
@@ -102,12 +105,8 @@ function Preview(props: {
                   reslove(result);
                 });
               });
-            case '.png':
-              return options.getFile(path);
             default:
-              if (isResource(type)) {
-                return options.getFile(path);
-              } else if (_window[path as string]) {
+              if (_window[path as string]) {
                 return _window[path as string];
               }
           }

@@ -136,12 +136,13 @@ export default (props: { fileSystem: FileSys }) => {
             options={options}
             pushConsole={pushConsole}
             elObserverChange={(rect: DOMRect, scale: number) => {
-              setOptions({
-                ...options,
-                width: rect.width,
-                // height: rect.height,
-                scale,
-              });
+              previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
+                setOptions({
+                  ...options,
+                  width: rect.width,
+                  // height: rect.height,
+                  scale,
+                });
             }}
             previewMode={previewMode}
           ></PreviewReact>

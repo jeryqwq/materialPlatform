@@ -12,6 +12,8 @@ export const isImgFile = function (path: string) {
   );
 };
 export const isResource = function (type: string) {
+  const typeArr = type.split('.');
+  const fileType = typeArr[typeArr.length - 1];
   return [
     'gif',
     'jpeg',
@@ -26,7 +28,7 @@ export const isResource = function (type: string) {
     'exal',
     'ps',
     'mov',
-  ].some((i) => i === type);
+  ].some((i) => i === fileType);
 };
 export const getFileType = function (path: string) {
   const splitRes = path.split('.');
