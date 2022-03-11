@@ -44,7 +44,7 @@ export default (props: { fileSystem: FileSys }) => {
       ...val,
       height: val.height === '100%' ? 400 : '100%',
     }));
-  }, [consoleList]);
+  }, []);
   return (
     <div style={{ height: '100%' }} className={styles['preview-containter']}>
       <div className={styles['util-btn']}>
@@ -140,7 +140,7 @@ export default (props: { fileSystem: FileSys }) => {
                 setOptions({
                   ...options,
                   width: rect.width,
-                  // height: rect.height,
+                  height: rect.height,
                   scale,
                 });
             }}

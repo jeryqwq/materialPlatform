@@ -202,27 +202,27 @@ function LayoutIndex(props: ReactPropsWithRouter) {
                 创建
               </Button> */}
               <Dropdown overlay={dropDownMenu(versionList[curVersionIndex])}>
-                <Button type="primary">
+                <Button type="primary" style={{ marginRight: 50 }}>
                   保存 <DownOutlined />
                 </Button>
               </Dropdown>
+              <SettingDrawer
+                pathname={pathname}
+                enableDarkTheme
+                getContainer={() => document.getElementById('pro-layout')}
+                settings={themeStore.themeConfig}
+                onSettingChange={(changeSetting) => {
+                  themeStore.setTheme(changeSetting);
+                  setRefreshCount(refreshCount + 1);
+                }}
+                disableUrlParams={false}
+              />
             </div>
           )}
           {...themeStore.themeConfig}
         >
           {props.children}
         </ProLayout>
-        <SettingDrawer
-          pathname={pathname}
-          enableDarkTheme
-          getContainer={() => document.getElementById('pro-layout')}
-          settings={themeStore.themeConfig}
-          onSettingChange={(changeSetting) => {
-            themeStore.setTheme(changeSetting);
-            setRefreshCount(refreshCount + 1);
-          }}
-          disableUrlParams={false}
-        />
       </div>
     </IndexProvider>
   );

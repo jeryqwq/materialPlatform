@@ -1,6 +1,11 @@
 .ant-tabs-top > div.ant-tabs-nav {
   margin-bottom: 0;
 }
+div.ant-pro-setting-drawer-handle{
+  top: 8px;
+  height: 33px;
+  border-radius: 0;
+}
 .react-contextmenu-wrapper {
   display: contents;
 }

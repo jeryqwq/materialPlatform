@@ -4,6 +4,7 @@ import { addStyles, destoryPreview } from '@/utils/reload';
 import React, {
   LegacyRef,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -16,16 +17,22 @@ import { CONSOLE_TYPES, RENDER_PREVIEW_TOOL } from '@/contants/render';
 import { observerEl, disConnectObs } from '@/utils/reload';
 import { RENDER_PREVIEW_MODE } from '@/contants';
 const { renderSandbox } = sandboxs;
+import styles from './index.less';
 declare global {
   interface Window {
     Vue: any;
     stylus: any;
     Sass: any;
+    __MOVE_TAG: boolean;
   }
 }
+let prevX: number, prevWidth: number;
+let prevY: number;
 const Vue = window['Vue'] || {};
 const stylus = window['stylus'] || {};
 const sass = new window.Sass();
+let dragType: 'RIGHT' | 'BOTTOM' = 'RIGHT';
+let isStartDrag = false;
 function Preview(props: {
   fileSystem: FileSys;
   options: RenderOptions;
@@ -34,6 +41,8 @@ function Preview(props: {
   previewMode: symbol;
 }) {
   const ref = useRef<HTMLDivElement>();
+  const rightDragRef = useRef<HTMLElement>();
+  const bottomDragRef = useRef<HTMLElement>();
   useLayoutEffect(() => {
     destoryPreview();
     disConnectObs();
@@ -43,17 +52,10 @@ function Preview(props: {
     const { current: elWrap } = ref;
     elWrap &&
       observerEl(elWrap, function (rect) {
-        const isScale = props.previewMode !== RENDER_PREVIEW_MODE.FULL_SCREEN;
-        let transform = 1;
         // depsList 需添加previewMode依赖，否则闭包内访问的值永远是初始化的值，即props.previewMode变化后重新生成闭包函数
-        if (isScale) {
-          const childNode = elWrap?.shadowRoot?.firstChild as HTMLElement;
-          let factWidth = childNode?.clientWidth;
-          if (!factWidth) return;
-          transform = rect.width / factWidth;
-        }
-        elWrap.style.transform = `scale(${transform})`;
-        props.elObserverChange(rect, transform);
+        // elWrap.style.transform = `scale(${transform})`;
+        props.previewMode !== RENDER_PREVIEW_MODE.FULL_SCREEN &&
+          props.elObserverChange(rect, 1);
       });
     const options = {
       moduleCache: {
@@ -195,13 +197,83 @@ function Preview(props: {
     ).mount(elWrap?.shadowRoot);
     return destoryPreview;
   }, [props.fileSystem.files, props.previewMode]);
+  useLayoutEffect(() => {
+    function move(e: MouseEvent) {
+      if (
+        isStartDrag &&
+        props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM
+      ) {
+        e.stopPropagation();
+        const { x, y } = e;
+        const elWrap = ref.current;
+        const rect = elWrap?.getBoundingClientRect();
+        const { width = 0, height = 0 } = rect || {};
+        if (dragType === 'RIGHT' && rightDragRef.current) {
+          if (elWrap && rightDragRef.current) {
+            const deviationX = x - (prevX || x);
+            prevX = x;
+            elWrap.style.width = width + deviationX * 2 + 'px'; // 因为居中，所以距离需要* 2
+            rightDragRef.current.style.right =
+              (elWrap.offsetLeft | 0) - 15 + 'px';
+          }
+        } else {
+          if (elWrap && bottomDragRef.current) {
+            const deviationY = y - (prevY || y);
+            prevY = y;
+            elWrap.style.height = height + deviationY + 'px';
+            bottomDragRef.current.style.bottom =
+              (elWrap.offsetTop | 0) - 15 + 'px';
+          }
+        }
+      }
+    }
+    function mouseUp() {
+      isStartDrag = false;
+    }
+    document.body.addEventListener('mousemove', move);
+    document.body.addEventListener('mouseup', mouseUp);
+    return function () {
+      document.body.removeEventListener('mousemove', move);
+      document.body.removeEventListener('mouseup', mouseUp);
+    };
+  }, [props.previewMode]);
+
   return (
-    <div>
+    <div
+      className={
+        props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
+        styles['preview-wrap']
+      }
+    >
       <div
-        style={{ transformOrigin: '0 0' }}
+        className={
+          props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
+          styles['preview-content']
+        }
         id={RENDER_PREVIEW_TOOL}
         ref={ref as LegacyRef<HTMLDivElement>}
+        style={{ margin: '0 auto', overflow: 'scroll' }}
       ></div>
+      {props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM && (
+        <div
+          className={styles['left-drag']}
+          onMouseDown={() => {
+            dragType = 'RIGHT';
+            isStartDrag = true;
+          }}
+          ref={rightDragRef as LegacyRef<HTMLDivElement>}
+        ></div>
+      )}
+      {props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM && (
+        <div
+          className={styles['bottom-drag']}
+          onMouseDown={() => {
+            dragType = 'BOTTOM';
+            isStartDrag = true;
+          }}
+          ref={bottomDragRef as LegacyRef<HTMLDivElement>}
+        ></div>
+      )}
     </div>
   );
 }
