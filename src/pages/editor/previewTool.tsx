@@ -36,40 +36,23 @@ export default (props: { fileSystem: FileSys }) => {
   const [options, setOptions] = useState<RenderOptions>({
     shadow: true,
     width: 400,
-    height: 400,
+    height: '100%',
     scale: 1,
   });
+  const [height, setHeight] = useState(400);
+  const [width, setWidth] = useState(400);
+  const [scale, setScale] = useState(1);
+
   const miniConsole = useCallback(() => {
     setOptions((val) => ({
       ...val,
-      height: val.height === '100%' ? 400 : '100%',
+      height: val.height === '100%' ? '80%' : '100%',
     }));
   }, []);
   return (
     <div style={{ height: '100%' }} className={styles['preview-containter']}>
       <div className={styles['util-btn']}>
         <div></div>
-        {previewMode === RENDER_PREVIEW_MODE.FULL_SCREEN ? null : (
-          <div>
-            <span className={styles['font-label']}>W:</span>
-            <Input
-              size="small"
-              placeholder="宽度"
-              style={{ width: '60px', margin: '0 5px' }}
-              value={options.width}
-            />
-            <span className={styles['font-label']}>H:</span>
-            <Input
-              size="small"
-              placeholder="高度"
-              value={options.height}
-              style={{ width: '60px', margin: '0 5px' }}
-            />
-            <span className={styles['font-label']}>
-              缩放比例：{options.scale}
-            </span>
-          </div>
-        )}
         <div
           style={{
             cursor: 'pointer',
@@ -122,6 +105,24 @@ export default (props: { fileSystem: FileSys }) => {
           userSelect: 'none',
         }}
       >
+        {previewMode === RENDER_PREVIEW_MODE.FULL_SCREEN ? null : (
+          <div>
+            <Input
+              size="small"
+              placeholder="宽度"
+              style={{ width: '60px', margin: '0 5px' }}
+              value={width}
+            />
+            <span className={styles['font-label']}>X</span>
+            <Input
+              size="small"
+              placeholder="高度"
+              value={height}
+              style={{ width: '60px', margin: '0 5px' }}
+            />
+            <span className={styles['font-label']}>{scale}</span>
+          </div>
+        )}
         <DragResize
           style={{
             height: options.height,
@@ -133,16 +134,13 @@ export default (props: { fileSystem: FileSys }) => {
         >
           <PreviewReact
             fileSystem={props.fileSystem}
-            options={options}
             pushConsole={pushConsole}
-            elObserverChange={(rect: DOMRect, scale: number) => {
-              previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
-                setOptions({
-                  ...options,
-                  width: rect.width,
-                  height: rect.height,
-                  scale,
-                });
+            elObserverChange={(rect: Partial<DOMRect>, scale?: number) => {
+              if (previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM) {
+                rect.height && setHeight(rect.height);
+                rect.width && setWidth(rect.width);
+                scale && setScale(scale);
+              }
             }}
             previewMode={previewMode}
           ></PreviewReact>

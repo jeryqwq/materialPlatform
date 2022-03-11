@@ -2,7 +2,6 @@ import { makeShadowRaw } from '@/utils/reload';
 import { fileTransform, isResource } from '@/utils/file';
 import { addStyles, destoryPreview } from '@/utils/reload';
 import React, {
-  LegacyRef,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -26,7 +25,7 @@ declare global {
     __MOVE_TAG: boolean;
   }
 }
-let prevX: number, prevWidth: number;
+let prevX: number;
 let prevY: number;
 const Vue = window['Vue'] || {};
 const stylus = window['stylus'] || {};
@@ -35,14 +34,14 @@ let dragType: 'RIGHT' | 'BOTTOM' = 'RIGHT';
 let isStartDrag = false;
 function Preview(props: {
   fileSystem: FileSys;
-  options: RenderOptions;
   pushConsole: Function;
-  elObserverChange: (rect: DOMRect, _: number) => void;
+  elObserverChange: (rect: Partial<DOMRect>, _: number) => void;
   previewMode: symbol;
 }) {
-  const ref = useRef<HTMLDivElement>();
-  const rightDragRef = useRef<HTMLElement>();
-  const bottomDragRef = useRef<HTMLElement>();
+  const ref = useRef<HTMLDivElement>(null);
+  const rightDragRef = useRef<HTMLDivElement>(null);
+  const bottomDragRef = useRef<HTMLDivElement>(null);
+  const refWrap = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     destoryPreview();
     disConnectObs();
@@ -55,7 +54,12 @@ function Preview(props: {
         // depsList 需添加previewMode依赖，否则闭包内访问的值永远是初始化的值，即props.previewMode变化后重新生成闭包函数
         // elWrap.style.transform = `scale(${transform})`;
         props.previewMode !== RENDER_PREVIEW_MODE.FULL_SCREEN &&
-          props.elObserverChange(rect, 1);
+          props.elObserverChange(
+            {
+              width: rect.width,
+            },
+            1,
+          );
       });
     const options = {
       moduleCache: {
@@ -217,12 +221,15 @@ function Preview(props: {
               (elWrap.offsetLeft | 0) - 15 + 'px';
           }
         } else {
-          if (elWrap && bottomDragRef.current) {
+          if (refWrap.current && bottomDragRef.current) {
+            const { height } = refWrap.current.getBoundingClientRect();
             const deviationY = y - (prevY || y);
             prevY = y;
-            elWrap.style.height = height + deviationY + 'px';
+            refWrap.current.style.height = height + deviationY + 'px';
             bottomDragRef.current.style.bottom =
-              (elWrap.offsetTop | 0) - 15 + 'px';
+              (refWrap.current.offsetTop | 0) - 15 + 'px';
+            props.elObserverChange({ height }, 1);
+            console.dir(height);
           }
         }
       }
@@ -245,15 +252,17 @@ function Preview(props: {
         styles['preview-wrap']
       }
     >
-      <div
-        className={
-          props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
-          styles['preview-content']
-        }
-        id={RENDER_PREVIEW_TOOL}
-        ref={ref as LegacyRef<HTMLDivElement>}
-        style={{ margin: '0 auto', overflow: 'scroll' }}
-      ></div>
+      <div ref={refWrap} style={{ overflow: 'scroll' }}>
+        <div
+          className={
+            props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
+            styles['preview-content']
+          }
+          id={RENDER_PREVIEW_TOOL}
+          ref={ref}
+          style={{ margin: '0 auto', overflow: 'scroll' }}
+        ></div>
+      </div>
       {props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM && (
         <div
           className={styles['left-drag']}
@@ -261,7 +270,7 @@ function Preview(props: {
             dragType = 'RIGHT';
             isStartDrag = true;
           }}
-          ref={rightDragRef as LegacyRef<HTMLDivElement>}
+          ref={rightDragRef}
         ></div>
       )}
       {props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM && (
@@ -271,7 +280,7 @@ function Preview(props: {
             dragType = 'BOTTOM';
             isStartDrag = true;
           }}
-          ref={bottomDragRef as LegacyRef<HTMLDivElement>}
+          ref={bottomDragRef}
         ></div>
       )}
     </div>
