@@ -62,3 +62,30 @@ export const DRAG_DIRECTION = {
 export const EVENT_BUS_TYPES = {
   HIDE_RIGHT_PREVIEW: Symbol(),
 };
+
+export const DIMENSIONS = [
+  {
+    value: 'Mobile',
+    label: 'Mobile',
+    width: 320,
+    height: 675,
+  },
+  {
+    value: 'Pad',
+    label: 'Pad',
+    width: 1024,
+    height: 765,
+  },
+  {
+    value: 'Desktop',
+    label: 'Desktop',
+    width: 1366,
+    height: 768,
+  },
+  {
+    value: 'DesktopHD',
+    label: 'DesktopHD',
+    width: 1920,
+    height: 1080,
+  },
+];

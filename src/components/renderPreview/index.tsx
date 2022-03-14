@@ -2,8 +2,10 @@ import { makeShadowRaw } from '@/utils/reload';
 import { fileTransform, isResource } from '@/utils/file';
 import { addStyles, destoryPreview } from '@/utils/reload';
 import React, {
+  forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useLayoutEffect,
   useRef,
   useState,
@@ -22,7 +24,6 @@ declare global {
     Vue: any;
     stylus: any;
     Sass: any;
-    __MOVE_TAG: boolean;
   }
 }
 let prevX: number;
@@ -32,16 +33,43 @@ const stylus = window['stylus'] || {};
 const sass = new window.Sass();
 let dragType: 'RIGHT' | 'BOTTOM' = 'RIGHT';
 let isStartDrag = false;
-function Preview(props: {
-  fileSystem: FileSys;
-  pushConsole: Function;
-  elObserverChange: (rect: Partial<DOMRect>, _: number) => void;
-  previewMode: symbol;
-}) {
+let scale = 1;
+function Preview(
+  props: {
+    fileSystem: FileSys;
+    pushConsole: Function;
+    elObserverChange: (rect: Partial<DOMRect>, _: number) => void;
+    previewMode: symbol;
+  },
+  pref: React.ForwardedRef<Record<string, any>>,
+) {
   const ref = useRef<HTMLDivElement>(null);
   const rightDragRef = useRef<HTMLDivElement>(null);
   const bottomDragRef = useRef<HTMLDivElement>(null);
   const refWrap = useRef<HTMLDivElement>(null);
+  const transformCenterRef = useRef<HTMLDivElement>(null);
+  const previewWrap = useRef<HTMLDivElement>(null);
+  useImperativeHandle(pref, () => ({
+    resize: function (width: number, height: number) {
+      if (ref.current && refWrap.current && transformCenterRef.current) {
+        scale =
+          (previewWrap.current &&
+            previewWrap.current?.getBoundingClientRect().width / width) ||
+          1;
+        ref.current.style.width = width + 'px';
+        ref.current.style.height = height + 'px';
+        if (scale >= 1) {
+          scale = 1;
+        }
+        ref.current.style.transform = `scale(${scale})`;
+        refWrap.current.style.width = width * scale + 'px';
+        refWrap.current.style.height = height * scale + 'px';
+        transformCenterRef.current.style.height = width * scale + 'px';
+        transformCenterRef.current.style.height = height * scale + 'px';
+        return scale;
+      }
+    },
+  }));
   useLayoutEffect(() => {
     destoryPreview();
     disConnectObs();
@@ -211,14 +239,27 @@ function Preview(props: {
         const { x, y } = e;
         const elWrap = ref.current;
         const rect = elWrap?.getBoundingClientRect();
-        const { width = 0, height = 0 } = rect || {};
+        // 优先从style获取宽度属性，getBoundClientRect获取的宽度会计算transform scal属性之后的宽度
         if (dragType === 'RIGHT' && rightDragRef.current) {
-          if (elWrap && rightDragRef.current) {
+          if (elWrap && rightDragRef.current && refWrap.current) {
+            const width =
+              parseInt(elWrap?.style.width || '0') || rect?.width || 0;
             const deviationX = x - (prevX || x);
             prevX = x;
+            console.dir(elWrap.style.width);
             elWrap.style.width = width + deviationX * 2 + 'px'; // 因为居中，所以距离需要* 2
-            rightDragRef.current.style.right =
-              (elWrap.offsetLeft | 0) - 15 + 'px';
+            let tipLeft = 0;
+            // padding 20 + 10 margin
+            tipLeft =
+              refWrap.current?.getBoundingClientRect().width / 2 +
+              rect.width / 2 +
+              35 * scale;
+            if (scale < 1 && transformCenterRef.current) {
+              // 适配缩放时居中
+              transformCenterRef.current.style.width = rect?.width + 'px';
+              transformCenterRef.current.style.height = rect?.height + 'px';
+            }
+            rightDragRef.current.style.left = tipLeft + 'px';
           }
         } else {
           if (refWrap.current && bottomDragRef.current) {
@@ -227,9 +268,8 @@ function Preview(props: {
             prevY = y;
             refWrap.current.style.height = height + deviationY + 'px';
             bottomDragRef.current.style.bottom =
-              (refWrap.current.offsetTop | 0) - 15 + 'px';
+              (refWrap.current.offsetTop | 0) - 10 + 'px';
             props.elObserverChange({ height }, 1);
-            console.dir(height);
           }
         }
       }
@@ -244,24 +284,26 @@ function Preview(props: {
       document.body.removeEventListener('mouseup', mouseUp);
     };
   }, [props.previewMode]);
-
   return (
     <div
       className={
         props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
         styles['preview-wrap']
       }
+      ref={previewWrap}
     >
-      <div ref={refWrap} style={{ overflow: 'scroll' }}>
-        <div
-          className={
-            props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
-            styles['preview-content']
-          }
-          id={RENDER_PREVIEW_TOOL}
-          ref={ref}
-          style={{ margin: '0 auto', overflow: 'scroll' }}
-        ></div>
+      {/* trigger */}
+      <div ref={refWrap} style={{ overflow: 'scroll', margin: '0 auto' }}>
+        <div ref={transformCenterRef} style={{ margin: '0 auto' }}>
+          <div
+            className={
+              props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
+              styles['preview-content']
+            }
+            id={RENDER_PREVIEW_TOOL}
+            ref={ref}
+          ></div>
+        </div>
       </div>
       {props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM && (
         <div
@@ -287,4 +329,4 @@ function Preview(props: {
   );
 }
 
-export default Preview;
+export default forwardRef(Preview);

@@ -1,5 +1,5 @@
-import { Button, Input, Modal, Switch, Tooltip } from 'antd';
-import React, { useCallback, useRef, useState } from 'react';
+import { Input, Modal, Select, Switch } from 'antd';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Console from './console';
 import styles from './index.less';
 import {
@@ -9,9 +9,10 @@ import {
 } from '@ant-design/icons';
 import PreviewReact from '@/components/RenderPreview';
 import { RenderOptions } from 'types';
-import { DRAG_DIRECTION, RENDER_PREVIEW_MODE } from '@/contants';
+import { DIMENSIONS, DRAG_DIRECTION, RENDER_PREVIEW_MODE } from '@/contants';
 import { CONSOLE_TYPES } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';
+const { Option } = Select;
 
 declare type ConsoleType = { type: Symbol; text: Array<any> };
 export default (props: { fileSystem: FileSys }) => {
@@ -27,12 +28,14 @@ export default (props: { fileSystem: FileSys }) => {
       ],
     },
   ]);
+  const [dimension, setDimension] = useState('Mobile');
   const pushConsole = (prop: ConsoleType) => {
     setConsoleList((val) => val.concat(prop));
   };
   const resetConsole = function () {
     setConsoleList([]);
   };
+  const [scale, setScale] = useState(1);
   const [options, setOptions] = useState<RenderOptions>({
     shadow: true,
     width: 400,
@@ -41,14 +44,29 @@ export default (props: { fileSystem: FileSys }) => {
   });
   const [height, setHeight] = useState(400);
   const [width, setWidth] = useState(400);
-  const [scale, setScale] = useState(1);
+  const handleDimChange = useCallback((val) => {
+    setDimension(val);
+    const item = DIMENSIONS.find((i) => i.value === val);
+    if (item) {
+      const { width, height } = item;
+      setWidth(width);
+      setHeight(height);
+      const scale = previewRef.current.resize(width, height);
+      setScale(Number(scale.toFixed(2)));
+    }
+  }, []);
 
+  const previewRef = useRef<Record<string, any>>({});
   const miniConsole = useCallback(() => {
     setOptions((val) => ({
       ...val,
       height: val.height === '100%' ? '80%' : '100%',
     }));
   }, []);
+
+  const resizeHandle = useCallback(() => {
+    const scale = previewRef.current.resize(width, height);
+  }, [width, height]);
   return (
     <div style={{ height: '100%' }} className={styles['preview-containter']}>
       <div className={styles['util-btn']}>
@@ -66,7 +84,7 @@ export default (props: { fileSystem: FileSys }) => {
             size="small"
             defaultChecked
             checkedChildren="沙箱"
-            checked={options.shadow}
+            checked={true}
             onChange={(checked) => {
               if (!checked) {
                 Modal.confirm({
@@ -106,7 +124,13 @@ export default (props: { fileSystem: FileSys }) => {
         }}
       >
         {previewMode === RENDER_PREVIEW_MODE.FULL_SCREEN ? null : (
-          <div>
+          <div
+            style={{
+              padding: '15px 0 0 0',
+              textAlign: 'center',
+              background: '#fafbfd',
+            }}
+          >
             <Input
               size="small"
               placeholder="宽度"
@@ -120,7 +144,12 @@ export default (props: { fileSystem: FileSys }) => {
               value={height}
               style={{ width: '60px', margin: '0 5px' }}
             />
-            <span className={styles['font-label']}>{scale}</span>
+            <span className={styles['font-label']}>({scale})</span>
+            <Select value={dimension} onChange={handleDimChange}>
+              {DIMENSIONS.map((i) => (
+                <Option value={i.value}>{i.label}</Option>
+              ))}
+            </Select>
           </div>
         )}
         <DragResize
@@ -139,10 +168,10 @@ export default (props: { fileSystem: FileSys }) => {
               if (previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM) {
                 rect.height && setHeight(rect.height);
                 rect.width && setWidth(rect.width);
-                scale && setScale(scale);
               }
             }}
             previewMode={previewMode}
+            ref={previewRef}
           ></PreviewReact>
         </DragResize>
         <Console

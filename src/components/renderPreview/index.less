@@ -2,15 +2,17 @@
   background-color: #fafbfd;
   position: relative;
   padding: 20px;
-  > .preview-content {
+  .preview-content {
     transform-origin: 0 0;
     background: white;
     border: solid 1px #e3e8ee;
+    margin: 0 auto;
+    overflow: scroll;
   }
 }
 .left-drag {
   position: absolute;
-  right: 15px;
+  right: 10px;
   height: 200px;
   width: 5px;
   top: calc(50% - 100px);
@@ -20,7 +22,7 @@
 }
 .bottom-drag {
   position: absolute;
-  bottom: 15px;
+  bottom: 10px;
   width: 200px;
   height: 5px;
   left: calc(50% - 100px);
