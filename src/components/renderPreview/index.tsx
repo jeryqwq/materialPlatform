@@ -3,8 +3,6 @@ import { fileTransform, isResource } from '@/utils/file';
 import { addStyles, destoryPreview } from '@/utils/reload';
 import React, {
   forwardRef,
-  useCallback,
-  useEffect,
   useImperativeHandle,
   useLayoutEffect,
   useRef,
@@ -49,23 +47,29 @@ function Preview(
   const refWrap = useRef<HTMLDivElement>(null);
   const transformCenterRef = useRef<HTMLDivElement>(null);
   const previewWrap = useRef<HTMLDivElement>(null);
+  const hiddenRef = useRef<HTMLDivElement>(null);
   useImperativeHandle(pref, () => ({
     resize: function (width: number, height: number) {
-      if (ref.current && refWrap.current && transformCenterRef.current) {
+      prevX = 0;
+      prevY = 0;
+      if (ref.current && hiddenRef.current && transformCenterRef.current) {
         scale =
-          (previewWrap.current &&
-            previewWrap.current?.getBoundingClientRect().width / width) ||
-          1;
+          (((previewWrap.current &&
+            previewWrap.current?.getBoundingClientRect().width) ||
+            500) -
+            40) /
+            width || 1;
         ref.current.style.width = width + 'px';
         ref.current.style.height = height + 'px';
         if (scale >= 1) {
           scale = 1;
         }
         ref.current.style.transform = `scale(${scale})`;
-        refWrap.current.style.width = width * scale + 'px';
-        refWrap.current.style.height = height * scale + 'px';
-        transformCenterRef.current.style.height = width * scale + 'px';
+        transformCenterRef.current.style.width = width * scale + 'px';
         transformCenterRef.current.style.height = height * scale + 'px';
+        hiddenRef.current.style.width = width * scale + 'px';
+        hiddenRef.current.style.height = height * scale + 'px';
+        rightDragRef.current && (rightDragRef.current.style.left = 'auto');
         return scale;
       }
     },
@@ -237,28 +241,20 @@ function Preview(
       ) {
         e.stopPropagation();
         const { x, y } = e;
-        const elWrap = ref.current;
-        const rect = elWrap?.getBoundingClientRect();
+        const elWrap = transformCenterRef.current;
+        const rect = elWrap?.getBoundingClientRect() || { width: 100 };
         // 优先从style获取宽度属性，getBoundClientRect获取的宽度会计算transform scal属性之后的宽度
         if (dragType === 'RIGHT' && rightDragRef.current) {
-          if (elWrap && rightDragRef.current && refWrap.current) {
-            const width =
-              parseInt(elWrap?.style.width || '0') || rect?.width || 0;
+          if (elWrap && rightDragRef.current && previewWrap.current) {
+            const width = rect?.width || 0;
             const deviationX = x - (prevX || x);
             prevX = x;
-            console.dir(elWrap.style.width);
             elWrap.style.width = width + deviationX * 2 + 'px'; // 因为居中，所以距离需要* 2
             let tipLeft = 0;
-            // padding 20 + 10 margin
             tipLeft =
-              refWrap.current?.getBoundingClientRect().width / 2 +
+              previewWrap.current?.getBoundingClientRect().width / 2 +
               rect.width / 2 +
-              35 * scale;
-            if (scale < 1 && transformCenterRef.current) {
-              // 适配缩放时居中
-              transformCenterRef.current.style.width = rect?.width + 'px';
-              transformCenterRef.current.style.height = rect?.height + 'px';
-            }
+              5;
             rightDragRef.current.style.left = tipLeft + 'px';
           }
         } else {
@@ -287,22 +283,33 @@ function Preview(
   return (
     <div
       className={
-        props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
-        styles['preview-wrap']
+        props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM
+          ? styles['preview-wrap']
+          : undefined
       }
       ref={previewWrap}
     >
       {/* trigger */}
       <div ref={refWrap} style={{ overflow: 'scroll', margin: '0 auto' }}>
-        <div ref={transformCenterRef} style={{ margin: '0 auto' }}>
-          <div
-            className={
-              props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM &&
-              styles['preview-content']
-            }
-            id={RENDER_PREVIEW_TOOL}
-            ref={ref}
-          ></div>
+        <div
+          ref={transformCenterRef}
+          style={{
+            margin: '0 auto',
+            border: ' solid 1px #e3e8ee',
+            overflow: 'scroll',
+          }}
+        >
+          <div ref={hiddenRef} style={{ overflow: 'hidden' }}>
+            <div
+              className={
+                props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM
+                  ? styles['preview-content']
+                  : undefined
+              }
+              id={RENDER_PREVIEW_TOOL}
+              ref={ref}
+            ></div>
+          </div>
         </div>
       </div>
       {props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM && (

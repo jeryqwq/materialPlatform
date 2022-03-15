@@ -28,20 +28,16 @@ export default (props: { fileSystem: FileSys }) => {
       ],
     },
   ]);
-  const [dimension, setDimension] = useState('Mobile');
+  const [dimension, setDimension] = useState('');
   const pushConsole = (prop: ConsoleType) => {
     setConsoleList((val) => val.concat(prop));
   };
-  const resetConsole = function () {
+  const resetConsole = useCallback(function () {
     setConsoleList([]);
-  };
+  }, []);
+  const [isMinoConsole, setIsMiniConsole] = useState(true);
+  const [isShadow, setIsShadow] = useState(true);
   const [scale, setScale] = useState(1);
-  const [options, setOptions] = useState<RenderOptions>({
-    shadow: true,
-    width: 400,
-    height: '100%',
-    scale: 1,
-  });
   const [height, setHeight] = useState(400);
   const [width, setWidth] = useState(400);
   const handleDimChange = useCallback((val) => {
@@ -58,11 +54,8 @@ export default (props: { fileSystem: FileSys }) => {
 
   const previewRef = useRef<Record<string, any>>({});
   const miniConsole = useCallback(() => {
-    setOptions((val) => ({
-      ...val,
-      height: val.height === '100%' ? '80%' : '100%',
-    }));
-  }, []);
+    setIsMiniConsole(!isMinoConsole);
+  }, [isMinoConsole]);
 
   const resizeHandle = useCallback(() => {
     const scale = previewRef.current.resize(width, height);
@@ -94,10 +87,10 @@ export default (props: { fileSystem: FileSys }) => {
                     '关闭沙箱模式可能会导致你的代码受到主应用的其他通用css属性和js代码污染，导致渲染效果和js执行与本地不一致，是否继续关闭？',
                   okText: '确认',
                   cancelText: '取消',
-                  onOk: () => setOptions({ ...options, shadow: checked }),
+                  onOk: () => setIsShadow(false),
                 });
               } else {
-                setOptions({ ...options, shadow: checked });
+                setIsShadow(true);
               }
             }}
           />
@@ -145,7 +138,11 @@ export default (props: { fileSystem: FileSys }) => {
               style={{ width: '60px', margin: '0 5px' }}
             />
             <span className={styles['font-label']}>({scale})</span>
-            <Select value={dimension} onChange={handleDimChange}>
+            <Select
+              style={{ width: 100 }}
+              value={dimension}
+              onChange={handleDimChange}
+            >
               {DIMENSIONS.map((i) => (
                 <Option value={i.value}>{i.label}</Option>
               ))}
@@ -154,7 +151,7 @@ export default (props: { fileSystem: FileSys }) => {
         )}
         <DragResize
           style={{
-            height: options.height,
+            height: isMinoConsole ? '100%' : 'auto',
             overflow: 'scroll',
           }}
           direction={DRAG_DIRECTION.TOP_BUTTOM}
