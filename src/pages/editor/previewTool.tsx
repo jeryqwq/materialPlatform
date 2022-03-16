@@ -112,8 +112,9 @@ export default (props: { fileSystem: FileSys }) => {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          flex: 1,
           userSelect: 'none',
+          height: 'calc( 100vh - 85px )',
+          overflow: 'hidden',
         }}
       >
         {previewMode === RENDER_PREVIEW_MODE.FULL_SCREEN ? null : (

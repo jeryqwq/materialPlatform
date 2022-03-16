@@ -139,3 +139,12 @@ export const disConnectObs = function () {
     elObserverWeakMap.get(i)?.disconnect();
   });
 };
+export const setStyle = function (
+  el: HTMLDivElement,
+  props: Record<string, string>,
+) {
+  for (const key in props) {
+    const element = props[key];
+    el.style[key as 'margin'] = element;
+  }
+};

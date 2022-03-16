@@ -1,8 +1,9 @@
-import { makeShadowRaw } from '@/utils/reload';
+import { makeShadowRaw, setStyle } from '@/utils/reload';
 import { fileTransform, isResource } from '@/utils/file';
 import { addStyles, destoryPreview } from '@/utils/reload';
 import React, {
   forwardRef,
+  useEffect,
   useImperativeHandle,
   useLayoutEffect,
   useRef,
@@ -74,7 +75,24 @@ function Preview(
       }
     },
   }));
+  useEffect(() => {
+    if (props.previewMode === RENDER_PREVIEW_MODE.FULL_SCREEN) {
+      scale = 1;
+      if (ref.current && hiddenRef.current && transformCenterRef.current) {
+        // 缩放回到普通状态去除写入的style属性
+        const resetStyle = {
+          transform: 'scale(1)',
+          width: 'auto',
+          height: 'auto',
+        };
+        setStyle(ref.current, resetStyle);
+        setStyle(hiddenRef.current, resetStyle);
+        setStyle(transformCenterRef.current, resetStyle);
+      }
+    }
+  }, [props.previewMode]);
   useLayoutEffect(() => {
+    // 渲染，编译相关
     destoryPreview();
     disConnectObs();
     const config = {
@@ -161,8 +179,7 @@ function Preview(
         );
       },
       log(type: string, err: string) {
-        // compiler error
-        // console.log(type, err)
+        console.dir(`错误类型： ${type}， 错误内容 ${err}`);
         // props.pushConsole({type: CONSOLE_TYPES.ERROR, text: [err]});
       },
       getResource(pathCx: any, options: any) {
@@ -234,6 +251,7 @@ function Preview(
     return destoryPreview;
   }, [props.fileSystem.files, props.previewMode]);
   useLayoutEffect(() => {
+    // 拖拽相关
     function move(e: MouseEvent) {
       if (
         isStartDrag &&
@@ -250,12 +268,11 @@ function Preview(
             const deviationX = x - (prevX || x);
             prevX = x;
             elWrap.style.width = width + deviationX * 2 + 'px'; // 因为居中，所以距离需要* 2
-            let tipLeft = 0;
-            tipLeft =
+            rightDragRef.current.style.left =
               previewWrap.current?.getBoundingClientRect().width / 2 +
               rect.width / 2 +
-              5;
-            rightDragRef.current.style.left = tipLeft + 'px';
+              5 +
+              'px';
           }
         } else {
           if (refWrap.current && bottomDragRef.current) {
@@ -293,11 +310,15 @@ function Preview(
       <div ref={refWrap} style={{ overflow: 'scroll', margin: '0 auto' }}>
         <div
           ref={transformCenterRef}
-          style={{
-            margin: '0 auto',
-            border: ' solid 1px #e3e8ee',
-            overflow: 'scroll',
-          }}
+          style={
+            props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM
+              ? {
+                  margin: '0 auto',
+                  border: ' solid 1px #e3e8ee',
+                  overflow: 'scroll',
+                }
+              : {}
+          }
         >
           <div ref={hiddenRef} style={{ overflow: 'hidden' }}>
             <div
@@ -313,24 +334,24 @@ function Preview(
         </div>
       </div>
       {props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM && (
-        <div
-          className={styles['left-drag']}
-          onMouseDown={() => {
-            dragType = 'RIGHT';
-            isStartDrag = true;
-          }}
-          ref={rightDragRef}
-        ></div>
-      )}
-      {props.previewMode === RENDER_PREVIEW_MODE.USER_CUSTOM && (
-        <div
-          className={styles['bottom-drag']}
-          onMouseDown={() => {
-            dragType = 'BOTTOM';
-            isStartDrag = true;
-          }}
-          ref={bottomDragRef}
-        ></div>
+        <>
+          <div
+            className={styles['left-drag']}
+            onMouseDown={() => {
+              dragType = 'RIGHT';
+              isStartDrag = true;
+            }}
+            ref={rightDragRef}
+          ></div>
+          <div
+            className={styles['bottom-drag']}
+            onMouseDown={() => {
+              dragType = 'BOTTOM';
+              isStartDrag = true;
+            }}
+            ref={bottomDragRef}
+          ></div>
+        </>
       )}
     </div>
   );
