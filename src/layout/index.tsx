@@ -155,7 +155,6 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           location={{
             pathname,
           }}
-          headerRender={false}
           collapsedButtonRender={false}
           collapsed={true}
           contentStyle={{ margin: 0 }}
