@@ -16,7 +16,7 @@ import styles from './index.less';
 import BasicInfo from './basicInfo';
 import { SHOW_MODE, ACTION_TYPE, DEFAULT_PROJECT_LIST } from '@/contants';
 import { doQueryPage, doMaterialRemove, doMaterialOn } from '@/server';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import copyIcon from '@/assets/img/copy.svg';
 import editorIcon from '@/assets/img/editor.svg';
 import infoIcon from '@/assets/img/info.svg';
@@ -80,7 +80,7 @@ const Index = (props) => {
       key: 'updateTime',
       width: '15%',
       render: (value) => {
-        return moment(value).format('YYYY-MM-DD HH:MM:SS');
+        return moment(value).format('YYYY-MM-DD HH:MM:ss');
       },
     },
     {

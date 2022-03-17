@@ -11,7 +11,7 @@ import {
   doMaterialQueryVersions,
   doMaterialCopy,
 } from '@/server';
-import { get } from 'lodash';
+import get from 'lodash/get';
 const { Option } = Select;
 const { TextArea } = Input;
 

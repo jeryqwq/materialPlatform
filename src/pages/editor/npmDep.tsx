@@ -1,7 +1,7 @@
 import { loadFileScript, searchPackage } from '@/server/npm';
 import { Collapse, message, TreeSelect } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import { observer } from 'mobx-react';
 import styles from './index.less';
 import { loadScript, removeScript } from '@/utils/reload';
