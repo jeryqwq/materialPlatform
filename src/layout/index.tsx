@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MaterialInfo, ReactPropsWithRouter } from 'types';
 import styles from './layout.less';
 import IndexProvider from '@/provider/index';
@@ -155,6 +155,8 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           location={{
             pathname,
           }}
+          headerRender={false}
+          collapsedButtonRender={false}
           collapsed={true}
           contentStyle={{ margin: 0 }}
           onMenuHeaderClick={(e) => props.history.push('/')}

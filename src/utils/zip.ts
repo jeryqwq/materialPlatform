@@ -14,8 +14,9 @@ export const writeLibFile = function (zip: JSZip, material?: MaterialInfo) {
   };
   for (const key in depStore.dependencies) {
     const item = depStore.dependencies[key];
+    const { target } = item;
     materialJson.dependencies[item.name] = { ...item, target: '' };
-    zip.file(`/lib/${item.name}`, item.target);
+    zip.file(`/lib/${item.name}`, target);
   }
   zip.file('/material.json', JSON.stringify(materialJson));
 };
@@ -111,7 +112,10 @@ export const loadZipFile = async function (
           // 库
           const libName = getFileType(key).name;
           const lib = depVersion.dependencies[libName];
-          depStore.addDep(libName, lib);
+          depStore.addDep(libName, {
+            ...lib,
+            target: context,
+          });
           loadScript(document.head, { ...lib, target: context });
         } else {
           // 代码
