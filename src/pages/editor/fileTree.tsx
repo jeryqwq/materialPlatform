@@ -5,7 +5,7 @@ const { DirectoryTree, TreeNode } = Tree;
 import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import DragResize from '@/components/DragBorderResize';
-
+import fileDafault from '@/contants/fileDefault';
 import {
   file2Tree,
   fileIcons,
@@ -32,6 +32,7 @@ import {
   _FILE_TEMP_MARK_NAME,
   _FOLDER_TEMP_MARK_NAME,
 } from '@/contants';
+import fileDefault from '@/contants/fileDefault';
 
 function FileTree(props: { fileSystem: FileSys }) {
   let curNode = useRef<TreeFileItem>();

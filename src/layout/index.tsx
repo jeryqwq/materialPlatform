@@ -128,16 +128,18 @@ function LayoutIndex(props: ReactPropsWithRouter) {
   }, []);
   useEffect(() => {
     const curMaterial = versionList[curVersionIndex] as MaterialInfo;
-    curMaterial &&
-      loadZipFile(curMaterial.path, fileStore, () => {
-        fileStore.reloadFile();
-      });
-    curMaterial &&
+    if (curMaterial) {
+      curMaterial.path
+        ? loadZipFile(curMaterial.path, fileStore, () => {
+            fileStore.reloadFile();
+          })
+        : fileStore.resetFile();
       doMaterialDetail(curMaterial?.id).then((res) => {
         // 获取物料信息
         const materialInfo = res.data as MaterialInfo;
         setMaterilaInfo(materialInfo);
       });
+    }
   }, [curVersionIndex]);
   return (
     <IndexProvider>

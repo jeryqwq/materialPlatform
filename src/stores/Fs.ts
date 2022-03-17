@@ -2,7 +2,7 @@ import { genUid } from '@/utils';
 import { resolveFile } from '@/utils/file';
 import { loadZipFile } from '@/utils/zip';
 import { observable, action, makeAutoObservable } from 'mobx';
-
+import fileDefault from '@/contants/fileDefault';
 class FileSystem implements FileSys {
   @observable files: Record<string, FileDescription> = {};
   @observable actives: Set<FileDescription> = new Set();
@@ -28,6 +28,7 @@ class FileSystem implements FileSys {
     this.files = {};
     this.actives = new Set();
     this.activeKey = '';
+    this.saveToLs('/index.vue', fileDefault['vue']);
   };
   @action removeFile = (perfix: string) => {
     const item = this.files[perfix];
