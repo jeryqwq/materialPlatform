@@ -97,12 +97,15 @@ export const loadScript = function (
   // scriptEl.id = `vis-lib-${lib.name}`;
   // scriptEl.type = 'text/javascript';
   // 代理window执行
+  // new Function(`
+  // (function(window){
+  //   with(window){
+  //     ${lib.target}
+  //   }
+  // })(window.__RENDER_SANDBOX.proxy)
+  // `)();
   new Function(`
-  (function(window){
-    with(window){
-      ${lib.target}
-    }
-  })(window.__RENDER_SANDBOX.proxy)
+  ${lib.target}
   `)();
   // scriptEl.textContent = `
   //   ${lib.target}
