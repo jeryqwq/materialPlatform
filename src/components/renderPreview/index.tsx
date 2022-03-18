@@ -19,7 +19,8 @@ import { RENDER_PREVIEW_MODE } from '@/contants';
 const { renderSandbox } = sandboxs;
 import styles from './index.less';
 import { batchConsole, freeConsole } from '@/sandbox/log';
-import patch from '@/sandbox/interval';
+import patchInterval from '@/sandbox/interval';
+import patchEventListener from '@/sandbox/listener';
 declare global {
   interface Window {
     Vue: any;
@@ -224,7 +225,8 @@ function Preview(
     const _loader = loader as { loadModule: Function };
     elWrap && makeShadowRaw(elWrap);
     batchConsole(props.pushConsole);
-    const freeInterval = patch(window); // 定时器劫持， 热更新销毁上次创建的所有定时器
+    const freeInterval = patchInterval(window); // 定时器劫持， 热更新销毁上次创建的所有定时器
+    const freeEventListener = patchEventListener(window);
     // https://v3.cn.vuejs.org/api/global-api.html#createapp
     // https://v3.cn.vuejs.org/api/global-api.html#defineasynccomponent
     // props in vm.$attrs
@@ -250,6 +252,7 @@ function Preview(
       destoryPreview();
       disConnectObs();
       freeInterval();
+      freeEventListener();
     };
   }, [props.fileSystem.files, props.previewMode]);
   useLayoutEffect(() => {

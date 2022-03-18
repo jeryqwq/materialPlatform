@@ -96,7 +96,11 @@ export const loadScript = function (
   // scriptEl.className = VIS_LIB_SCRIPT_CLASSNAME;
   // scriptEl.id = `vis-lib-${lib.name}`;
   // scriptEl.type = 'text/javascript';
-  // 代理window执行
+  // 代理window执行 ,
+  // 目前先不开启，cdn代码并非所有库都按照标准的umd格式来执行代码，受限于不同的打包插件
+  // 且有的第三方库会挂载多个全局变量，解析挂载的key和使用qiankun沙箱机制在某些库下都有问题
+  // 测试结果： 沙箱适配jq✅，， therejs 无法适配且全局挂载了多个变量(版本啥的全挂出去了，会导致解析异常)
+  // 并非按照标准走, vue: {version: xxx, ...}
   // new Function(`
   // (function(window){
   //   with(window){
