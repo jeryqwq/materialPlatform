@@ -18,6 +18,8 @@ import { observerEl, disConnectObs } from '@/utils/reload';
 import { RENDER_PREVIEW_MODE } from '@/contants';
 const { renderSandbox } = sandboxs;
 import styles from './index.less';
+import { batchConsole, freeConsole } from '@/sandbox/log';
+import patch from '@/sandbox/interval';
 declare global {
   interface Window {
     Vue: any;
@@ -36,7 +38,7 @@ let scale = 1;
 function Preview(
   props: {
     fileSystem: FileSys;
-    pushConsole: Function;
+    pushConsole: (_: { type: symbol; text: Array<any> }) => void;
     elObserverChange: (rect: Partial<DOMRect>, _: number) => void;
     previewMode: symbol;
   },
@@ -60,16 +62,20 @@ function Preview(
             500) -
             40) /
             width || 1;
-        ref.current.style.width = width + 'px';
-        ref.current.style.height = height + 'px';
         if (scale >= 1) {
           scale = 1;
         }
-        ref.current.style.transform = `scale(${scale})`;
-        transformCenterRef.current.style.width = width * scale + 'px';
-        transformCenterRef.current.style.height = height * scale + 'px';
-        hiddenRef.current.style.width = width * scale + 'px';
-        hiddenRef.current.style.height = height * scale + 'px';
+        const wrapStyle = {
+          width: width * scale + 'px',
+          height: height * scale + 'px',
+        };
+        setStyle(ref.current, {
+          width: width + 'px',
+          height: height + 'px',
+          transform: `scale(${scale})`,
+        });
+        setStyle(transformCenterRef.current, wrapStyle);
+        setStyle(hiddenRef.current, wrapStyle);
         rightDragRef.current && (rightDragRef.current.style.left = 'auto');
         return scale;
       }
@@ -93,8 +99,7 @@ function Preview(
   }, [props.previewMode]);
   useLayoutEffect(() => {
     // 渲染，编译相关
-    destoryPreview();
-    disConnectObs();
+
     const config = {
       files: fileTransform(props.fileSystem),
     };
@@ -218,37 +223,34 @@ function Preview(
     };
     const _loader = loader as { loadModule: Function };
     elWrap && makeShadowRaw(elWrap);
-    const prevConsole = { ...window.console };
-    window.console = {
-      ...prevConsole,
-      log(...strs: Array<string>) {
-        props.pushConsole({ type: CONSOLE_TYPES.USER, text: strs });
-      },
-      warn(...strs: Array<string>) {
-        props.pushConsole({ type: CONSOLE_TYPES.WARN, text: strs });
-      },
-      error(...strs: Array<string>) {
-        props.pushConsole({ type: CONSOLE_TYPES.ERROR, text: strs });
-      },
-    };
+    batchConsole(props.pushConsole);
+    const freeInterval = patch(window); // 定时器劫持， 热更新销毁上次创建的所有定时器
     // https://v3.cn.vuejs.org/api/global-api.html#createapp
     // https://v3.cn.vuejs.org/api/global-api.html#defineasynccomponent
     // props in vm.$attrs
-    Vue.createApp(
-      Vue.defineAsyncComponent(async () => {
-        const App = await _loader.loadModule('/index.vue', options);
-        const prevMounted = App.mounted;
-        return {
-          ...App,
-          mounted() {
-            prevMounted && prevMounted.call(this);
-            window.console = prevConsole;
-          },
-        };
-      }),
-      { a: 1 },
-    ).mount(elWrap?.shadowRoot);
-    return destoryPreview;
+    try {
+      Vue.createApp(
+        Vue.defineAsyncComponent(async () => {
+          const App = await _loader.loadModule('/index.vue', options);
+          const prevMounted = App.mounted;
+          return {
+            ...App,
+            mounted() {
+              prevMounted && prevMounted.call(this);
+              freeConsole();
+            },
+          };
+        }),
+        { a: 1 },
+      ).mount(elWrap?.shadowRoot);
+    } catch (error) {
+      freeConsole();
+    }
+    return function () {
+      destoryPreview();
+      disConnectObs();
+      freeInterval();
+    };
   }, [props.fileSystem.files, props.previewMode]);
   useLayoutEffect(() => {
     // 拖拽相关

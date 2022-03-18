@@ -1,7 +1,9 @@
+import interval from './interval';
 export default class ProxySandbox {
   sandboxRunning: boolean = false;
   proxy: Record<string, any>;
   addValue: Record<string, any>;
+  free: () => void;
   active() {
     this.sandboxRunning = true;
   }
@@ -17,6 +19,7 @@ export default class ProxySandbox {
     // VM73:3 Uncaught TypeError: Illegal invocation
     fakeWindow.document = window.document;
     fakeWindow.setTimeout = window.setTimeout.bind(window);
+    this.free = interval(fakeWindow as Window);
     const that = this;
     const proxy = new Proxy(fakeWindow, {
       get(target, prop) {
@@ -25,9 +28,8 @@ export default class ProxySandbox {
       set(target, prop, value) {
         console.log('set', prop);
         if (that.sandboxRunning) {
-          fakeWindow[prop] = value;
           that.addValue[prop as string] = value;
-          return true;
+          return Reflect.set(target, prop, value);
         }
         return false;
       },

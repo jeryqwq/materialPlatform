@@ -91,25 +91,27 @@ export const loadScript = function (
   }
   const beforeKeys = Object.keys(window);
   // const beforeWindowKeys = Object.keys(window)
-  // renderSandbox.active(); // 激活沙箱
-  const scriptEl = document.createElement('script');
-  scriptEl.className = VIS_LIB_SCRIPT_CLASSNAME;
-  scriptEl.id = `vis-lib-${lib.name}`;
-  scriptEl.type = 'text/javascript';
+  renderSandbox.active(); // 激活沙箱
+  // const scriptEl = document.createElement('script');
+  // scriptEl.className = VIS_LIB_SCRIPT_CLASSNAME;
+  // scriptEl.id = `vis-lib-${lib.name}`;
+  // scriptEl.type = 'text/javascript';
   // 代理window执行
+  new Function(`
+  (function(window){
+    with(window){
+      ${lib.target}
+    }
+  })(window.__RENDER_SANDBOX.proxy)
+  `)();
   // scriptEl.textContent = `
-  // (function(window){
   //   ${lib.target}
-  // })(window.__RENDER_SANDBOX.proxy)
   // `;
-  scriptEl.textContent = `
-    ${lib.target}
-  `;
   // scriptEl.src = lib.url
-  el.appendChild(scriptEl);
+  // el.appendChild(scriptEl);
   // scriptEl.onload = function () {
   const afterKeys = Object.keys(window);
-  // renderSandbox.inactive(); // 退出沙箱
+  renderSandbox.inactive(); // 退出沙箱
   let libKey = afterKeys.find((i) => !beforeKeys.includes(i));
   // if(!libKey?.length) { // 未找到库对应的key， 可能是该库并没有按照标准的umd格式，window再找一遍
   //   libKey =  Object.keys(window).find((i) => !beforeWindowKeys.includes(i));
