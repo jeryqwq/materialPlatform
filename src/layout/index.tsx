@@ -155,6 +155,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           location={{
             pathname,
           }}
+          menuHeaderRender={() => <span />}
           collapsedButtonRender={false}
           collapsed={true}
           contentStyle={{ margin: 0 }}
