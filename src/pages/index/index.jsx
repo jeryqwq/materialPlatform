@@ -9,6 +9,7 @@ import {
   Pagination,
   Tooltip,
   Modal,
+  message,
 } from 'antd';
 import { BarsOutlined, AppstoreFilled, PlusOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
@@ -34,7 +35,6 @@ import orangeState from '@/assets/img/orangeState.png';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 const { Search } = Input;
 const { Option } = Select;
-
 const Index = (props) => {
   const { history } = props;
   const [searchValue, setSearchValue] = useState('');
@@ -49,14 +49,18 @@ const Index = (props) => {
   const [itemInfo, setItemInfo] = useState({});
   const handleDelItem = function (item) {
     Modal.confirm({
-      title: 'Confirm',
+      title: '提示',
       icon: <ExclamationCircleOutlined />,
-      content: 'Bla bla ...',
+      content: '该操作即将删除该物料，是否继续？',
       okText: '确认',
       cancelText: '取消',
       async onOk() {
         const res = await doDeleteMaterial(item.id);
-        message.success('删除成功！');
+        res.data === 0
+          ? message.success('删除成功！')
+          : message.error('删除失败!');
+        getData();
+        return true;
       },
     });
   };
