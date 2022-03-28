@@ -1,5 +1,11 @@
-import { Input, Modal, Select, Switch } from 'antd';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Input, InputNumber, Modal, Select, Switch } from 'antd';
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import Console from './console';
 import styles from './index.less';
 import {
@@ -125,18 +131,24 @@ export default (props: { fileSystem: FileSys }) => {
               background: '#fafbfd',
             }}
           >
-            <Input
+            <InputNumber
               size="small"
               placeholder="宽度"
-              style={{ width: '60px', margin: '0 5px' }}
+              style={{ width: '80px', margin: '0 5px' }}
               value={width}
+              onChange={(val) => {
+                previewRef.current.resize(val, height);
+              }}
             />
             <span className={styles['font-label']}>X</span>
-            <Input
+            <InputNumber
               size="small"
               placeholder="高度"
               value={height}
               style={{ width: '60px', margin: '0 5px' }}
+              onChange={(val) => {
+                previewRef.current.resize(width, val);
+              }}
             />
             <span className={styles['font-label']}>({scale})</span>
             <Select
