@@ -52,7 +52,7 @@ export const makeShadowRaw = function (el: HTMLElement) {
     }
     const oldRootShadowRoot = el.shadowRoot;
     if (oldRootShadowRoot) {
-      console.log(`its already open shadow, attach shadow mutiple times`);
+      // console.log(`its already open shadow, attach shadow mutiple times`);
       return;
     } else {
       const shadowRoot = el.attachShadow({ mode: 'open' });

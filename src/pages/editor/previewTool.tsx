@@ -19,7 +19,6 @@ import { DIMENSIONS, DRAG_DIRECTION, RENDER_PREVIEW_MODE } from '@/contants';
 import { CONSOLE_TYPES } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';
 const { Option } = Select;
-
 declare type ConsoleType = { type: Symbol; text: Array<any> };
 export default (props: { fileSystem: FileSys }) => {
   const [previewMode, setPreviewMode] = useState(

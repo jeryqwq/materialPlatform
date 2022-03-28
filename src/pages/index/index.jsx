@@ -8,14 +8,21 @@ import {
   Space,
   Pagination,
   Tooltip,
+  Modal,
+  message,
 } from 'antd';
-import { BarsOutlined, AppstoreFilled } from '@ant-design/icons';
+import { BarsOutlined, AppstoreFilled, PlusOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import styles from './index.less';
 import BasicInfo from './basicInfo';
 import { SHOW_MODE, ACTION_TYPE, DEFAULT_PROJECT_LIST } from '@/contants';
-import { doQueryPage, doMaterialRemove, doMaterialOn } from '@/server';
+import {
+  doQueryPage,
+  doMaterialRemove,
+  doMaterialOn,
+  doDeleteMaterial,
+} from '@/server';
 import get from 'lodash/get';
 import copyIcon from '@/assets/img/copy.svg';
 import editorIcon from '@/assets/img/editor.svg';
@@ -25,9 +32,9 @@ import onIcon from '@/assets/img/on.svg';
 import defaultBg from '@/assets/img/defaultBg.png';
 import greenState from '@/assets/img/greenState.png';
 import orangeState from '@/assets/img/orangeState.png';
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 const { Search } = Input;
 const { Option } = Select;
-
 const Index = (props) => {
   const { history } = props;
   const [searchValue, setSearchValue] = useState('');
@@ -40,7 +47,23 @@ const Index = (props) => {
   const [total, setTotal] = useState(0);
   const [dataList, setDataList] = useState([]);
   const [itemInfo, setItemInfo] = useState({});
-
+  const handleDelItem = function (item) {
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '该操作即将删除该物料，是否继续？',
+      okText: '确认',
+      cancelText: '取消',
+      async onOk() {
+        const res = await doDeleteMaterial(item.id);
+        res.data === 0
+          ? message.success('删除成功！')
+          : message.error('删除失败!');
+        getData();
+        return true;
+      },
+    });
+  };
   const columns = [
     {
       title: '名称',
@@ -125,6 +148,13 @@ const Index = (props) => {
               }}
             >
               复制
+            </a>
+            <a
+              onClick={() => {
+                handleDelItem(record);
+              }}
+            >
+              删除
             </a>
           </Space>
         );
@@ -253,6 +283,16 @@ const Index = (props) => {
       {mode === SHOW_MODE.THUMBNAIL ? (
         <>
           <ul className="itemList">
+            <li className="itemBox" key={-1}>
+              <div className={styles['add-material']}>
+                <span className={styles['icon-wrap']}>
+                  <PlusOutlined
+                    onClick={handleCreateItem}
+                    style={{ fontSize: '60px' }}
+                  />
+                </span>
+              </div>
+            </li>
             {dataList.map((item, index) => {
               return (
                 <li className="itemBox" key={index}>
@@ -302,6 +342,16 @@ const Index = (props) => {
                         }}
                       >
                         <img src={copyIcon} alt="" />
+                      </div>
+                    </Tooltip>
+                    <Tooltip placement="topLeft" title="删除">
+                      <div
+                        className="iconBox"
+                        onClick={() => {
+                          handleDelItem(item);
+                        }}
+                      >
+                        <DeleteOutlined style={{ color: 'white' }} />
                       </div>
                     </Tooltip>
                   </div>

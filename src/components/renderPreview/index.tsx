@@ -77,7 +77,14 @@ function Preview(
         });
         setStyle(transformCenterRef.current, wrapStyle);
         setStyle(hiddenRef.current, wrapStyle);
-        rightDragRef.current && (rightDragRef.current.style.left = 'auto');
+        const tipLeft =
+          (previewWrap.current &&
+            previewWrap.current?.getBoundingClientRect().width / 2 +
+              ref.current.getBoundingClientRect().width / 2 +
+              5 +
+              'px') ||
+          '';
+        rightDragRef.current && (rightDragRef.current.style.left = tipLeft);
         return scale;
       }
     },

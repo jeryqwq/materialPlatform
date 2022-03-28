@@ -65,3 +65,8 @@ export const doMaterialCopy = (params) => {
 export const doMaterialDetail = (id) => {
   return axios.get(`/ssa/vis/material/query/detail?id=${id}`);
 };
+
+// 删除物料
+export const doDeleteMaterial = (id) => {
+  return axios.get(`/ssa/vis/material/delete?id=${id}`);
+};

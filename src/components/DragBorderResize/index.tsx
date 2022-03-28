@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { DRAG_DIRECTION } from '@/contants';
 import styles from './index.less';
 const EL_ATTRS = {
@@ -43,6 +43,7 @@ export default function (props: {
   let isStartMove = false;
   let closeMove: () => void, mouseMoveFn: (e: MouseEvent) => void;
   const elWrap = useRef<HTMLDivElement>(null);
+  const elLine = useRef<HTMLDivElement>(null);
   const { direction, min, children, style } = props;
   useLayoutEffect(() => {
     let prevX: number;
@@ -82,11 +83,17 @@ export default function (props: {
       document.body.removeEventListener('mousemove', mouseMoveFn);
     };
   });
+  const scrollBottom = useCallback((e: React.UIEvent<HTMLElement>) => {
+    // 适配滚动条情况
+    elLine.current &&
+      (elLine.current.style.bottom = -e?.currentTarget.scrollTop + 'px');
+  }, []);
   return (
     <div
       style={{ position: 'relative', ...style }}
       ref={elWrap}
       id={props?.domId}
+      onScroll={scrollBottom}
     >
       {children}
       <div
@@ -95,6 +102,7 @@ export default function (props: {
         onMouseDown={() => {
           isStartMove = true;
         }}
+        ref={elLine}
       ></div>
     </div>
   );

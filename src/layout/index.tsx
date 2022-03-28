@@ -155,6 +155,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           location={{
             pathname,
           }}
+          menuHeaderRender={() => <span />}
           collapsedButtonRender={false}
           collapsed={true}
           contentStyle={{ margin: 0 }}
@@ -204,7 +205,12 @@ function LayoutIndex(props: ReactPropsWithRouter) {
               {/* <Button type="primary" style={{ marginRight: 10 }}>
                 创建
               </Button> */}
-              <Dropdown overlay={dropDownMenu(versionList[curVersionIndex])}>
+              <Dropdown
+                overlay={dropDownMenu({
+                  ...materialInfo,
+                  ...versionList[curVersionIndex],
+                })}
+              >
                 <Button type="primary" style={{ marginRight: 50 }}>
                   保存 <DownOutlined />
                 </Button>
