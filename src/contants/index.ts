@@ -19,7 +19,7 @@ export const SHOW_MODE = {
   THUMBNAIL: 'thumbnail',
   LIST: 'list',
 };
-export const DEFAULT_PROJECT_LIST = ['光大A', '光大B', '光大C'];
+export const DEFAULT_PROJECT_LIST = ['画布', '仪表板'];
 
 export const DOWNLOAD_MESSAGE_TIP_KEY = 'DOWNLOAD_MESSAGE_TIP_KEY';
 export const INIT_PROJECT_KEY = 'INIT_PROJECT_KEY';
