@@ -78,7 +78,7 @@ export default (props: { fileSystem: FileSys }) => {
             alignItems: 'center',
           }}
         >
-          <Switch
+          {/* <Switch
             size="small"
             defaultChecked
             checkedChildren="沙箱"
@@ -98,7 +98,7 @@ export default (props: { fileSystem: FileSys }) => {
                 setIsShadow(true);
               }
             }}
-          />
+          /> */}
           <img
             src="/imgs/icon/triggerMobile.png"
             onClick={() => {
