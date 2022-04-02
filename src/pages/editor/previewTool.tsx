@@ -9,7 +9,7 @@ import React, {
 import Console from './console';
 import styles from './index.less';
 import { CreditCardOutlined } from '@ant-design/icons';
-import PreviewReact from '@/components/RenderPreview';
+import PreviewReact from './../../components/RenderPreview/index';
 import { DIMENSIONS, DRAG_DIRECTION, RENDER_PREVIEW_MODE } from '@/contants';
 import { CONSOLE_TYPES } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';

@@ -1,6 +1,6 @@
 import { TreeDataNode, Tree, Input, Upload, Modal } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import ContextMenu from '@/components/ContentMenu/index';
+import ContextMenu from './../../components/ContentMenu/index';
 const { DirectoryTree, TreeNode } = Tree;
 import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import styles from './index.less';
