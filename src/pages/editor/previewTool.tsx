@@ -8,13 +8,8 @@ import React, {
 } from 'react';
 import Console from './console';
 import styles from './index.less';
-import {
-  CreditCardOutlined,
-  ExclamationCircleOutlined,
-  MobileOutlined,
-} from '@ant-design/icons';
+import { CreditCardOutlined } from '@ant-design/icons';
 import PreviewReact from '@/components/RenderPreview';
-import { RenderOptions } from 'types';
 import { DIMENSIONS, DRAG_DIRECTION, RENDER_PREVIEW_MODE } from '@/contants';
 import { CONSOLE_TYPES } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';
@@ -41,7 +36,6 @@ export default (props: { fileSystem: FileSys }) => {
     setConsoleList([]);
   }, []);
   const [isMinoConsole, setIsMiniConsole] = useState(true);
-  const [isShadow, setIsShadow] = useState(true);
   const [scale, setScale] = useState(1);
   const [height, setHeight] = useState(400);
   const [width, setWidth] = useState(400);

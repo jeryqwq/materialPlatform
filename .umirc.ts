@@ -5,9 +5,6 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  alias: {
-    '@': '/src',
-  },
   plugins: [],
   routes: routes,
   fastRefresh: {},

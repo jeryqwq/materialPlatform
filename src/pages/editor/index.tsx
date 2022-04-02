@@ -5,7 +5,7 @@ import FileTree from './fileTree';
 import NpmTree from './npmDep';
 import Preview from './previewTool';
 import FileHistory from './fileHistory';
-import { Alert, Button, Spin, Upload } from 'antd';
+import { Alert, Upload } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { loadZipFile, resolveZipFile } from '@/utils/zip';
 import { CACHE_COMP_LOADED } from '@/contants/render';
@@ -57,7 +57,7 @@ class Editor extends React.Component<StoreProps, StateType> {
   render() {
     const store = this.props;
     const { fileSystem, themeStore, dependenciesStore } = store;
-    const { actives, files } = fileSystem as FileSys;
+    const { actives } = fileSystem as FileSys;
     return (
       <div className={styles['editer-wrap']}>
         <div className={styles['left-tree']}>
