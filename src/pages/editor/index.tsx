@@ -57,7 +57,7 @@ class Editor extends React.Component<StoreProps, StateType> {
   render() {
     const store = this.props;
     const { fileSystem, themeStore, dependenciesStore } = store;
-    const { actives } = fileSystem as FileSys;
+    const { actives, files } = fileSystem as FileSys; // 注： 这个files必须要拿到一次，做依赖收集
     return (
       <div className={styles['editer-wrap']}>
         <div className={styles['left-tree']}>
