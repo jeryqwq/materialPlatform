@@ -115,8 +115,9 @@ function LayoutIndex(props: ReactPropsWithRouter) {
   const [versionList, setVersionList] = useState<Array<any>>([]);
   const [refreshCount, setRefreshCount] = useState<number>(0); // hack
   const [curVersionIndex, setCurVersionIdx] = useState(-1);
-  const [materialInfo, setMaterilaInfo] =
-    useState<MaterialInfo>(fakeMaterialInfo);
+  const [materialInfo, setMaterilaInfo] = useState<MaterialInfo>(
+    fakeMaterialInfo,
+  );
   const { location } = useHistory();
   const id = (location as any).query.id;
   useEffect(() => {
@@ -155,7 +156,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           location={{
             pathname,
           }}
-          menuHeaderRender={() => <span />}
+          menuHeaderRender={() => <img src="/favicon.ico" />}
           collapsedButtonRender={false}
           collapsed={true}
           contentStyle={{ margin: 0 }}
@@ -171,7 +172,14 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           )}
           headerContentRender={() => (
             <div style={{ textAlign: 'center', fontSize: 16 }}>
-              <span style={{ float: 'left' }}>
+              <span
+                style={{
+                  float: 'left',
+                  lineHeight: '32px',
+                  marginTop: 8,
+                  borderRight: '1px solid #e3e8ee',
+                }}
+              >
                 <Dropdown
                   overlay={
                     <Menu
@@ -202,16 +210,20 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           )}
           rightContentRender={() => (
             <div>
-              {/* <Button type="primary" style={{ marginRight: 10 }}>
-                创建
-              </Button> */}
+              <Button
+                type="primary"
+                style={{ marginRight: 10 }}
+                onClick={() => props.history.push('/')}
+              >
+                退出
+              </Button>
               <Dropdown
                 overlay={dropDownMenu({
                   ...materialInfo,
                   ...versionList[curVersionIndex],
                 })}
               >
-                <Button type="primary" style={{ marginRight: 50 }}>
+                <Button type="primary" style={{ marginRight: 42 }}>
                   保存 <DownOutlined />
                 </Button>
               </Dropdown>

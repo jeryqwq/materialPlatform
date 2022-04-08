@@ -3,6 +3,7 @@ import {
   VIS_LIB_SCRIPT_CLASSNAME,
 } from '@/contants/render';
 import sandbox from '@/sandbox/sandboxInstance';
+import { isResource } from './file';
 const { renderSandbox } = sandbox;
 export const addStyles = function (
   content: string,
@@ -29,12 +30,12 @@ export const addStyles = function (
   }
 };
 export const destoryPreview = function () {
-  const styles = document.getElementsByClassName(
+  const styles = (document.getElementsByClassName(
     VIS_STYLE_CLASSNAME,
-  ) as unknown as Array<HTMLElement>;
-  const scripts = document.getElementsByClassName(
+  ) as unknown) as Array<HTMLElement>;
+  const scripts = (document.getElementsByClassName(
     VIS_LIB_SCRIPT_CLASSNAME,
-  ) as unknown as Array<HTMLElement>;
+  ) as unknown) as Array<HTMLElement>;
   styles.forEach((element) => {
     element.parentNode?.removeChild(element);
   });
@@ -156,4 +157,19 @@ export const setStyle = function (
     const element = props[key];
     el.style[key as 'margin'] = element;
   }
+};
+
+export const cssUrlHandler = function (
+  cssStr: string,
+  files: Record<string, FileDescription>,
+): string {
+  let res = cssStr;
+  for (const key in files) {
+    const item = files[key];
+    if (isResource(key)) {
+      // 是资源素材的话替换url为blob
+      res = item.url && res.replaceAll('.' + key, item.url);
+    }
+  }
+  return res;
 };

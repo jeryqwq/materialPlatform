@@ -75,7 +75,7 @@ const BasicInfo = (props) => {
       };
       try {
         let res = await doMaterialQueryVersions(params);
-        setOriginalVersionList([]);
+        setOriginalVersionList(res.data);
       } catch (error) {}
     }
     queryVersions();

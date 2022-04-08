@@ -24,7 +24,6 @@ export default (props: { fileSystem: FileSys }) => {
       type: CONSOLE_TYPES.WARN,
       text: [
         'VisCodeEditor Tip: Ctrl + S 热更新代码, 支持的文件类型: css, js, vue, html, mp4, mp3, mov, pdf, png, gif, jpeg, jpg,json ... ',
-        '未完成: js sandbox ',
       ],
     },
   ]);

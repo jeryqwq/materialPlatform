@@ -79,12 +79,32 @@
         cursor: pointer;
         overflow: hidden;
         margin: 0 24px 24px 0;
-
+        &.disabled {
+          position: relative;
+          &:after {
+            content: '已下架';
+            display: inline-block;
+            position: absolute;
+            width: 52px;
+            height: 24px;
+            background-color: #fa541c;
+            border-radius: 0px 0px 4px 4px;
+            color: white;
+            left: 10px;
+            text-align: center;
+            top: 0;
+          }
+        }
+        &:hover {
+          .action {
+            display: flex;
+          }
+        }
         .action {
           position: absolute;
           right: 16px;
           top: 16px;
-          display: flex;
+          display: none;
           .iconBox {
             width: 32px;
             height: 32px;

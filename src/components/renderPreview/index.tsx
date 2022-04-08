@@ -1,4 +1,4 @@
-import { makeShadowRaw, setStyle } from '@/utils/reload';
+import { cssUrlHandler, makeShadowRaw, setStyle } from '@/utils/reload';
 import { fileTransform, isResource } from '@/utils/file';
 import { addStyles, destoryPreview } from '@/utils/reload';
 import React, {
@@ -21,6 +21,7 @@ import styles from './index.less';
 import { batchConsole, freeConsole } from '@/sandbox/log';
 import patchInterval from '@/sandbox/interval';
 import patchEventListener from '@/sandbox/listener';
+import { files } from 'jszip';
 declare global {
   interface Window {
     Vue: any;
@@ -145,7 +146,8 @@ function Preview(
         },
       },
       addStyle: (context: string, scopedId: string, path: string) => {
-        addStyles(context, scopedId, { shadowEl: elWrap?.shadowRoot, path });
+        const replaceUrl = cssUrlHandler(context, props.fileSystem.files);
+        addStyles(replaceUrl, scopedId, { shadowEl: elWrap?.shadowRoot, path });
       },
       handleModule: async function (
         type: string,

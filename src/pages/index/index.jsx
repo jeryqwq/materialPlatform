@@ -82,7 +82,7 @@ const Index = (props) => {
       dataIndex: 'state',
       key: 'state',
       width: '15%',
-      render: (value) => {
+      render: (value, item) => {
         return (
           <div>
             <>
@@ -295,7 +295,10 @@ const Index = (props) => {
             </li>
             {dataList.map((item, index) => {
               return (
-                <li className="itemBox" key={index}>
+                <li
+                  className={item.state ? 'itemBox disabled' : 'itemBox '}
+                  key={index}
+                >
                   <div className="action">
                     <Tooltip placement="topLeft" title={'基础'}>
                       <div
@@ -356,7 +359,11 @@ const Index = (props) => {
                     </Tooltip>
                   </div>
                   <div className="thumbnail">
-                    <img src={item.thumbnail || defaultBg} alt="" />
+                    <img
+                      src={item.thumbnail || defaultBg}
+                      alt=""
+                      onClick={() => goEditorPage(item)}
+                    />
                   </div>
                   <div className="name">{item.name}</div>
                 </li>
