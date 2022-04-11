@@ -5,7 +5,7 @@ import FileTree from './fileTree';
 import NpmTree from './npmDep';
 import Preview from './previewTool';
 import FileHistory from './fileHistory';
-import { Alert, Upload } from 'antd';
+import { Alert, Upload, Empty } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { loadZipFile, resolveZipFile } from '@/utils/zip';
 import { CACHE_COMP_LOADED } from '@/contants/render';
@@ -99,54 +99,61 @@ class Editor extends React.Component<StoreProps, StateType> {
             onKeyDown={this.reloadFile}
             tabIndex={0}
           >
-            <FileHistory
-              activeKey={fileSystem.activeKey}
-              onChange={(val: string) => {
-                const curFile = [...fileSystem.actives].find(
-                  (i) => i.path === val,
-                ) as FileDescription;
-                fileSystem.activeFile(curFile);
-              }}
-              onRemove={(key: string) => {
-                fileSystem.files[key] &&
-                  fileSystem.removeActiveItem(fileSystem.files[key]);
-                [...fileSystem.actives].length &&
-                  fileSystem.activeFile([...fileSystem.actives][0]);
-              }}
-              panes={[...actives].map((i) => {
-                const Editor =
-                  CACHE_COMP_LOADED[i.type] ||
-                  function () {
-                    return (
-                      <Alert
-                        message="提示"
-                        type="info"
-                        closeText="目前暂不支持此类文件的预览， 请联系相关开发人员"
-                        style={{ marginTop: '50px' }}
-                      />
-                    );
-                  };
-                return {
-                  title: i.name,
-                  key: i.path,
-                  content: (
-                    <div style={{ height: 'calc( 100vh - 85px )' }}>
-                      <div className={styles['path-wrap']}>
-                        {renderFilePath(i.path)}
+            {fileSystem.activeKey.length ? (
+              <FileHistory
+                activeKey={fileSystem.activeKey}
+                onChange={(val: string) => {
+                  const curFile = [...fileSystem.actives].find(
+                    (i) => i.path === val,
+                  ) as FileDescription;
+                  fileSystem.activeFile(curFile);
+                }}
+                onRemove={(key: string) => {
+                  fileSystem.files[key] &&
+                    fileSystem.removeActiveItem(fileSystem.files[key]);
+                  [...fileSystem.actives].length &&
+                    fileSystem.activeFile([...fileSystem.actives][0]);
+                }}
+                panes={[...actives].map((i) => {
+                  const Editor =
+                    CACHE_COMP_LOADED[i.type] ||
+                    function () {
+                      return (
+                        <Alert
+                          message="提示"
+                          type="info"
+                          closeText="目前暂不支持此类文件的预览， 请联系相关开发人员"
+                          style={{ marginTop: '50px' }}
+                        />
+                      );
+                    };
+                  return {
+                    title: i.name,
+                    key: i.path,
+                    content: (
+                      <div style={{ height: 'calc( 100vh - 85px )' }}>
+                        <div className={styles['path-wrap']}>
+                          {renderFilePath(i.path)}
+                        </div>
+                        <Editor
+                          file={i}
+                          onChange={(i: FileDescription, val: string) => {
+                            fileSystem.updateFile(i.path, val);
+                          }}
+                          theme={themeStore.themeConfig.navTheme}
+                        />
                       </div>
-                      <Editor
-                        file={i}
-                        onChange={(i: FileDescription, val: string) => {
-                          fileSystem.updateFile(i.path, val);
-                        }}
-                        theme={themeStore.themeConfig.navTheme}
-                      />
-                    </div>
-                  ),
-                  style: { height: '100%' },
-                };
-              })}
-            />
+                    ),
+                    style: { height: '100%' },
+                  };
+                })}
+              />
+            ) : (
+              <Empty
+                description="暂无预览的文件，请在左侧文件区打开预览或者编辑"
+                imageStyle={{ marginTop: 40 }}
+              />
+            )}
           </div>
           <div className={styles['preview-wrap']}>
             <DragResize
