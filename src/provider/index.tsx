@@ -12,13 +12,6 @@ loader.config({
   // 不支持相对路径访问
   paths: { vs: location.origin + '/lib' },
 });
-import { ConfigProvider } from 'antd';
-
-ConfigProvider.config({
-  theme: {
-    primaryColor: 'red',
-  },
-});
 const stores = {
   fileSystem,
   themeStore,
