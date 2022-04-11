@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './../../node_modules/antd/dist/antd.variable.min.css';
 import fileSystem from '../stores/Fs';
 import { Provider } from 'mobx-react';
 import themeStore from '../stores/Theme';
@@ -12,7 +12,13 @@ loader.config({
   // 不支持相对路径访问
   paths: { vs: location.origin + '/lib' },
 });
+import { ConfigProvider } from 'antd';
 
+ConfigProvider.config({
+  theme: {
+    primaryColor: 'red',
+  },
+});
 const stores = {
   fileSystem,
   themeStore,
