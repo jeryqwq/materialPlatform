@@ -2,10 +2,13 @@ import { TreeDataNode, Tree, Input, Upload, Modal } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ContextMenu from '@/components/ContentMenu/index';
 const { DirectoryTree, TreeNode } = Tree;
-import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  ExclamationCircleOutlined,
+  SearchOutlined,
+  FileOutlined,
+} from '@ant-design/icons';
 import styles from './index.less';
 import DragResize from '@/components/DragBorderResize';
-import fileDafault from '@/contants/fileDefault';
 import {
   file2Tree,
   fileIcons,
@@ -72,8 +75,9 @@ function FileTree(props: { fileSystem: FileSys }) {
         id: genUid(),
       },
     };
-    curFileNode.switcherIcon =
-      fileIcons[(fileInfo.type as FileTypes) || 'common'];
+    curFileNode.switcherIcon = fileIcons[
+      (fileInfo.type as FileTypes) || 'common'
+    ] || <FileOutlined />;
     node?.children?.push(curFileNode);
     setFileData((origin) => new Array(...origin));
   }, []);

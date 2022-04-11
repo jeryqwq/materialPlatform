@@ -2,7 +2,7 @@ import { fileIcons, getFileType } from '@/utils/file';
 import { Button, Tabs } from 'antd';
 import { TabPane, TabPaneProps } from 'rc-tabs';
 import React, { useCallback } from 'react';
-import { PicLeftOutlined } from '@ant-design/icons';
+import { PicLeftOutlined, FileOutlined } from '@ant-design/icons';
 type TabPaneItem = TabPaneProps & {
   title: string;
   key: number | string;
@@ -50,7 +50,9 @@ function FileHistory(props: {
           <TabPane
             tab={
               <span>
-                {fileIcons[getFileType(pane.key as string).type as 'png']}
+                {fileIcons[getFileType(pane.key as string).type as 'png'] || (
+                  <FileOutlined />
+                )}
                 {pane.title}
               </span>
             }

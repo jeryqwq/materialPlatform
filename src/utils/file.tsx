@@ -4,6 +4,7 @@ import {
   PictureOutlined,
   FileOutlined,
   RightOutlined,
+  VideoCameraOutlined,
 } from '@ant-design/icons';
 import { INIT_PROJECT_KEY, MIME_TYPES } from '@/contants';
 export const isImgFile = function (path: string) {
@@ -157,7 +158,8 @@ export const fileIcons: Record<FileTypes, JSX.Element> = {
     />
   ),
   stylus: <FileOutlined />,
-  mp4: <FileOutlined />,
+  mp4: <VideoCameraOutlined />,
+  mov: <VideoCameraOutlined />,
   mp3: <FileOutlined />,
   pdf: <FileOutlined />,
   json: <FileOutlined />,
@@ -220,7 +222,7 @@ export const file2Tree = function (fileSystem: FileSys, projectName: string) {
       title: fileName,
       key: file?.path as string,
       file: file,
-      switcherIcon: fileIcons[file?.type || 'common'],
+      switcherIcon: fileIcons[file?.type || 'common'] || <FileOutlined />,
     };
     if (!curFolder) {
       // 根目录的文件
