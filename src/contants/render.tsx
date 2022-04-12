@@ -8,6 +8,7 @@ import CssPreview from '@/components/FilePreviews/css';
 import PdfPreview from '@/components/FilePreviews/pdf';
 import JsonPreview from '@/components/FilePreviews/json';
 import Mp4Preview from '@/components/FilePreviews/mp4';
+import JSXPreview from '@/components/FilePreviews/jsx';
 export const VIS_STYLE_CLASSNAME = 'vis-style-class-name';
 export const VIS_LIB_SCRIPT_CLASSNAME = 'vis-lib-script-class-name';
 export const RENDER_PREVIEW_TOOL = 'RENDER_PREVIEW_TOOL';
@@ -36,4 +37,5 @@ export const CACHE_COMP_LOADED: Record<
   mp4: Mp4Preview,
   json: JsonPreview,
   mov: Mp4Preview,
+  jsx: JSXPreview,
 };

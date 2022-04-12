@@ -30,16 +30,12 @@ export const addStyles = function (
   }
 };
 export const destoryPreview = function () {
-  const styles = (document.getElementsByClassName(
-    VIS_STYLE_CLASSNAME,
-  ) as unknown) as Array<HTMLElement>;
-  const scripts = (document.getElementsByClassName(
-    VIS_LIB_SCRIPT_CLASSNAME,
-  ) as unknown) as Array<HTMLElement>;
-  styles.forEach((element) => {
+  const styles = document.getElementsByClassName(VIS_STYLE_CLASSNAME);
+  const scripts = document.getElementsByClassName(VIS_LIB_SCRIPT_CLASSNAME);
+  [...styles].forEach((element) => {
     element.parentNode?.removeChild(element);
   });
-  scripts.forEach((element) => {
+  [...scripts].forEach((element) => {
     element.parentNode?.removeChild(element);
   });
 };

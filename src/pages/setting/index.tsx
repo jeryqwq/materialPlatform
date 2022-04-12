@@ -8,7 +8,13 @@ const manageIndex = (props: any) => {
     counterStore,
   } = props;
   console.log(props, '----function');
-  return <div>配置页面， 如入口文件，编辑器主题。。。</div>;
+  return (
+    <h3 style={{ margin: '20px' }}>
+      配置页面，
+      如入口文件，参考webpack相关配置，理论上一般常用配置都可以在浏览器内实现，
+      包括打包。
+    </h3>
+  );
 };
 
 export default manageIndex;
