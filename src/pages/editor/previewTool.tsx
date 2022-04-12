@@ -174,7 +174,7 @@ export default (props: { fileSystem: FileSys }) => {
             }}
             previewMode={previewMode}
             ref={previewRef}
-            mode={'VUE'}
+            mode={'REACT'}
           ></PreviewReact>
         </DragResize>
         <Console

@@ -1,4 +1,4 @@
-import { setStyle } from '@/utils/reload';
+import { makeShadowRaw, setStyle } from '@/utils/reload';
 import { fileTransform } from '@/utils/file';
 import { destoryPreview } from '@/utils/reload';
 import React, {
@@ -106,17 +106,30 @@ function Preview(
             1,
           );
       });
-    const { freeInterval, freeEventListener } = renderVue({
-      files: fileTransform(props.fileSystem),
-      entry: '/index.vue',
-      props: props,
-      el: elWrap as HTMLElement,
-    });
+    let freeInterval: () => any, freeEventListener: () => any;
+    elWrap && makeShadowRaw(elWrap);
+    if (props.mode === 'VUE') {
+      const frees = renderVue({
+        files: fileTransform(props.fileSystem),
+        entry: '/index.vue',
+        props: props,
+        el: elWrap as HTMLElement,
+      });
+      freeInterval = frees.freeInterval;
+      freeEventListener = frees.freeEventListener;
+    } else {
+      const frees = renderReact({
+        files: fileTransform(props.fileSystem),
+        entry: '/index.jsx',
+        props: props,
+        el: elWrap as HTMLElement,
+      });
+    }
     return function () {
       destoryPreview();
       disConnectObs();
-      freeInterval();
-      freeEventListener();
+      freeInterval && freeInterval();
+      freeEventListener && freeEventListener();
     };
   }, [props.fileSystem.files, props.previewMode]);
   useLayoutEffect(() => {

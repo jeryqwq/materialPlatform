@@ -1,7 +1,7 @@
 import { batchConsole, freeConsole } from '@/sandbox/log';
 import patchInterval from '@/sandbox/interval';
 import patchEventListener from '@/sandbox/listener';
-import { cssUrlHandler, makeShadowRaw } from '@/utils/reload';
+import { cssUrlHandler } from '@/utils/reload';
 import { isResource } from '@/utils/file';
 import { addStyles } from '@/utils/reload';
 import { RenderProps } from 'types';
@@ -119,7 +119,6 @@ export default function (arg: {
     },
   };
   const _loader = loader as { loadModule: Function };
-  el && makeShadowRaw(el);
   batchConsole(props.pushConsole);
   const freeInterval = patchInterval(window); // 定时器劫持， 热更新销毁上次创建的所有定时器
   const freeEventListener = patchEventListener(window);
