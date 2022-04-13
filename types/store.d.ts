@@ -24,6 +24,7 @@ declare enum FileTypes {
   TS = 'ts',
   JSON = 'json',
   MOV = 'mov',
+  JSX = 'jsx',
 }
 type FileTypesString = keyof typeof FileTypes;
 

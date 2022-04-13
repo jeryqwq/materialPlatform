@@ -157,6 +157,13 @@ export const fileIcons: Record<FileTypes, JSX.Element> = {
       style={{ height: '15px', transform: 'translateX(-5px)' }}
     />
   ),
+  jsx: (
+    <img
+      src="/imgs/icon/react.png"
+      alt="vue"
+      style={{ height: '15px', transform: 'translateX(-5px)' }}
+    />
+  ),
   stylus: <FileOutlined />,
   mp4: <VideoCameraOutlined />,
   mov: <VideoCameraOutlined />,

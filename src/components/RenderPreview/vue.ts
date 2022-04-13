@@ -1,6 +1,4 @@
 import { batchConsole, freeConsole } from '@/sandbox/log';
-import patchInterval from '@/sandbox/interval';
-import patchEventListener from '@/sandbox/listener';
 import { cssUrlHandler } from '@/utils/reload';
 import { isResource } from '@/utils/file';
 import { addStyles } from '@/utils/reload';
@@ -119,9 +117,7 @@ export default function (arg: {
     },
   };
   const _loader = loader as { loadModule: Function };
-  batchConsole(props.pushConsole);
-  const freeInterval = patchInterval(window); // 定时器劫持， 热更新销毁上次创建的所有定时器
-  const freeEventListener = patchEventListener(window);
+
   // https://v3.cn.vuejs.org/api/global-api.html#createapp
   // https://v3.cn.vuejs.org/api/global-api.html#defineasynccomponent
   // props in vm.$attrs
@@ -143,8 +139,4 @@ export default function (arg: {
   } catch (error) {
     freeConsole();
   }
-  return {
-    freeInterval,
-    freeEventListener,
-  };
 }

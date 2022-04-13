@@ -14,7 +14,10 @@ import { observerEl, disConnectObs } from '@/utils/reload';
 import { RENDER_PREVIEW_MODE } from '@/contants';
 import styles from './index.less';
 import renderVue from './vue';
+import patchInterval from '@/sandbox/interval';
+import patchEventListener from '@/sandbox/listener';
 import renderReact from './react';
+import { batchConsole } from '@/sandbox/log';
 declare global {
   interface Window {
     Vue: any;
@@ -106,20 +109,21 @@ function Preview(
             1,
           );
       });
-    let freeInterval: () => any, freeEventListener: () => any;
     elWrap && makeShadowRaw(elWrap);
-    if (props.mode === 'VUE') {
-      const frees = renderVue({
-        files: fileTransform(props.fileSystem),
+    const freeInterval = patchInterval(window); // 定时器劫持， 热更新销毁上次创建的所有定时器
+    const freeEventListener = patchEventListener(window);
+    batchConsole(props.pushConsole);
+    const files = fileTransform(props.fileSystem);
+    if (files['/index.vue']) {
+      renderVue({
+        files,
         entry: '/index.vue',
         props: props,
         el: elWrap as HTMLElement,
       });
-      freeInterval = frees.freeInterval;
-      freeEventListener = frees.freeEventListener;
-    } else {
-      const frees = renderReact({
-        files: fileTransform(props.fileSystem),
+    } else if (files['/index.jsx']) {
+      renderReact({
+        files,
         entry: '/index.jsx',
         props: props,
         el: elWrap as HTMLElement,
@@ -128,8 +132,8 @@ function Preview(
     return function () {
       destoryPreview();
       disConnectObs();
-      freeInterval && freeInterval();
-      freeEventListener && freeEventListener();
+      freeInterval();
+      freeEventListener();
     };
   }, [props.fileSystem.files, props.previewMode]);
   useLayoutEffect(() => {
