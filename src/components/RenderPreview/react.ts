@@ -48,5 +48,8 @@ export default function (arg: {
     },
   };
   const App = load(config);
-  ReactDOM.render(React.createElement(App.default, { a: 1 }), el?.shadowRoot);
+  ReactDOM.render(
+    React.createElement(App.default as any, { a: 1 }),
+    el?.shadowRoot,
+  );
 }

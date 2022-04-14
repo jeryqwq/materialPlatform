@@ -55,9 +55,9 @@ export default (props: { fileSystem: FileSys }) => {
     setIsMiniConsole(!isMinoConsole);
   }, [isMinoConsole]);
 
-  const resizeHandle = useCallback(() => {
-    const scale = previewRef.current.resize(width, height);
-  }, [width, height]);
+  // const resizeHandle = useCallback(() => {
+  //   const scale = previewRef.current.resize(width, height);
+  // }, [width, height]);
   return (
     <div style={{ height: '100%' }} className={styles['preview-containter']}>
       <div className={styles['util-btn']}>

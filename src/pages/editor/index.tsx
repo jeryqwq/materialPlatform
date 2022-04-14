@@ -12,7 +12,8 @@ import { CACHE_COMP_LOADED } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';
 import { DRAG_DIRECTION } from '@/contants';
 import { renderFilePath } from '@/utils/file';
-
+import { ReactPropsWithRouter } from 'types';
+import ProjectConfig from './projectConfig';
 type StateType = {
   inputVal: string;
 };
@@ -20,7 +21,7 @@ type StoreProps = {
   fileSystem: FileSys;
   themeStore: ThemeStore;
   dependenciesStore: Dependencies;
-};
+} & ReactPropsWithRouter;
 
 @inject('fileSystem', 'themeStore', 'dependenciesStore')
 @observer
@@ -56,8 +57,11 @@ class Editor extends React.Component<StoreProps, StateType> {
   };
   render() {
     const store = this.props;
+    const { location, history } = this.props;
     const { fileSystem, themeStore, dependenciesStore } = store;
     const { actives, files } = fileSystem as FileSys; // 注： 这个files必须要拿到一次，做依赖收集
+    const { type } = location.query as { type: string | [] };
+
     return (
       <div className={styles['editer-wrap']}>
         <div className={styles['left-tree']}>
@@ -71,26 +75,35 @@ class Editor extends React.Component<StoreProps, StateType> {
             min={0}
             max={Infinity}
           >
-            <div className={styles['resource-header']}>
-              资源管理器
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                }}
-              >
-                <Upload onChange={this.uplaodZipFile} fileList={[]}>
-                  <UploadOutlined />
-                </Upload>
-                <DownloadOutlined
-                  style={{ margin: '0 5px' }}
-                  onClick={() => resolveZipFile(fileSystem.files, 'files.zip')}
-                />
-              </div>
-            </div>
-            <FileTree fileSystem={fileSystem} />
-            <NpmTree dep={dependenciesStore} />
+            {type === 'manage' ||
+            (type && type[type.length - 1] === 'manage') ? (
+              <ProjectConfig />
+            ) : (
+              <>
+                <div className={styles['resource-header']}>
+                  资源管理器
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Upload onChange={this.uplaodZipFile} fileList={[]}>
+                      <UploadOutlined />
+                    </Upload>
+                    <DownloadOutlined
+                      style={{ margin: '0 5px' }}
+                      onClick={() =>
+                        resolveZipFile(fileSystem.files, 'files.zip')
+                      }
+                    />
+                  </div>
+                </div>
+                <FileTree fileSystem={fileSystem} />
+                <NpmTree dep={dependenciesStore} />
+              </>
+            )}
           </DragResize>
         </div>
         <div className={styles['content-wrap']}>

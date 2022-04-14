@@ -13,7 +13,7 @@
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,jsx,less,md,json}": [
+    "*.{jsx,less}": [
       "prettier --write"
     ],
     "*.ts?(x)": [
@@ -32,7 +32,7 @@
     "mobx-react": "^7.2.1",
     "moment": "^2.29.1",
     "react": "17.x",
-    "react-browser-loader": "^1.0.1",
+    "react-browser-loader": "^1.0.2",
     "react-contextmenu": "^2.14.0",
     "react-dom": "17.x",
     "umi": "^3.5.20",

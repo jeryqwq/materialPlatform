@@ -20,6 +20,11 @@ export default defineConfig({
       changeOrigin: true,
     },
   },
+  chainWebpack(memo, { env, webpack, createCSSRule }) {
+    // 设置 alias
+    // memo.plugins.set('monaco',new MonacoWebpackPlugin())
+    // memo.plugins.delete('prefetch')
+  },
   locale: {
     default: 'zh-CN',
   },

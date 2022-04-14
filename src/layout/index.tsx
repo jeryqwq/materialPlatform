@@ -164,7 +164,13 @@ function LayoutIndex(props: ReactPropsWithRouter) {
           menuItemRender={(item, dom) => (
             <a
               onClick={() => {
-                props.history.push(`${item.path}`);
+                const params = new URLSearchParams(props.location.query as {});
+                item.path &&
+                  props.history.replace({
+                    pathname: '/editor',
+                    search:
+                      params.toString() + `&type=${item.path.replace('/', '')}`,
+                  });
               }}
             >
               {dom}

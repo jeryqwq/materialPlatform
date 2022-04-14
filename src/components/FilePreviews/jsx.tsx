@@ -6,6 +6,11 @@ function Editer(props: {
   theme: 'light' | 'dark' | 'realdark';
 }) {
   const { file, onChange, theme } = props;
+  function handleEditorDidMount(editor: any, monaco: any) {
+    // here is the editor instance
+    // you can store it in `useRef` for further usage
+    console.dir(editor);
+  }
   function handleEditorChange(value: any, event: any) {
     onChange(file, value);
   }
@@ -16,6 +21,7 @@ function Editer(props: {
       defaultValue={typeof file.target === 'string' ? file.target : ''}
       theme={theme === 'light' ? 'light' : 'vs-dark'}
       onChange={handleEditorChange}
+      onMount={handleEditorDidMount}
     />
   );
 }
