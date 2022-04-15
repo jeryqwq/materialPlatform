@@ -112,7 +112,6 @@ function Preview(
     elWrap && makeShadowRaw(elWrap);
     const freeInterval = patchInterval(window); // 定时器劫持， 热更新销毁上次创建的所有定时器
     const freeEventListener = patchEventListener(window);
-    batchConsole(props.pushConsole);
     const files = fileTransform(props.fileSystem);
     if (files['/index.vue']) {
       renderVue({

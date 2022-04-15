@@ -71,11 +71,12 @@ export default function (arg: {
     getFile(url: string, options: any) {
       if (url === 'scss') return;
       return (
-        files[url] ||
-        props.pushConsole({
-          type: CONSOLE_TYPES.ERROR,
-          text: [`cant reslove url or module '${url}' `],
-        })
+        files[url] || console.error(`cant reslove url or module '${url}'`)
+        // ||
+        // props.pushConsole({
+        //   type: CONSOLE_TYPES.ERROR,
+        //   text: [`cant reslove url or module '${url}' `],
+        // })
       );
     },
     log(type: string, err: string) {

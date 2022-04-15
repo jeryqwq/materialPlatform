@@ -46,7 +46,7 @@ declare type MaterialInfo = {
 
 declare type RenderProps = {
   fileSystem: FileSys;
-  pushConsole: (_: { type: symbol; text: Array<any> }) => void;
+  pushConsole: (_: { id: string; method: string; data: string[] }) => void;
   elObserverChange: (rect: Partial<DOMRect>, _: number) => void;
   previewMode: symbol;
   mode: 'VUE' | 'REACT';

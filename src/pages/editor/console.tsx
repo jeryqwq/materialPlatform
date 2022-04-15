@@ -8,6 +8,7 @@ import {
   WarningOutlined,
   CloseCircleOutlined,
 } from '@ant-design/icons';
+import { Hook, Console as MyConsole } from 'console-feed';
 
 import styles from './index.less';
 declare type ConsolleProps = {
@@ -38,24 +39,15 @@ const colors = {
   },
 };
 
-declare type ConsoleType = 'All' | 'Info' | 'Warn' | 'Error';
+declare type ConsoleType = 'all' | 'log' | 'info' | 'warn' | 'error';
 function Console(props: ConsolleProps) {
-  const { consoleList } = props;
-  const [consoleType, setConsoleType] = useState<ConsoleType>('All');
+  const { consoleList = [] } = props;
+  const [consoleType, setConsoleType] = useState<ConsoleType>('all');
   const [isOpenConsole, setIsOpen] = useState<boolean>(true);
-  const consoles = consoleList.filter((i) => i.type === CONSOLE_TYPES.USER);
-  const warns = consoleList.filter((i) => i.type === CONSOLE_TYPES.WARN);
-  const errors = consoleList.filter((i) => i.type === CONSOLE_TYPES.ERROR);
-  let curList =
-    consoleType === 'All'
+  const curList =
+    consoleType === 'all'
       ? consoleList
-      : consoleType === 'Info'
-      ? consoles
-      : consoleType === 'Warn'
-      ? warns
-      : consoleType === 'Error'
-      ? errors
-      : [];
+      : consoleList.filter((i) => i.method === consoleType);
   return (
     <div className={styles['console-wrap']}>
       <div className={styles['console-header']}>
@@ -74,7 +66,7 @@ function Console(props: ConsolleProps) {
             onClick={() => props.resetConsole()}
           />
           <Select
-            defaultValue="All"
+            defaultValue="all"
             style={{ width: 80, margin: '0 5px 0 10px' }}
             size={'small'}
             showArrow={false}
@@ -82,10 +74,10 @@ function Console(props: ConsolleProps) {
               setConsoleType(val);
             }}
           >
-            <Option value="All">All</Option>
-            <Option value="Info">Info</Option>
-            <Option value="Warn">Warn</Option>
-            <Option value="Error">Error</Option>
+            <Option value="all">All</Option>
+            <Option value="info">Info</Option>
+            <Option value="warn">Warn</Option>
+            <Option value="error">Error</Option>
           </Select>
           <DownOutlined
             onClick={() => {
@@ -100,7 +92,8 @@ function Console(props: ConsolleProps) {
         </div>
       </div>
       <div className={styles['console-list-wrap']}>
-        {curList &&
+        <MyConsole logs={curList} variant="light" />
+        {/* {curList &&
           curList.map((i, idx) => (
             <div
               className={styles['console-item']}
@@ -111,7 +104,7 @@ function Console(props: ConsolleProps) {
               {colors[i.type].icon}
               {i.text.map((i: any) => JSON.stringify(i)).join(',')}
             </div>
-          ))}
+          ))} */}
       </div>
     </div>
   );

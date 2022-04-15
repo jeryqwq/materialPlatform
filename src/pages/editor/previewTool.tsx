@@ -13,20 +13,24 @@ import PreviewReact from '@/components/RenderPreview';
 import { DIMENSIONS, DRAG_DIRECTION, RENDER_PREVIEW_MODE } from '@/contants';
 import { CONSOLE_TYPES } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';
+import { Hook } from 'console-feed';
 const { Option } = Select;
-declare type ConsoleType = { type: Symbol; text: Array<any> };
+declare type ConsoleType = { method: string; data: any[]; id: string };
 export default (props: { fileSystem: FileSys }) => {
   const [previewMode, setPreviewMode] = useState(
     RENDER_PREVIEW_MODE.FULL_SCREEN,
   );
-  const [consoleList, setConsoleList] = useState<Array<ConsoleType>>([
-    {
-      type: CONSOLE_TYPES.WARN,
-      text: [
-        'VisCodeEditor Tip: Ctrl + S 热更新代码, 支持的文件类型: css, js, vue, html, mp4, mp3, mov, pdf, png, gif, jpeg, jpg,json ... ',
-      ],
-    },
-  ]);
+
+  const [consoleList, setConsoleList] = useState<Array<ConsoleType>>([]);
+  useEffect(() => {
+    Hook(
+      window.console,
+      (log) => {
+        setConsoleList((val) => [...val, log as ConsoleType]);
+      },
+      false,
+    );
+  }, []);
   const [dimension, setDimension] = useState('');
   const pushConsole = (prop: ConsoleType) => {
     setConsoleList((val) => val.concat(prop));
