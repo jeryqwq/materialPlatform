@@ -118,12 +118,12 @@ export default function (arg: {
     },
   };
   const _loader = loader as { loadModule: Function };
-
+  let vm;
   // https://v3.cn.vuejs.org/api/global-api.html#createapp
   // https://v3.cn.vuejs.org/api/global-api.html#defineasynccomponent
   // props in vm.$attrs
   try {
-    Vue.createApp(
+    vm = Vue.createApp(
       Vue.defineAsyncComponent(async () => {
         const App = await _loader.loadModule(entry, options);
         const prevMounted = App.mounted;
@@ -140,4 +140,5 @@ export default function (arg: {
   } catch (error) {
     freeConsole();
   }
+  return vm;
 }

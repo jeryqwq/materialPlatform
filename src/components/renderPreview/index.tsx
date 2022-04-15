@@ -30,6 +30,8 @@ let prevY: number;
 let dragType: 'RIGHT' | 'BOTTOM' = 'RIGHT';
 let isStartDrag = false;
 let scale = 1;
+let vm: any;
+
 function Preview(
   props: RenderProps,
   pref: React.ForwardedRef<Record<string, any>>,
@@ -77,6 +79,9 @@ function Preview(
         return scale;
       }
     },
+    getVm: function () {
+      return vm;
+    },
   }));
   useEffect(() => {
     if (props.previewMode === RENDER_PREVIEW_MODE.FULL_SCREEN) {
@@ -114,14 +119,14 @@ function Preview(
     const freeEventListener = patchEventListener(window);
     const files = fileTransform(props.fileSystem);
     if (files['/index.vue']) {
-      renderVue({
+      vm = renderVue({
         files,
         entry: '/index.vue',
         props: props,
         el: elWrap as HTMLElement,
       });
     } else if (files['/index.jsx']) {
-      renderReact({
+      vm = renderReact({
         files,
         entry: '/index.jsx',
         props: props,

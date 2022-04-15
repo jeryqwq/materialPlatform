@@ -185,6 +185,7 @@ export default (props: { fileSystem: FileSys }) => {
           consoleList={consoleList}
           resetConsole={resetConsole}
           miniConsole={miniConsole}
+          vm={previewRef.current.getVm && previewRef.current.getVm()}
         />
       </div>
     </div>

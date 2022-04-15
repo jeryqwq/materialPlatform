@@ -8,42 +8,24 @@ import {
   WarningOutlined,
   CloseCircleOutlined,
 } from '@ant-design/icons';
-import { Hook, Console as MyConsole } from 'console-feed';
+import { Console as MyConsole } from 'console-feed';
 
 import styles from './index.less';
+import VueDevTool from './vueDevTool';
 declare type ConsolleProps = {
   consoleList: Array<any>;
   resetConsole: Function;
   miniConsole: () => void;
+  vm: any;
 };
 const { Option } = Select;
 
-const colors = {
-  [CONSOLE_TYPES.USER]: {
-    color: 'gray',
-    borderBottom: 'solid 1px rgba(128, 128, 128, 0.35)',
-    backgroundColor: '#f3eeee',
-    icon: <InfoCircleOutlined style={{ margin: '0 5px' }} />,
-  },
-  [CONSOLE_TYPES.WARN]: {
-    color: '#f38115',
-    borderBottom: 'solid 1px rgb(245 199 155)',
-    backgroundColor: '#fbe0c182',
-    icon: <WarningOutlined style={{ margin: '0 5px' }} />,
-  },
-  [CONSOLE_TYPES.ERROR]: {
-    color: '#e72828',
-    borderBottom: 'solid 1px #f3a2a2',
-    backgroundColor: '#f3dbdb',
-    icon: <CloseCircleOutlined style={{ margin: '0 5px' }} />,
-  },
-};
-
 declare type ConsoleType = 'all' | 'log' | 'info' | 'warn' | 'error';
 function Console(props: ConsolleProps) {
-  const { consoleList = [] } = props;
+  const { consoleList = [], vm } = props;
   const [consoleType, setConsoleType] = useState<ConsoleType>('all');
   const [isOpenConsole, setIsOpen] = useState<boolean>(true);
+  const [curMode, setCurMode] = useState<'DEV_TOOL' | 'CONSOLE'>('CONSOLE');
   const curList =
     consoleType === 'all'
       ? consoleList
@@ -58,7 +40,26 @@ function Console(props: ConsolleProps) {
             top: 6,
           }}
         >
-          Console
+          <span
+            style={{ color: curMode === 'CONSOLE' ? '#333' : '#999' }}
+            onClick={() => setCurMode('CONSOLE')}
+          >
+            {' '}
+            Console
+          </span>
+        </Badge>
+        <Badge
+          style={{
+            right: -20,
+            top: 6,
+          }}
+        >
+          <span
+            style={{ color: curMode === 'DEV_TOOL' ? '#333' : '#999' }}
+            onClick={() => setCurMode('DEV_TOOL')}
+          >
+            DevTool
+          </span>
         </Badge>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <ClearOutlined
@@ -92,7 +93,11 @@ function Console(props: ConsolleProps) {
         </div>
       </div>
       <div className={styles['console-list-wrap']}>
-        <MyConsole logs={curList} variant="light" />
+        {curMode === 'CONSOLE' ? (
+          <MyConsole logs={curList} variant="light" />
+        ) : (
+          <VueDevTool vm={vm} />
+        )}
         {/* {curList &&
           curList.map((i, idx) => (
             <div
