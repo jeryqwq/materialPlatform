@@ -1,5 +1,6 @@
 import { defineConfig } from 'umi';
 import routes from './src/routes';
+const isProd = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
   nodeModulesTransform: {
@@ -20,8 +21,11 @@ export default defineConfig({
       changeOrigin: true,
     },
   },
+  extraBabelPlugins: [isProd ? 'transform-remove-console' : ''],
   chainWebpack(memo, { env, webpack, createCSSRule }) {
     // 设置 alias
+    if (env === 'production') {
+    }
     // memo.plugins.set('monaco',new MonacoWebpackPlugin())
     // memo.plugins.delete('prefetch')
   },
