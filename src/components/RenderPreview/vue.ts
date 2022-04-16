@@ -123,20 +123,19 @@ export default function (arg: {
   // https://v3.cn.vuejs.org/api/global-api.html#defineasynccomponent
   // props in vm.$attrs
   try {
-    vm = Vue.createApp(
-      Vue.defineAsyncComponent(async () => {
-        const App = await _loader.loadModule(entry, options);
-        const prevMounted = App.mounted;
-        return {
-          ...App,
-          mounted() {
-            prevMounted && prevMounted.call(this);
-            freeConsole();
-          },
-        };
-      }),
-      { a: 1 },
-    ).mount(el?.shadowRoot);
+    const comp = Vue.defineAsyncComponent(async () => {
+      const App = await _loader.loadModule(entry, options);
+      const prevMounted = App.mounted;
+      return {
+        ...App,
+        mounted() {
+          prevMounted && prevMounted.call(this);
+          freeConsole();
+        },
+      };
+    });
+
+    vm = Vue.createApp(comp, { a: 1 }).mount(el?.shadowRoot);
   } catch (error) {
     freeConsole();
   }

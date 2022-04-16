@@ -11,7 +11,7 @@ import {
 import { Console as MyConsole } from 'console-feed';
 
 import styles from './index.less';
-import VueDevTool from './vueDevTool';
+import VueDevTool from './devTool';
 declare type ConsolleProps = {
   consoleList: Array<any>;
   resetConsole: Function;
@@ -98,18 +98,6 @@ function Console(props: ConsolleProps) {
         ) : (
           <VueDevTool vm={vm} />
         )}
-        {/* {curList &&
-          curList.map((i, idx) => (
-            <div
-              className={styles['console-item']}
-              style={colors[i.type]}
-              title={JSON.stringify(i.text)}
-              key={idx}
-            >
-              {colors[i.type].icon}
-              {i.text.map((i: any) => JSON.stringify(i)).join(',')}
-            </div>
-          ))} */}
       </div>
     </div>
   );
