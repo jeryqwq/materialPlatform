@@ -17,6 +17,7 @@ declare type ConsolleProps = {
   resetConsole: Function;
   miniConsole: () => void;
   vm: any;
+  files: Record<string, FileDescription>;
 };
 const { Option } = Select;
 
@@ -96,7 +97,7 @@ function Console(props: ConsolleProps) {
         {curMode === 'CONSOLE' ? (
           <MyConsole logs={curList} variant="light" />
         ) : (
-          <VueDevTool vm={vm} />
+          <VueDevTool vm={vm} files={props.files} />
         )}
       </div>
     </div>

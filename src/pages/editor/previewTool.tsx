@@ -14,6 +14,7 @@ import { DIMENSIONS, DRAG_DIRECTION, RENDER_PREVIEW_MODE } from '@/contants';
 import { CONSOLE_TYPES } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';
 import { Hook } from 'console-feed';
+import { files } from 'jszip';
 const { Option } = Select;
 declare type ConsoleType = { method: string; data: any[]; id: string };
 export default (props: { fileSystem: FileSys }) => {
@@ -30,7 +31,7 @@ export default (props: { fileSystem: FileSys }) => {
       },
       false,
     );
-  }, []);
+  }, [props.fileSystem.files]);
   const [dimension, setDimension] = useState('');
   const pushConsole = (prop: ConsoleType) => {
     setConsoleList((val) => val.concat(prop));
@@ -186,6 +187,7 @@ export default (props: { fileSystem: FileSys }) => {
           resetConsole={resetConsole}
           miniConsole={miniConsole}
           vm={previewRef.current.getVm && previewRef.current.getVm()}
+          files={props.fileSystem.files}
         />
       </div>
     </div>

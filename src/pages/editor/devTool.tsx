@@ -8,13 +8,16 @@ import {
   useRef,
   useState,
 } from 'react';
-import devTool from 'vue-devtool';
-function VueDevTool(props: { vm: any }) {
+import devTool from 'vue-vconsole-devtools';
+function VueDevTool(props: {
+  vm: any;
+  files: Record<string, FileDescription>;
+}) {
   const { vm } = props;
   const [logs, setLogs] = useState<
     Array<{ id: string; method: string; data: any[] }>
   >([]);
-  const el = useRef<HTMLDivElement>();
+  const el = useRef<HTMLIFrameElement>();
   // window.vm = vm
   // const tabComp = useCallback((comp: any) => {
   //   const attrs = { id: 'attrs', method: 'log', data: [comp.$attrs]}
@@ -23,11 +26,12 @@ function VueDevTool(props: { vm: any }) {
   //   setLogs([attrs, data, el])
   // }, [])
   useLayoutEffect(() => {
-    // tabComp(vm)
-    console.log('devtool');
     const wrap = el.current;
-    devTool.initPlugin(wrap);
-  }, []);
+    if (wrap && wrap.contentWindow) {
+      wrap.contentWindow.document.body.innerHTML = '';
+      devTool.initPlugin(wrap);
+    }
+  }, [props.files]);
   return (
     <iframe
       className={styles['dev-wrap']}
