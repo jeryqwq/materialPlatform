@@ -198,7 +198,7 @@ function Preview(
       style={{ margin: '0 10px' }}
     >
       {/* trigger */}
-      <div ref={refWrap} style={{ margin: '0 auto' }}>
+      <div ref={refWrap} style={{ margin: '0 auto', overflow: 'scroll' }}>
         <div
           ref={transformCenterRef}
           style={

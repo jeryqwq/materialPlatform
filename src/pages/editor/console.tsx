@@ -42,10 +42,12 @@ function Console(props: ConsolleProps) {
           }}
         >
           <span
-            style={{ color: curMode === 'CONSOLE' ? '#333' : '#999' }}
+            style={{
+              color: curMode === 'CONSOLE' ? '#333' : '#999',
+              cursor: 'pointer',
+            }}
             onClick={() => setCurMode('CONSOLE')}
           >
-            {' '}
             Console
           </span>
         </Badge>
@@ -56,41 +58,50 @@ function Console(props: ConsolleProps) {
           }}
         >
           <span
-            style={{ color: curMode === 'DEV_TOOL' ? '#333' : '#999' }}
+            style={{
+              color: curMode === 'DEV_TOOL' ? '#333' : '#999',
+              cursor: 'pointer',
+            }}
             onClick={() => setCurMode('DEV_TOOL')}
           >
             DevTool
           </span>
         </Badge>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <ClearOutlined
-            style={{ cursor: 'pointer' }}
-            onClick={() => props.resetConsole()}
-          />
-          <Select
-            defaultValue="all"
-            style={{ width: 80, margin: '0 5px 0 10px' }}
-            size={'small'}
-            showArrow={false}
-            onChange={(val: ConsoleType) => {
-              setConsoleType(val);
-            }}
-          >
-            <Option value="all">All</Option>
-            <Option value="info">Info</Option>
-            <Option value="warn">Warn</Option>
-            <Option value="error">Error</Option>
-          </Select>
-          <DownOutlined
-            onClick={() => {
-              props.miniConsole();
-              setIsOpen((val) => !val);
-            }}
-            style={{
-              transform: `rotate(${isOpenConsole ? 0 : 180}deg)`,
-              transition: 'all .5s',
-            }}
-          />
+        <div style={{ display: 'flex', alignItems: 'center', width: 120 }}>
+          {curMode === 'CONSOLE' ? (
+            <>
+              <ClearOutlined
+                style={{ cursor: 'pointer' }}
+                onClick={() => props.resetConsole()}
+              />
+              <Select
+                defaultValue="all"
+                style={{ width: 80, margin: '0 5px 0 10px' }}
+                size={'small'}
+                showArrow={false}
+                onChange={(val: ConsoleType) => {
+                  setConsoleType(val);
+                }}
+              >
+                <Option value="all">All</Option>
+                <Option value="info">Info</Option>
+                <Option value="warn">Warn</Option>
+                <Option value="error">Error</Option>
+              </Select>
+              <DownOutlined
+                onClick={() => {
+                  props.miniConsole();
+                  setIsOpen((val) => !val);
+                }}
+                style={{
+                  transform: `rotate(${isOpenConsole ? 0 : 180}deg)`,
+                  transition: 'all .5s',
+                }}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <div className={styles['console-list-wrap']}>
