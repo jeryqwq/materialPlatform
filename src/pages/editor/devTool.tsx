@@ -7,9 +7,7 @@ function VueDevTool(props: {
   files: Record<string, FileDescription>;
 }) {
   const { vm } = props;
-  const [logs, setLogs] = useState<
-    Array<{ id: string; method: string; data: any[] }>
-  >([]);
+
   const el = useRef<HTMLIFrameElement>();
   // window.vm = vm
   // const tabComp = useCallback((comp: any) => {
@@ -22,21 +20,16 @@ function VueDevTool(props: {
     const wrap = el.current;
     if (wrap && wrap.contentWindow) {
       wrap.contentWindow.document.body.innerHTML = '';
-      devTool.initPlugin(wrap);
+      setTimeout(() => {
+        devTool.initPlugin(wrap);
+      }, 500);
     }
   }, [props.files]);
   return (
     <iframe
       className={styles['dev-wrap']}
       ref={el as React.LegacyRef<HTMLIFrameElement>}
-    >
-      {/* <div className={styles['lf-component']}>
-      
-      </div>
-      <div className={styles['rg-data']}>
-        <MyConsole logs={logs as any}/>
-      </div> */}
-    </iframe>
+    ></iframe>
   );
 }
 

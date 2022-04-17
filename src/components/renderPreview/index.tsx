@@ -134,6 +134,7 @@ function Preview(
       });
     }
     return function () {
+      vm && vm.unmount && vm.unmount();
       destoryPreview();
       disConnectObs();
       freeInterval();

@@ -135,7 +135,8 @@ export default function (arg: {
       };
     });
 
-    vm = Vue.createApp(comp, { a: 1 }).mount(el?.shadowRoot);
+    vm = Vue.createApp(comp, { a: 1 });
+    vm.mount(el?.shadowRoot);
   } catch (error) {
     freeConsole();
   }
