@@ -1,14 +1,7 @@
 import styles from './index.less';
 import { Console as MyConsole } from 'console-feed';
-import {
-  MutableRefObject,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
-import devTool from 'vue-vconsole-devtools';
+import { useLayoutEffect, useRef, useState } from 'react';
+import devTool from 'vue-devtools';
 function VueDevTool(props: {
   vm: any;
   files: Record<string, FileDescription>;
