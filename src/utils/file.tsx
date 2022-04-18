@@ -63,10 +63,7 @@ const path2UrlMap: Record<string, string> = {};
 export const resolveFile = function (
   path: string,
   content: FileTarget,
-  cb: (
-    url: string,
-    other: Pick<FileDescription, 'type' | 'compiled' | 'result' | 'name'>,
-  ) => void,
+  cb: (url: string, other: any) => void,
 ) {
   // buffer处理图片等其他文件流， 字符串处理文本内容
   const isImg = isImgFile(path);
@@ -76,6 +73,21 @@ export const resolveFile = function (
   let url = '';
   if (isRes) {
     url = fileAdapter(content, fileInfo.name, MIME_TYPES[fileInfo.type]);
+  } else if (content.constructor === File) {
+    // file 类型需要读取内容后写入
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      cb &&
+        cb(url, {
+          type: fileType as FileTypes,
+          compiled: true,
+          result: '',
+          name: fileInfo.name,
+          target: event?.target?.result,
+        });
+    };
+    reader.readAsText(content);
+    return;
   }
   if (fileInfo.type) {
     path2UrlMap[path] = '';

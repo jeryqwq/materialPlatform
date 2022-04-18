@@ -2,13 +2,16 @@ import { genUid } from '@/utils';
 import { getFileDir, resolveFile } from '@/utils/file';
 import { loadZipFile } from '@/utils/zip';
 import { observable, action, makeAutoObservable } from 'mobx';
+import debounce from 'lodash/debounce';
 import dep from './Dependencies';
 class FileSystem implements FileSys {
   @observable files: Record<string, FileDescription> = {};
   @observable actives: Set<FileDescription> = new Set();
   @observable activeKey: string = '';
+  debounceReload: () => void;
   constructor() {
     makeAutoObservable(this);
+    this.debounceReload = debounce(this.reloadFile, 500);
   }
   @action activeFile = (item: FileDescription) => {
     this.activeKey = item.path;
@@ -71,22 +74,16 @@ class FileSystem implements FileSys {
   };
   @action saveToLs = (path: string, content: FileTarget) => {
     // 数据写入stroge, 只有ctrl + s 的时候才会保存， onchange参数写入内存，没必要每次都保存到硬盘， 做持久化存储
-    resolveFile(
-      path,
-      content,
-      (
-        url: string,
-        other: Pick<FileDescription, 'type' | 'compiled' | 'result' | 'name'>,
-      ) => {
-        this.files[path] = {
-          url,
-          target: content,
-          path,
-          ...other,
-          id: genUid(),
-        };
-      },
-    );
+    resolveFile(path, content, (url: string, other: any) => {
+      this.files[path] = {
+        url,
+        target: content,
+        path,
+        ...other,
+        id: genUid(),
+      };
+      this.debounceReload();
+    });
   };
 }
 const fs = new FileSystem();
@@ -176,5 +173,4 @@ const fs = new FileSystem();
 // loadZipFile('/test.zip', fs, () => {
 //   fs.activeFile(fs.files['/index.vue']);
 // });
-// window.fs = fs
 export default fs;

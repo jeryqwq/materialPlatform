@@ -96,7 +96,7 @@ export const loadZipFile = async function (
     const materialStr = new TextDecoder().decode(
       materialInfo._data.compressedContent,
     );
-    depVersion = JSON.parse(materialStr);
+    depVersion = JSON.parse(materialStr) || {};
   }
   for (let key in files) {
     const element = files[key];
@@ -108,7 +108,8 @@ export const loadZipFile = async function (
         //  buffer => file => url
         fs.saveToLs(key, compressedContent);
       } else {
-        const context = new TextDecoder().decode(compressedContent);
+        // https://encoding.spec.whatwg.org/#dom-textdecoder
+        const context = new TextDecoder('utf-8').decode(compressedContent);
         if (key.startsWith('/lib/')) {
           // 库
           const libName = getFileType(key).name;

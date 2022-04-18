@@ -11,9 +11,10 @@ import { loadZipFile, resolveZipFile } from '@/utils/zip';
 import { CACHE_COMP_LOADED } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';
 import { DRAG_DIRECTION } from '@/contants';
-import { renderFilePath } from '@/utils/file';
+import { getFileType, renderFilePath } from '@/utils/file';
 import { ReactPropsWithRouter } from 'types';
 import ProjectConfig from './projectConfig';
+import fs from '@/stores/Fs';
 type StateType = {
   inputVal: string;
 };
@@ -48,12 +49,14 @@ class Editor extends React.Component<StoreProps, StateType> {
     const {
       file: { originFileObj },
     } = e;
-    const fileUrl = URL.createObjectURL(originFileObj as File);
-    const { fileSystem } = this.props;
-    loadZipFile(fileUrl, fileSystem, () => {
-      URL.revokeObjectURL(fileUrl);
-      fileSystem.reloadFile();
-    });
+    let { webkitRelativePath, name } = originFileObj;
+    let temp = webkitRelativePath.split('/');
+    temp.shift();
+    webkitRelativePath = '/' + temp.join('/');
+    if (webkitRelativePath.startsWith('/lib/')) {
+      return;
+    } // 忽略lib处理
+    this.props.fileSystem.saveToLs(webkitRelativePath, originFileObj);
   };
   render() {
     const store = this.props;
@@ -89,8 +92,16 @@ class Editor extends React.Component<StoreProps, StateType> {
                       cursor: 'pointer',
                     }}
                   >
-                    <Upload onChange={this.uplaodZipFile} fileList={[]}>
-                      <UploadOutlined />
+                    <Upload
+                      onChange={this.uplaodZipFile}
+                      fileList={[]}
+                      directory
+                    >
+                      <UploadOutlined
+                        onClick={() => {
+                          this.props.fileSystem.resetFile();
+                        }}
+                      />
                     </Upload>
                     <DownloadOutlined
                       style={{ margin: '0 5px' }}
