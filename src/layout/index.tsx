@@ -72,7 +72,13 @@ const dropDownMenu = function (material: MaterialInfo) {
                 <Form.Item
                   label="版本号"
                   name="version"
-                  rules={[{ required: true, message: '请输入版本号!' }]}
+                  rules={[
+                    {
+                      required: true,
+                      message: '请输入版本号!',
+                      pattern: /^[1-9]\d?(\.(0|[1-9]\d?)){2}$/,
+                    },
+                  ]}
                 >
                   <Input maxLength={32} />
                 </Form.Item>

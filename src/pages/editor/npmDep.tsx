@@ -60,7 +60,7 @@ function FileTree(props: { dep: Dependencies }) {
   }, []);
   const handleRemoveDep = (i: string) => {
     const depItem = dep.dependencies[i];
-    Modal.warning({
+    Modal.confirm({
       title: '提示',
       content: '该操作会删除对应的库代码，是否继续？',
       onOk() {

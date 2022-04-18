@@ -167,7 +167,13 @@ const BasicInfo = (props) => {
             <Form.Item
               label="版本"
               name="version"
-              rules={[{ required: true, message: '请输入版本!' }]}
+              rules={[
+                {
+                  required: true,
+                  message: '请输入版本!',
+                  pattern: /^[1-9]\d?(\.(0|[1-9]\d?)){2}$/,
+                },
+              ]}
             >
               <Input maxLength="32" />
             </Form.Item>
