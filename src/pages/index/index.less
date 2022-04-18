@@ -4,6 +4,7 @@
   height: 100%;
   overflow-x: hidden;
   background-color: #f3f4f9;
+  position: relative;
   :global {
     .header {
       display: flex;
@@ -11,6 +12,9 @@
       justify-content: center;
       align-items: center;
       background-color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 2;
       .project {
         position: absolute;
         left: 16px;
