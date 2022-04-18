@@ -11,6 +11,8 @@ export const MENU_KEYS = {
   ADD_FILE: 'ADD_FILE',
   ADD_FOLDER: 'ADD_FOLDER',
   UPLODAD: 'UPLODAD',
+  COPY_FILE: 'COPY_FILE',
+  PASTE: 'PASTE',
 };
 export const CONTEXT_MENU_FOLDER = [
   {
@@ -37,10 +39,10 @@ export const CONTEXT_MENU_FOLDER = [
     value: MENU_KEYS.DELETE,
     title: '删除',
   },
-  {
-    value: MENU_KEYS.DOWNLOAD,
-    title: '下载到本地',
-  },
+  // {
+  //   value: MENU_KEYS.DOWNLOAD,
+  //   title: '下载到本地',
+  // },
 ];
 
 export const CONTEXT_MENU_FILE = [
@@ -59,9 +61,5 @@ export const CONTEXT_MENU_FILE = [
   {
     value: MENU_KEYS.DELETE,
     title: '删除',
-  },
-  {
-    value: MENU_KEYS.DOWNLOAD,
-    title: '下载到本地',
   },
 ];

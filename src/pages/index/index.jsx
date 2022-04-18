@@ -377,6 +377,7 @@ const Index = (props) => {
             total={total}
             showTotal={(total) => `共 ${total} 条`}
             showSizeChanger
+            pageSize={pageSize}
             onShowSizeChange={onShowSizeChange}
           />
         </>
@@ -391,6 +392,7 @@ const Index = (props) => {
               showTotal: () => {
                 return `共 ${total} 条`;
               },
+              pageSize,
               onChange: onChangePagination,
               showSizeChanger: true,
               onShowSizeChange,

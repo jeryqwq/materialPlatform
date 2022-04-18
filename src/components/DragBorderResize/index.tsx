@@ -95,7 +95,6 @@ export default function (props: {
       id={props?.domId}
       onScroll={scrollBottom}
     >
-      {children}
       <div
         style={{ ...EL_ATTRS[direction] }}
         className={styles['drag-line']}
@@ -104,6 +103,7 @@ export default function (props: {
         }}
         ref={elLine}
       ></div>
+      {children}
     </div>
   );
 }

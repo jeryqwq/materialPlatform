@@ -13,6 +13,7 @@ import {
   file2Tree,
   fileIcons,
   findFileItemByFileTree,
+  getFileDir,
   getFileType,
   isResource,
   renderSearchKeywordNode,
@@ -36,6 +37,7 @@ import {
   _FOLDER_TEMP_MARK_NAME,
 } from '@/contants';
 import fileDefault from '@/contants/fileDefault';
+import fs from '@/stores/Fs';
 
 function FileTree(props: { fileSystem: FileSys }) {
   let curNode = useRef<TreeFileItem>();
@@ -234,6 +236,23 @@ function FileTree(props: { fileSystem: FileSys }) {
     keyword.current = value;
     setExpandedKey(searchTitleByKeyword(value, fileTree));
   };
+  const onDrop = (info: any) => {
+    const file = info.dragNode.file;
+    const curPath = info.node.key;
+    if (file && !info.node.isLeaf) {
+      //  文件 => 拖动到文件夹
+      const fromPath = file.path;
+      fs.moveFile2Dir(fromPath, curPath === INIT_PROJECT_KEY ? '' : curPath);
+    } else if (file && info.node.isLeaf) {
+      // 文件 => 文件，应该放到同级
+      if (getFileDir(file.path) === getFileDir(curPath)) {
+        // 同文件夹之间
+      } else {
+        // 夸文件夹
+        fs.moveFile2FileParent(file, curPath);
+      }
+    }
+  };
   return (
     <div style={{ padding: '5px 5px 0 5px' }}>
       <DragResize
@@ -268,6 +287,8 @@ function FileTree(props: { fileSystem: FileSys }) {
           expandedKeys={expandedKeys}
           defaultExpandedKeys={[INIT_PROJECT_NAME]}
           treeData={fileTree}
+          onDrop={onDrop}
+          draggable
           onClick={(e, node) => {
             const _node = node as TreeFileItem;
             _node?.isLeaf &&

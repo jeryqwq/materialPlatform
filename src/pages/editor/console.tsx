@@ -67,7 +67,14 @@ function Console(props: ConsolleProps) {
             DevTool
           </span>
         </Badge>
-        <div style={{ display: 'flex', alignItems: 'center', width: 120 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            width: 120,
+            justifyContent: 'flex-end',
+          }}
+        >
           {curMode === 'CONSOLE' ? (
             <>
               <ClearOutlined
@@ -88,20 +95,20 @@ function Console(props: ConsolleProps) {
                 <Option value="warn">Warn</Option>
                 <Option value="error">Error</Option>
               </Select>
-              <DownOutlined
-                onClick={() => {
-                  props.miniConsole();
-                  setIsOpen((val) => !val);
-                }}
-                style={{
-                  transform: `rotate(${isOpenConsole ? 0 : 180}deg)`,
-                  transition: 'all .5s',
-                }}
-              />
             </>
           ) : (
             <></>
           )}
+          <DownOutlined
+            onClick={() => {
+              props.miniConsole();
+              setIsOpen((val) => !val);
+            }}
+            style={{
+              transform: `rotate(${isOpenConsole ? 0 : 180}deg)`,
+              transition: 'all .5s',
+            }}
+          />
         </div>
       </div>
       <div className={styles['console-list-wrap']}>

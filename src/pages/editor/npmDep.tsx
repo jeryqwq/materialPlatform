@@ -1,5 +1,5 @@
 import { loadFileScript, searchPackage } from '@/server/npm';
-import { Collapse, message, TreeSelect } from 'antd';
+import { Collapse, message, Modal, TreeSelect } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { observer } from 'mobx-react';
@@ -14,8 +14,12 @@ const searchDebounce = debounce(async function (
   setCb: Function,
   keyword: string,
 ) {
-  const deps = await searchPackage(keyword);
-  deps?.data?.results && setCb(deps.data.results);
+  if (keyword) {
+    const deps = await searchPackage(keyword);
+    deps?.data?.results && setCb(deps.data.results);
+  } else {
+    setCb([]);
+  }
 },
 500);
 function FileTree(props: { dep: Dependencies }) {
@@ -23,9 +27,7 @@ function FileTree(props: { dep: Dependencies }) {
   const [searchLibTree, setSearchList] = useState<Array<any>>([]);
   const { dep } = props;
   useEffect(() => {
-    if (keyword) {
-      searchDebounce(setSearchList, keyword);
-    }
+    searchDebounce(setSearchList, keyword);
   }, [keyword]);
   const handleSearch = (val: string) => {
     setKeyword(val);
@@ -58,8 +60,14 @@ function FileTree(props: { dep: Dependencies }) {
   }, []);
   const handleRemoveDep = (i: string) => {
     const depItem = dep.dependencies[i];
-    dep.removeDep(depItem.name);
-    removeScript(depItem.name);
+    Modal.warning({
+      title: '提示',
+      content: '该操作会删除对应的库代码，是否继续？',
+      onOk() {
+        dep.removeDep(depItem.name);
+        removeScript(depItem.name);
+      },
+    });
   };
   return (
     <div style={{ padding: '5px', borderTop: 'solid 1px #e3e8ee' }}>

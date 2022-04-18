@@ -50,6 +50,8 @@ interface FileSys {
   removeActiveItem: (_: FileDescription) => void;
   resetFile: () => void;
   updateFile: (path: string, context: string) => void;
+  moveFile2Dir: (from: string, to: string) => void;
+  moveFile2FileParent: (from: FileDescription, to: string) => void;
 }
 interface ThemeStore {
   themeConfig: Record<string, any>;

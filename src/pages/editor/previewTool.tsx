@@ -11,10 +11,8 @@ import styles from './index.less';
 import { CreditCardOutlined } from '@ant-design/icons';
 import PreviewReact from '@/components/RenderPreview';
 import { DIMENSIONS, DRAG_DIRECTION, RENDER_PREVIEW_MODE } from '@/contants';
-import { CONSOLE_TYPES } from '@/contants/render';
 import DragResize from '@/components/DragBorderResize';
 import { Hook } from 'console-feed';
-import { files } from 'jszip';
 const { Option } = Select;
 declare type ConsoleType = { method: string; data: any[]; id: string };
 export default (props: { fileSystem: FileSys }) => {

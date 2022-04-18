@@ -1,5 +1,5 @@
 import { genUid } from '@/utils';
-import { resolveFile } from '@/utils/file';
+import { getFileDir, resolveFile } from '@/utils/file';
 import { loadZipFile } from '@/utils/zip';
 import { observable, action, makeAutoObservable } from 'mobx';
 import dep from './Dependencies';
@@ -38,6 +38,26 @@ class FileSystem implements FileSys {
   };
   @action removeActiveItem = (item: FileDescription) => {
     this.actives.delete(item);
+  };
+
+  @action moveFile2Dir = (target: string, to: string) => {
+    const file = this.files[target];
+    const fromName = file.name;
+    const toPath = to + '/' + fromName;
+    file.path = toPath;
+    this.removeFile(target);
+    this.files[toPath] = file;
+    this.reloadFile();
+  };
+  @action moveFile2FileParent = (target: FileDescription, to: string) => {
+    const fileName = target.name;
+    const prevPath = target.path;
+    const dirStr = getFileDir(to);
+    const curPath = dirStr + '/' + fileName;
+    target.path = curPath;
+    this.files[curPath] = target;
+    this.removeFile(prevPath);
+    this.reloadFile();
   };
   @action removeFolder = (perfix: string) => {
     for (const key in this.files) {

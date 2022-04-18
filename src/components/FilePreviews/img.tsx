@@ -5,7 +5,7 @@ export default function (props: {
 }) {
   const { url } = props.file;
   return (
-    <div style={{ textAlign: 'center', maxWidth: '80%', margin: '0 auto' }}>
+    <div style={{ textAlign: 'center', margin: '0 auto', overflow: 'scroll' }}>
       <img src={url} alt="" />
     </div>
   );

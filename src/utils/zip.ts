@@ -98,11 +98,12 @@ export const loadZipFile = async function (
     );
     depVersion = JSON.parse(materialStr);
   }
-  for (const key in files) {
+  for (let key in files) {
     const element = files[key];
     if (!element.dir) {
       let { compressedContent } = (element as any)._data;
       const fileType = getFileType(key).type;
+      key = key.startsWith('/') ? key : '/' + key; // 适配PC端电脑保存压缩包时会去除根目录的/
       if (isResource(fileType)) {
         //  buffer => file => url
         fs.saveToLs(key, compressedContent);

@@ -108,6 +108,13 @@ export const fileTransform = function (
   }
   return ret;
 };
+const img = (
+  <img
+    src="/imgs/icon/img.png"
+    alt="image"
+    style={{ width: '15px', transform: 'translateX(-5px)' }}
+  />
+);
 export const fileIcons: Record<FileTypes, JSX.Element> = {
   vue: (
     <img
@@ -123,19 +130,13 @@ export const fileIcons: Record<FileTypes, JSX.Element> = {
       style={{ width: '15px', transform: 'translateX(-5px)' }}
     />
   ),
-  img: (
-    <img
-      src="/imgs/icon/img.png"
-      alt="image"
-      style={{ width: '15px', transform: 'translateX(-5px)' }}
-    />
-  ),
+  img: img,
   common: <FileOutlined />,
-  png: <PictureOutlined />,
-  jpeg: <PictureOutlined />,
-  gif: <PictureOutlined />,
-  jpg: <PictureOutlined />,
-  svg: <PictureOutlined />,
+  png: img,
+  jpeg: img,
+  gif: img,
+  jpg: img,
+  svg: img,
   mjs: (
     <img
       src="/imgs/icon/js.png"
@@ -316,4 +317,10 @@ export const renderFilePath = function (path: string) {
       })}
     </span>
   );
+};
+
+export const getFileDir = function (path: string) {
+  const pathArr = path.split('/');
+  pathArr.pop();
+  return pathArr.join('/');
 };
