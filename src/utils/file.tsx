@@ -206,7 +206,6 @@ export const file2Tree = function (fileSystem: FileSys, projectName: string) {
     tempPathArr.push(path);
   }
   // console.log(tempPathArr, cacheFiles)
-  console.log('--------------------------------');
   tempPathArr.forEach((folder) => {
     const file = cacheFiles.get(folder);
     const fileName = folder.pop();

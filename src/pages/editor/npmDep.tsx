@@ -16,7 +16,8 @@ const searchDebounce = debounce(async function (
 ) {
   if (keyword) {
     const deps = await searchPackage(keyword);
-    deps?.data?.results && setCb(deps.data.results);
+    const json = await deps.json();
+    json?.results && setCb(json.results);
   } else {
     setCb([]);
   }
@@ -35,7 +36,7 @@ function FileTree(props: { dep: Dependencies }) {
   const handleLoadDep = useCallback(async (value: any, { node }: any) => {
     const { latest, name, version, filename } = node;
     if (dep.dependencies[value]) return;
-    const { data: content } = await loadFileScript(latest);
+    const content = await loadFileScript(latest);
     let lib = {
       target: content,
       version,
