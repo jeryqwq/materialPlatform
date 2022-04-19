@@ -22,7 +22,7 @@ export const SHOW_MODE = {
 export const DEFAULT_PROJECT_LIST = ['画布', '仪表板', '其他'];
 
 export const DOWNLOAD_MESSAGE_TIP_KEY = 'DOWNLOAD_MESSAGE_TIP_KEY';
-export const INIT_PROJECT_KEY = '';
+export const INIT_PROJECT_KEY = 'INIT_KEY';
 // The type represents the general category into which the data type falls, such as video or text.
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
 // https://www.iana.org/assignments/media-types/media-types.xhtml#audio

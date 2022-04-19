@@ -200,13 +200,13 @@ export const file2Tree = function (fileSystem: FileSys, projectName: string) {
   // /a/b/a.vue /a/b.vue /a.vue => [{ title: 'a', children: [ { title: 'b', children: [{ title: 'a.vue' }] },{ title: 'b.vue' } ] }, { title: 'a.vue' }]
   let tempPathArr = [];
   for (const key in files) {
-    if (Object.prototype.hasOwnProperty.call(files, key)) {
-      const element = files[key];
-      const path = element.path.split('/').filter((_) => _);
-      cacheFiles.set(path, element);
-      tempPathArr.push(path);
-    }
+    const element = files[key];
+    const path = element.path.split('/').filter((_) => _);
+    cacheFiles.set(path, element);
+    tempPathArr.push(path);
   }
+  // console.log(tempPathArr, cacheFiles)
+  console.log('--------------------------------');
   tempPathArr.forEach((folder) => {
     const file = cacheFiles.get(folder);
     const fileName = folder.pop();
@@ -232,6 +232,7 @@ export const file2Tree = function (fileSystem: FileSys, projectName: string) {
         prevFolder &&
           prevFolder.children &&
           prevFolder.children.push(curFolder);
+        prevFolder = curFolder;
       } else {
         // 保存上一个文件夹的记录
         prevFolder = curFolder;

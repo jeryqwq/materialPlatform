@@ -1,5 +1,4 @@
 import styles from './index.less';
-import { Console as MyConsole } from 'console-feed';
 import { useLayoutEffect, useRef, useState } from 'react';
 import devTool from 'vue-devtools';
 function VueDevTool(props: {

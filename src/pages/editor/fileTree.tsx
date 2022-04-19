@@ -104,6 +104,10 @@ function FileTree(props: { fileSystem: FileSys }) {
     name: string,
     isEdit?: boolean,
   ) => {
+    if (!name) {
+      setFileData(file2Tree(fileSystem, INIT_PROJECT_NAME));
+      return;
+    }
     node.title = name;
     node.isEditName = isEdit;
     const splitArr = (node.key as string).split('/');
@@ -132,6 +136,10 @@ function FileTree(props: { fileSystem: FileSys }) {
     name: string,
     isEdit?: boolean,
   ) => {
+    if (!name) {
+      setFileData(file2Tree(fileSystem, INIT_PROJECT_NAME));
+      return;
+    }
     const { file } = node;
     const beforeKey = node.key as string;
     node.title = name;
@@ -211,9 +219,11 @@ function FileTree(props: { fileSystem: FileSys }) {
         break;
       case MENU_KEYS.RENAME:
         // node.isLeaf ?   file || folder
-        node.isLeaf
-          ? updateFileName(node, node.title as string, true)
-          : updateFolderName(node, node.title as string, true);
+        node.isEditName = true;
+        setFileData([...fileTree]);
+        // node.isLeaf
+        //   ? updateFileName(node, node.title as string, true)
+        //   : updateFolderName(node, node.title as string, true);
         break;
       case MENU_KEYS.COPY_PATH:
         node && copyPath(node.key as string);
@@ -311,13 +321,14 @@ function FileTree(props: { fileSystem: FileSys }) {
                         size="small"
                         ref={(e) => e?.focus()}
                         defaultValue={node.title}
+                        onKeyDown={(e) => {
+                          if (e.keyCode === 27) {
+                            updateFolderName(node, '');
+                          }
+                        }}
                         onPressEnter={(e) => {
                           const value = (e.target as HTMLInputElement).value;
-                          value &&
-                            updateFileName(
-                              node,
-                              (e.target as HTMLInputElement).value,
-                            );
+                          updateFileName(node, value);
                         }}
                       ></Input>
                     ) : keyword.current ? (
@@ -341,9 +352,14 @@ function FileTree(props: { fileSystem: FileSys }) {
                         ref={(e) => e?.focus()}
                         size="small"
                         defaultValue={node.title}
+                        onKeyDown={(e) => {
+                          if (e.keyCode === 27) {
+                            updateFolderName(node, '');
+                          }
+                        }}
                         onPressEnter={(e) => {
                           const value = (e.target as HTMLInputElement).value;
-                          value && updateFolderName(node, value);
+                          updateFolderName(node, value);
                         }}
                       ></Input>
                     ) : keyword.current ? (
