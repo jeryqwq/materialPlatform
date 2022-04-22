@@ -1,10 +1,8 @@
-import { batchConsole, freeConsole } from '@/sandbox/log';
 import { cssUrlHandler } from '@/utils/reload';
 import { isResource } from '@/utils/file';
 import { addStyles } from '@/utils/reload';
 import { RenderProps } from 'types';
-import * as loader from 'vue3-sfc-loader-vis';
-import { CONSOLE_TYPES } from '@/contants/render';
+// import * as loader from 'vue3-sfc-loader-vis';
 
 const Vue = window['Vue'] || {};
 const stylus = window['stylus'] || {};
@@ -72,16 +70,10 @@ export default function (arg: {
       if (url === 'scss') return;
       return (
         files[url] || console.error(`cant reslove url or module '${url}'`)
-        // ||
-        // props.pushConsole({
-        //   type: CONSOLE_TYPES.ERROR,
-        //   text: [`cant reslove url or module '${url}' `],
-        // })
       );
     },
     log(type: string, err: string) {
-      console.dir(`错误类型： ${type}， 错误内容 ${err}`);
-      // props.pushConsole({type: CONSOLE_TYPES.ERROR, text: [err]});
+      console.error(`错误类型： ${type}`, err);
     },
     getResource(pathCx: any, options: any) {
       const { refPath, relPath } = pathCx;
@@ -117,28 +109,20 @@ export default function (arg: {
       };
     },
   };
-  const _loader = loader as { loadModule: Function };
+  const _loader = window['vue3-sfc-loader'] as { loadModule: Function };
   let vm;
   // https://v3.cn.vuejs.org/api/global-api.html#createapp
   // https://v3.cn.vuejs.org/api/global-api.html#defineasynccomponent
   // props in vm.$attrs
   try {
-    const comp = Vue.defineAsyncComponent(async () => {
+      const comp = Vue.defineAsyncComponent(async () => {
       const App = await _loader.loadModule(entry, options);
-      const prevMounted = App.mounted;
-      return {
-        ...App,
-        mounted() {
-          prevMounted && prevMounted.call(this);
-          freeConsole();
-        },
-      };
+      return App;
     });
 
-    vm = Vue.createApp(comp, { a: 1 });
+    vm = Vue.createApp(comp);
     vm.mount(el?.shadowRoot);
   } catch (error) {
-    freeConsole();
   }
   return vm;
 }

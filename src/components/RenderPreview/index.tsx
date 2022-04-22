@@ -17,12 +17,12 @@ import renderVue from './vue';
 import patchInterval from '@/sandbox/interval';
 import patchEventListener from '@/sandbox/listener';
 import renderReact from './react';
-import { batchConsole } from '@/sandbox/log';
 declare global {
   interface Window {
     Vue: any;
     stylus: any;
     Sass: any;
+    "vue3-sfc-loader": any
   }
 }
 let prevX: number;
