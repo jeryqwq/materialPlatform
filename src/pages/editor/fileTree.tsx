@@ -209,7 +209,6 @@ function FileTree(props: { fileSystem: FileSys }) {
       (target.parentNode as HTMLElement).getAttribute('accessKey') || '';
     const node = findFileItemByFileTree(nodeKye, fileTree);
     if (!node) return;
-    console.log(value, node);
     switch (value) {
       case MENU_KEYS.ADD_FILE:
         addFile(node, '');
@@ -314,6 +313,7 @@ function FileTree(props: { fileSystem: FileSys }) {
                 <ContextMenuTrigger
                   id={MENU_FILE}
                   attributes={{ accessKey: node.key }}
+                  holdToDisplay={-1}
                 >
                   <span className={styles['file-tree-node']}>
                     {node.isEditName ? (
