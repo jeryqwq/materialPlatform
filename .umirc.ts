@@ -11,6 +11,13 @@ export default defineConfig({
   fastRefresh: {},
   // headScripts: ['https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js'],
   mfsu: {},
+  dva: {
+    immer: true,
+    hmr: false,
+    lazyLoad: true,
+    disableModelsReExport: true,
+  },
+  dynamicImportSyntax: {},
   proxy: {
     '/ssa': {
       target: 'http://10.28.184.32:8089',
@@ -32,4 +39,6 @@ export default defineConfig({
   locale: {
     default: 'zh-CN',
   },
+  esbuild: {},
+  ignoreMomentLocale: true,
 });
