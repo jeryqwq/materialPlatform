@@ -170,7 +170,7 @@ const BasicInfo = (props) => {
               rules={[
                 {
                   required: true,
-                  message: '请输入版本!',
+                  message: '请输入正确的版本表示方法, 如1.0.0',
                   pattern: /^[1-9]\d?(\.(0|[1-9]\d?)){2}$/,
                 },
               ]}

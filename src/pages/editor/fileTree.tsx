@@ -263,7 +263,7 @@ function FileTree(props: { fileSystem: FileSys }) {
     }
   };
   return (
-    <div style={{ padding: '5px 5px 0 5px' }}>
+    <div style={{ padding: '5px 5px 0 5px', minHeight: 300 }}>
       <DragResize
         style={{
           overflow: 'scroll',
