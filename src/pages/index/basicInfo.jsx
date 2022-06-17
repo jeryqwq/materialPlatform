@@ -126,7 +126,9 @@ const BasicInfo = (props) => {
             </Select>
           </Form.Item>
         )}
-        {[ACTION_TYPE.ADD, ACTION_TYPE.COPY].includes(actionType) && (
+        {[ACTION_TYPE.ADD, ACTION_TYPE.COPY, ACTION_TYPE.EDITOR].includes(
+          actionType,
+        ) && (
           <Form.Item
             label="类型"
             name="type"

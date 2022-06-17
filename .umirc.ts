@@ -20,7 +20,7 @@ export default defineConfig({
   dynamicImportSyntax: {},
   proxy: {
     '/ssa': {
-      target: 'http://10.28.184.32:8089',
+      target: 'http://10.28.184.234:8981',
       changeOrigin: true,
     },
     '/static/material': {
