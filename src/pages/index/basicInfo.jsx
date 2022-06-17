@@ -138,8 +138,8 @@ const BasicInfo = (props) => {
               optionFilterProp="children"
               onChange={handleChange}
             >
-              <Option key="1">组件</Option>
-              <Option key="2">区块</Option>
+              <Option key="components">组件</Option>
+              <Option key="blocks">区块</Option>
             </Select>
           </Form.Item>
         )}

@@ -225,7 +225,14 @@ function LayoutIndex(props: ReactPropsWithRouter) {
               <Button
                 type="primary"
                 style={{ marginRight: 10 }}
-                onClick={() => props.history.push('/')}
+                onClick={() => {
+                  Modal.confirm({
+                    content: `该操作会清空当前操作文件并退出，是否继续?`,
+                    onOk() {
+                      props.history.push('/');
+                    },
+                  });
+                }}
               >
                 退出
               </Button>
