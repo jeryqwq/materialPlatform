@@ -263,7 +263,7 @@ function FileTree(props: { fileSystem: FileSys }) {
     }
   };
   return (
-    <div style={{ padding: '5px 5px 0 5px', minHeight: 300 }}>
+    <div style={{ padding: '5px 5px 0 5px' }}>
       <DragResize
         style={{
           overflow: 'scroll',
@@ -305,6 +305,7 @@ function FileTree(props: { fileSystem: FileSys }) {
               !_node.isEditName &&
               fileSystem.activeFile(_node.file);
           }}
+          style={{ minHeight: 300 }}
           onExpand={onExpand}
           titleRender={(node: any) => {
             if (node.isLeaf) {
