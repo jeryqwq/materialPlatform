@@ -36,7 +36,7 @@ const material2FromData = async function (material: MaterialInfo) {
   formData.append('id', material.id);
   formData.append('cssType', material.cssType + '');
   formData.append('version', material.version);
-  formData.append('type', material.type + '');
+  formData.append('type', material.type === 1 ? 'components' : 'blocks');
   const file1 = await html2Image(
     document.getElementById(RENDER_PREVIEW_TOOL) as HTMLElement,
   );
@@ -121,9 +121,8 @@ function LayoutIndex(props: ReactPropsWithRouter) {
   const [versionList, setVersionList] = useState<Array<any>>([]);
   const [refreshCount, setRefreshCount] = useState<number>(0); // hack
   const [curVersionIndex, setCurVersionIdx] = useState(-1);
-  const [materialInfo, setMaterilaInfo] = useState<MaterialInfo>(
-    fakeMaterialInfo,
-  );
+  const [materialInfo, setMaterilaInfo] =
+    useState<MaterialInfo>(fakeMaterialInfo);
   const { location } = useHistory();
   const id = (location as any).query.id;
   useEffect(() => {
