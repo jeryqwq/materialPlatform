@@ -129,7 +129,7 @@ export const loadZipFile = async function (
   cb && cb();
 };
 export const loadFileBuffer = function (url: string): Promise<ArrayBuffer> {
-  const req = new Request(url, { method: 'GET' });
+  const req = new Request(url, { method: 'GET', cache: 'no-cache' });
   return new Promise<ArrayBuffer>((resolve) => {
     fetch(req).then((res) => resolve(res.arrayBuffer()));
   });
