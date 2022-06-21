@@ -53,7 +53,10 @@ export function get(url, params = {}) {
   return new Promise((resolve, reject) => {
     axios
       .get(url, {
-        params: params,
+        params: {
+          ...params,
+          timestamp: new Date().getTime(), // get请求增加随机数
+        },
       })
       .then((response) => {
         resolve(response.data);
