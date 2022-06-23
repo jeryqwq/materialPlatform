@@ -20,7 +20,6 @@ const BasicInfo = (props) => {
   const { setVisible, getData } = props;
   const [originalVersionList, setOriginalVersionList] = useState([]);
   const [form] = Form.useForm();
-
   const saveData = async (values) => {
     let res;
     let mes;
@@ -139,9 +138,14 @@ const BasicInfo = (props) => {
               placeholder="请选择类型"
               optionFilterProp="children"
               onChange={handleChange}
+              value={itemInfo.type}
             >
-              <Option key="1">组件</Option>
-              <Option key="2">区块</Option>
+              <Option key="1" value={1}>
+                组件
+              </Option>
+              <Option key="2" value={2}>
+                区块
+              </Option>
             </Select>
           </Form.Item>
         )}

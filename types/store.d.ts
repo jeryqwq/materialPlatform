@@ -39,6 +39,7 @@ declare type FileDescription = {
   id: number;
 };
 interface FileSys {
+  debounceReload: () => void;
   files: Record<string, FileDescription>;
   actives: Set<FileDescription>;
   activeFile: (_: FileDescription) => void;

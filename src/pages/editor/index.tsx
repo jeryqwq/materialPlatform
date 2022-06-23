@@ -41,7 +41,7 @@ class Editor extends React.Component<StoreProps, StateType> {
   }
   reloadFile(e: any) {
     if (e.code === 'KeyS' && (e.altKey || e.ctrlKey || e.metaKey)) {
-      this.props.fileSystem.reloadFile();
+      this.props.fileSystem.debounceReload();
       e.preventDefault();
     }
   }
