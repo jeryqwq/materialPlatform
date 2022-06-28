@@ -14,7 +14,14 @@ Start the dev server,
 $ yarn start
 ```
 ## 物料
-<img src="./demo.jpg">
+<img src="./demo.png">
+
+## 支持语法
+### Vue2
+
+### Vue3
+
+### React < 18
 
 ## 文档
 接口文档： https://asiainfo-sec.feishu.cn/docs/doccnh5OOnTbG68JJ5S9WLrnobc
