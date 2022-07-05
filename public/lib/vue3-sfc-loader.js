@@ -1,4 +1,5 @@
-/*!
+var dn=Object.prototype.hasOwnProperty;var cn=Object.getOwnPropertySymbols,hn=Object.prototype.propertyIsEnumerable,wr=Math.pow,Kt=Object.assign;var sn=(ar,cr)=>{var $t={};for(var A in ar)dn.call(ar,A)&&cr.indexOf(A)<0&&($t[A]=ar[A]);if(ar!=null&&cn)for(var A of cn(ar))cr.indexOf(A)<0&&hn.call(ar,A)&&($t[A]=ar[A]);return $t};var Ut=(ar,cr,$t)=>new Promise((A,t)=>{var a=r=>{try{e($t.next(r))}catch(s){t(s)}},n=r=>{try{e($t.throw(r))}catch(s){t(s)}},e=r=>r.done?A(r.value):Promise.resolve(r.value).then(a,n);e(($t=$t.apply(ar,cr)).next())});/*!
+
  * vue3-sfc-loader v0.8.4 for vue3
  *
  * @description Vue3 Single File Component loader.

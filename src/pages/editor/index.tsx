@@ -14,7 +14,7 @@ import { DRAG_DIRECTION } from '@/contants';
 import { getFileType, renderFilePath } from '@/utils/file';
 import { ReactPropsWithRouter } from 'types';
 import ProjectConfig from './projectConfig';
-import fs from '@/stores/Fs';
+import { loadScript } from '@/utils/reload';
 type StateType = {
   inputVal: string;
 };
@@ -54,7 +54,15 @@ class Editor extends React.Component<StoreProps, StateType> {
     temp.shift();
     webkitRelativePath = '/' + temp.join('/');
     if (webkitRelativePath.startsWith('/lib/')) {
-      return;
+      // debugger
+      // const libName = getFileType(webkitRelativePath).name;
+      //     const lib = depVersion.dependencies[libName];
+      //     this.props.dependenciesStore.addDep(libName, {
+      //       ...lib,
+      //       target: context,
+      //     });
+      //     loadScript(document.head, { ...lib, target: context });
+      // return;
     } // 忽略lib处理
     this.props.fileSystem.saveToLs(webkitRelativePath, originFileObj);
   };
