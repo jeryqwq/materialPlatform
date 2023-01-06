@@ -159,7 +159,7 @@ export default (props: { fileSystem: FileSys }) => {
         )}
         <DragResize
           style={{
-            height: isMinoConsole ? '100%' : 'auto',
+            height: isMinoConsole ? '100%' : '450px',
             overflow: 'scroll',
           }}
           direction={DRAG_DIRECTION.TOP_BUTTOM}

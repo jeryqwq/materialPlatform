@@ -54,8 +54,8 @@ const dropDownMenu = function (material: MaterialInfo) {
         const { key } = val;
         if (key === 'save') {
           const formData = await material2FromData(material);
-          message.success('保存成功!');
           doMaterialUpload(formData);
+          message.success('保存成功!');
         } else {
           confirm({
             title: '另存为',
@@ -235,16 +235,25 @@ function LayoutIndex(props: ReactPropsWithRouter) {
               >
                 退出
               </Button>
-              <Dropdown
+              {/* <Dropdown.Button overlay={menu}>Actions</Dropdown.Button> */}
+              <Dropdown.Button
                 overlay={dropDownMenu({
                   ...materialInfo,
                   ...versionList[curVersionIndex],
                 })}
+                type="primary"
+                style={{ marginRight: 42 }}
+                onClick={async () => {
+                  const formData = await material2FromData({
+                    ...materialInfo,
+                    ...versionList[curVersionIndex],
+                  });
+                  doMaterialUpload(formData);
+                  message.success('保存成功!');
+                }}
               >
-                <Button type="primary" style={{ marginRight: 42 }}>
-                  保存 <DownOutlined />
-                </Button>
-              </Dropdown>
+                保存
+              </Dropdown.Button>
               <SettingDrawer
                 pathname={pathname}
                 enableDarkTheme

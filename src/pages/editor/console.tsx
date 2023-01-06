@@ -1,13 +1,7 @@
 import { CONSOLE_TYPES } from '@/contants/render';
 import { Badge, Select } from 'antd';
 import React, { useState } from 'react';
-import {
-  DownOutlined,
-  ClearOutlined,
-  InfoCircleOutlined,
-  WarningOutlined,
-  CloseCircleOutlined,
-} from '@ant-design/icons';
+import { UpOutlined, ClearOutlined } from '@ant-design/icons';
 import { Console as MyConsole } from 'console-feed';
 
 import styles from './index.less';
@@ -99,7 +93,7 @@ function Console(props: ConsolleProps) {
           ) : (
             <></>
           )}
-          <DownOutlined
+          <UpOutlined
             onClick={() => {
               props.miniConsole();
               setIsOpen((val) => !val);
