@@ -51,7 +51,7 @@ export default function (arg: {
       switch (type) {
         case '.css':
           options.addStyle(await getContentData(false));
-          return;
+          return true;
         case '.scss': // 处理单个scss文件
           return new Promise((reslove, reject) => {
             sass.compile(options.getFile(path), function (result: any) {
@@ -68,9 +68,7 @@ export default function (arg: {
     },
     getFile(url: string, options: any) {
       if (url === 'scss') return;
-      return (
-        files[url] || console.error(`cant reslove url or module '${url}'`)
-      );
+      return files[url] || console.error(`cant reslove url or module '${url}'`);
     },
     log(type: string, err: string) {
       console.error(`错误类型： ${type}`, err);
@@ -115,14 +113,13 @@ export default function (arg: {
   // https://v3.cn.vuejs.org/api/global-api.html#defineasynccomponent
   // props in vm.$attrs
   try {
-      const comp = Vue.defineAsyncComponent(async () => {
+    const comp = Vue.defineAsyncComponent(async () => {
       const App = await _loader.loadModule(entry, options);
       return App;
     });
 
     vm = Vue.createApp(comp);
     vm.mount(el?.shadowRoot);
-  } catch (error) {
-  }
+  } catch (error) {}
   return vm;
 }

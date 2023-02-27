@@ -19,7 +19,7 @@ export default defineConfig({
   },
   dynamicImportSyntax: {},
   proxy: {
-    '/ssa': {
+    '/vis': {
       target: 'http://10.28.184.222:8981/',
       changeOrigin: true,
     },

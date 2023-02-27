@@ -5,7 +5,7 @@ export const fakeMaterialInfo = {
   id: '',
   md5: '',
   name: '',
-  path: '/data/asap/ssa/ssa-web/static/material/components/1493060577428307969/3.1',
+  path: '/data/asap-web/static/material/components/1493060577428307969/3.1',
   project: '',
   state: 1,
   thumbnail: '',
