@@ -8223,9 +8223,10 @@
   "resolved" "https://registry.npmmirror.com/vm-browserify/-/vm-browserify-1.1.2.tgz"
   "version" "1.1.2"
 
-"vue-devtools@git+https://github.com/jeryqwq/vue-vconsole-devtools.git":
-  "resolved" "git+ssh://git@github.com/jeryqwq/vue-vconsole-devtools.git#493d0f66eac1ab791c2841734223d1b4c46b3fa9"
-  "version" "0.0.0"
+"vue-devtools@file:/./public/lib/vue-devtools-0.0.1.tgz":
+  "integrity" "sha512-RImnKEFzqIZB+MBOM6hZg73JyeOBAcMnXLxlEhTuu5AJH2lv9aFK1GGOu3Gz9e3zchDfrFRcMouq7Vh3da88JA=="
+  "resolved" "file:public/lib/vue-devtools-0.0.1.tgz"
+  "version" "0.0.1"
 
 "w3c-hr-time@^1.0.2":
   "integrity" "sha512-z8P5DvDNjKDoFIHK7q8r8lackT6l+jo/Ye3HOle7l9nICP9lf1Ci25fy9vHd0JOWewkIFzXIEig3TdKT7JQ5fQ=="

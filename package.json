@@ -37,7 +37,7 @@
     "react-contextmenu": "^2.14.0",
     "react-dom": "17.x",
     "umi": "^3.5.20",
-    "vue-devtools": "git+https://github.com/jeryqwq/vue-vconsole-devtools.git"
+    "vue-devtools": "file:/./public/lib/vue-devtools-0.0.1.tgz"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.178",
