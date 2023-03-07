@@ -1,6 +1,6 @@
 import styles from './index.less';
 import { useLayoutEffect, useRef, useState } from 'react';
-import devTool from 'vue-devtools';
+import devTool from '@jeryqwq/vue-vconsole-devtools';
 function VueDevTool(props: {
   vm: any;
   files: Record<string, FileDescription>;

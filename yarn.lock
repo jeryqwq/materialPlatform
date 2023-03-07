@@ -722,6 +722,11 @@
   "resolved" "https://registry.npmmirror.com/@istanbuljs/schema/-/schema-0.1.3.tgz"
   "version" "0.1.3"
 
+"@jeryqwq/vue-vconsole-devtools@0.0.0":
+  "integrity" "sha512-hfUrPZqVvIeaEF1RCduleoAHMC8WKraaxSG+9w1kBE6N/63oWtZXk9oMbXg8lbXG+1uEUjR63fqgGlbYuYci5Q=="
+  "resolved" "https://registry.npmjs.org/@jeryqwq/vue-vconsole-devtools/-/vue-vconsole-devtools-0.0.0.tgz"
+  "version" "0.0.0"
+
 "@jest/console@^26.6.2":
   "integrity" "sha512-IY1R2i2aLsLr7Id3S6p2BA82GNWryt4oSvEXLAKc+L2zdi89dSkE8xC1C+0kpATG4JhBJREnQOH7/zmccM2B0g=="
   "resolved" "https://registry.npmmirror.com/@jest/console/-/console-26.6.2.tgz"
@@ -8222,11 +8227,6 @@
   "integrity" "sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ=="
   "resolved" "https://registry.npmmirror.com/vm-browserify/-/vm-browserify-1.1.2.tgz"
   "version" "1.1.2"
-
-"vue-devtools@file:/./public/lib/vue-devtools-0.0.1.tgz":
-  "integrity" "sha512-RImnKEFzqIZB+MBOM6hZg73JyeOBAcMnXLxlEhTuu5AJH2lv9aFK1GGOu3Gz9e3zchDfrFRcMouq7Vh3da88JA=="
-  "resolved" "file:public/lib/vue-devtools-0.0.1.tgz"
-  "version" "0.0.1"
 
 "w3c-hr-time@^1.0.2":
   "integrity" "sha512-z8P5DvDNjKDoFIHK7q8r8lackT6l+jo/Ye3HOle7l9nICP9lf1Ci25fy9vHd0JOWewkIFzXIEig3TdKT7JQ5fQ=="
