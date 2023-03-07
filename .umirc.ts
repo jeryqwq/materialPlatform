@@ -6,6 +6,9 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
+  history: {
+    type: 'hash',
+  },
   plugins: [],
   routes: routes,
   fastRefresh: {},
