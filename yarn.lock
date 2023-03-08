@@ -722,10 +722,10 @@
   "resolved" "https://registry.npmmirror.com/@istanbuljs/schema/-/schema-0.1.3.tgz"
   "version" "0.1.3"
 
-"@jeryqwq/vue-vconsole-devtools@0.0.0":
-  "integrity" "sha512-hfUrPZqVvIeaEF1RCduleoAHMC8WKraaxSG+9w1kBE6N/63oWtZXk9oMbXg8lbXG+1uEUjR63fqgGlbYuYci5Q=="
-  "resolved" "https://registry.npmjs.org/@jeryqwq/vue-vconsole-devtools/-/vue-vconsole-devtools-0.0.0.tgz"
-  "version" "0.0.0"
+"@jeryqwq/vue-vconsole-devtools@0.0.1":
+  "integrity" "sha512-UK9waVGbkj92CR4vg7JxWh1FWEGlJVgf69AhiTp72lCTKsI85Y/OQaMSNuouB5QKuWCdIEbBtUNqsnyuV3vWDA=="
+  "resolved" "https://registry.npmjs.org/@jeryqwq/vue-vconsole-devtools/-/vue-vconsole-devtools-0.0.1.tgz"
+  "version" "0.0.1"
 
 "@jest/console@^26.6.2":
   "integrity" "sha512-IY1R2i2aLsLr7Id3S6p2BA82GNWryt4oSvEXLAKc+L2zdi89dSkE8xC1C+0kpATG4JhBJREnQOH7/zmccM2B0g=="

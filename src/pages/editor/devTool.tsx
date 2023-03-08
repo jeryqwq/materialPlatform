@@ -6,7 +6,6 @@ function VueDevTool(props: {
   files: Record<string, FileDescription>;
 }) {
   const { vm } = props;
-
   const el = useRef<HTMLIFrameElement>();
   // window.vm = vm
   // const tabComp = useCallback((comp: any) => {
@@ -23,7 +22,7 @@ function VueDevTool(props: {
         devTool.initPlugin(wrap);
       }, 500);
     }
-  }, [props.files]);
+  }, []);
   return (
     <iframe
       className={styles['dev-wrap']}

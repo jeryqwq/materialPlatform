@@ -126,11 +126,12 @@ function LayoutIndex(props: ReactPropsWithRouter) {
   const { location } = useHistory();
   const id = (location as any).query.id;
   useEffect(() => {
-    doMaterialQueryVersions({ id }).then((versions: any) => {
-      // 获取版本列表
-      setVersionList(versions.data);
-      setCurVersionIdx(0);
-    });
+    id &&
+      doMaterialQueryVersions({ id }).then((versions: any) => {
+        // 获取版本列表
+        setVersionList(versions.data);
+        setCurVersionIdx(0);
+      });
   }, []);
   useEffect(() => {
     const curMaterial = versionList[curVersionIndex] as MaterialInfo;
@@ -255,6 +256,7 @@ function LayoutIndex(props: ReactPropsWithRouter) {
                 保存
               </Dropdown.Button>
               <SettingDrawer
+                disableUrlParams
                 pathname={pathname}
                 enableDarkTheme
                 getContainer={() => document.getElementById('pro-layout')}
@@ -263,7 +265,6 @@ function LayoutIndex(props: ReactPropsWithRouter) {
                   themeStore.setTheme(changeSetting);
                   setRefreshCount(refreshCount + 1);
                 }}
-                disableUrlParams={false}
               />
             </div>
           )}
