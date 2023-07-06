@@ -21,16 +21,7 @@ export default defineConfig({
     disableModelsReExport: true,
   },
   dynamicImportSyntax: {},
-  proxy: {
-    '/vis': {
-      target: 'http://10.28.184.222:8981/',
-      changeOrigin: true,
-    },
-    '/static/material': {
-      target: 'http://10.28.184.222:8981/',
-      changeOrigin: true,
-    },
-  },
+  proxy: {},
   extraBabelPlugins: [isProd ? 'transform-remove-console' : ''],
   chainWebpack(memo, { env, webpack, createCSSRule }) {
     // 设置 alias
